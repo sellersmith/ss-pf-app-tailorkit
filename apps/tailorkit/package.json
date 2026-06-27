@@ -3,7 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "description": "PageFly internal TailorKit app-platform marketplace shell",
-  "main": "src/backend/plugin.ts",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./manifest": "./manifest.ts",
+    "./admin": "./src/admin/index.tsx",
+    "./product-editor-route-contract": "./src/admin/product-editor-island/route-contract.ts",
+    "./domain/order-record": "./domain/order-record.ts",
+    "./domain/order-property-matchers": "./domain/order-property-matchers.ts"
+  },
   "scripts": {
     "build": "npm run build:server && npm run build:admin",
     "build:with-theme": "npm run build && npm run build:theme",
