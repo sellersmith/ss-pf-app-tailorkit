@@ -43,6 +43,7 @@ const requiredRootExports = {
   '.': './apps/tailorkit/src/index.ts',
   './manifest': './apps/tailorkit/manifest.ts',
   './admin': './apps/tailorkit/src/admin/index.tsx',
+  './backend/plugin': './apps/tailorkit/src/backend/plugin.ts',
   './product-editor-route-contract': './apps/tailorkit/src/admin/product-editor-island/route-contract.ts',
   './domain/order-record': './apps/tailorkit/domain/order-record.ts',
   './domain/order-property-matchers': './apps/tailorkit/domain/order-property-matchers.ts',
