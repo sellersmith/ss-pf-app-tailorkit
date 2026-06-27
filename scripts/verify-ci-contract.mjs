@@ -39,4 +39,23 @@ if (tailorkitPackageJson.scripts?.['build:admin-artifact'] !== 'npm run build:co
   throw new Error('TailorKit package is missing build:admin-artifact contract')
 }
 
+const requiredRootExports = {
+  '.': './apps/tailorkit/src/index.ts',
+  './manifest': './apps/tailorkit/manifest.ts',
+  './admin': './apps/tailorkit/src/admin/index.tsx',
+  './product-editor-route-contract': './apps/tailorkit/src/admin/product-editor-island/route-contract.ts',
+  './domain/order-record': './apps/tailorkit/domain/order-record.ts',
+  './domain/order-property-matchers': './apps/tailorkit/domain/order-property-matchers.ts',
+}
+
+for (const [exportName, target] of Object.entries(requiredRootExports)) {
+  if (packageJson.exports?.[exportName] !== target) {
+    throw new Error(`TailorKit root package export ${exportName} must point to ${target}`)
+  }
+
+  if (!fs.existsSync(path.join(repoRoot, target.replace(/^\.\//, '')))) {
+    throw new Error(`TailorKit root package export ${exportName} points to missing file ${target}`)
+  }
+}
+
 process.stdout.write('ci-contract-ok\n')
