@@ -8,6 +8,7 @@
     ".": "./src/index.ts",
     "./manifest": "./manifest.ts",
     "./admin": "./src/admin/index.tsx",
+    "./backend/plugin": "./src/backend/plugin.ts",
     "./product-editor-route-contract": "./src/admin/product-editor-island/route-contract.ts",
     "./domain/order-record": "./domain/order-record.ts",
     "./domain/order-property-matchers": "./domain/order-property-matchers.ts"
