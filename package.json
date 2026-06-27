@@ -1,0 +1,20 @@
+{
+  "name": "ss-pf-app-tailorkit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TailorKit admin artifact producer for PageFly app-platform",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
+  "scripts": {
+    "ci:contract": "node scripts/verify-ci-contract.mjs",
+    "build:admin-artifact": "node scripts/build-admin-artifact.mjs",
+    "package:admin-artifact": "node scripts/package-app-platform-admin-artifact.mjs --app tailorkit",
+    "deploy:admin-artifact": "node scripts/deploy-app-platform-admin-artifact.mjs",
+    "deploy:admin-artifact:dry-run": "node scripts/deploy-app-platform-admin-artifact.mjs --dry-run"
+  }
+}
+
