@@ -1,0 +1,181 @@
+/* Tailorkit Tooltip Styles */
+.emtlkit-tooltip {
+  position: absolute;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 200ms ease-in-out,
+    visibility 200ms ease-in-out;
+}
+
+.emtlkit-tooltip--visible {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.emtlkit-tooltip__content {
+  position: relative;
+  background: rgba(255, 255, 255, 1);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.8;
+  color: rgba(0, 0, 0, 1);
+  max-width: 200px;
+  word-wrap: break-word;
+  box-shadow:
+    0px 8px 20px -4px rgba(23, 24, 24, 0.12),
+    0px 3px 6px -3px rgba(23, 24, 24, 0.08);
+}
+
+.emtlkit-tooltip__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Arrow positioning for different tooltip positions */
+.emtlkit-tooltip--top .emtlkit-tooltip__arrow {
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0 8px;
+  border-color: rgba(255, 255, 255, 1) transparent transparent transparent;
+  filter: drop-shadow(0px 2px 4px rgba(23, 24, 24, 0.1));
+}
+
+.emtlkit-tooltip--top-left .emtlkit-tooltip__arrow {
+  bottom: -8px;
+  left: 16px;
+  border-width: 8px 8px 0 8px;
+  border-color: rgba(255, 255, 255, 1) transparent transparent transparent;
+  filter: drop-shadow(0px 2px 4px rgba(23, 24, 24, 0.1));
+}
+
+.emtlkit-tooltip--top-right .emtlkit-tooltip__arrow {
+  bottom: -8px;
+  right: 16px;
+  border-width: 8px 8px 0 8px;
+  border-color: rgba(255, 255, 255, 1) transparent transparent transparent;
+  filter: drop-shadow(0px 2px 4px rgba(23, 24, 24, 0.1));
+}
+
+.emtlkit-tooltip--bottom .emtlkit-tooltip__arrow {
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent rgba(255, 255, 255, 1) transparent;
+  filter: drop-shadow(0px -2px 4px rgba(23, 24, 24, 0.1));
+}
+
+.emtlkit-tooltip--bottom-left .emtlkit-tooltip__arrow {
+  top: -8px;
+  left: 16px;
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent rgba(255, 255, 255, 1) transparent;
+  filter: drop-shadow(0px -2px 4px rgba(23, 24, 24, 0.1));
+}
+
+.emtlkit-tooltip--bottom-right .emtlkit-tooltip__arrow {
+  top: -8px;
+  right: 16px;
+  border-width: 0 8px 8px 8px;
+  border-color: transparent transparent rgba(255, 255, 255, 1) transparent;
+  filter: drop-shadow(0px -2px 4px rgba(23, 24, 24, 0.1));
+}
+
+.emtlkit-tooltip--left .emtlkit-tooltip__arrow {
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 8px 0 8px 8px;
+  border-color: transparent transparent transparent rgba(255, 255, 255, 1);
+  filter: drop-shadow(2px 0px 4px rgba(23, 24, 24, 0.1));
+}
+
+.emtlkit-tooltip--right .emtlkit-tooltip__arrow {
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 8px 8px 8px 0;
+  border-color: transparent rgba(255, 255, 255, 1) transparent transparent;
+  filter: drop-shadow(-2px 0px 4px rgba(23, 24, 24, 0.1));
+}
+
+/* Animation variants */
+.emtlkit-tooltip--fade-in {
+  animation: emtlkit-tooltip-fade-in 200ms ease-out;
+}
+
+.emtlkit-tooltip--fade-out {
+  animation: emtlkit-tooltip-fade-out 200ms ease-in;
+}
+
+@keyframes emtlkit-tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes emtlkit-tooltip-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .emtlkit-tooltip__content {
+    max-width: 250px;
+    font-size: 14px;
+    padding: 6px 10px;
+  }
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .emtlkit-tooltip__content {
+    background: rgba(48, 48, 48, 1);
+    color: rgba(255, 255, 255, 1);
+    box-shadow:
+      0px 8px 20px -4px rgba(0, 0, 0, 0.3),
+      0px 3px 6px -3px rgba(0, 0, 0, 0.2);
+  }
+
+  .emtlkit-tooltip--top .emtlkit-tooltip__arrow,
+  .emtlkit-tooltip--top-left .emtlkit-tooltip__arrow,
+  .emtlkit-tooltip--top-right .emtlkit-tooltip__arrow {
+    border-color: rgba(48, 48, 48, 1) transparent transparent transparent;
+  }
+
+  .emtlkit-tooltip--bottom .emtlkit-tooltip__arrow,
+  .emtlkit-tooltip--bottom-left .emtlkit-tooltip__arrow,
+  .emtlkit-tooltip--bottom-right .emtlkit-tooltip__arrow {
+    border-color: transparent transparent rgba(48, 48, 48, 1) transparent;
+  }
+
+  .emtlkit-tooltip--left .emtlkit-tooltip__arrow {
+    border-color: transparent transparent transparent rgba(48, 48, 48, 1);
+  }
+
+  .emtlkit-tooltip--right .emtlkit-tooltip__arrow {
+    border-color: transparent rgba(48, 48, 48, 1) transparent transparent;
+  }
+}

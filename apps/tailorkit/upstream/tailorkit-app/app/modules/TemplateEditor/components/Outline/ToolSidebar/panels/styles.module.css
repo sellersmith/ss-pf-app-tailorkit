@@ -1,0 +1,300 @@
+.panelContainer {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* Use clip instead of hidden to prevent implicit overflow-y: auto (CSS spec promotes
+     the other axis to auto when one axis is hidden). clip doesn't create a scroll container. */
+  overflow-x: clip;
+  padding-bottom: 24px;
+  /* Prevent content from expanding beyond the parent sidebar width */
+  min-width: 0;
+  max-width: 100%;
+}
+
+.effectCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.effectCard:hover {
+  transform: scale(1.05);
+}
+
+.effectPreview {
+  aspect-ratio: 1;
+  background-color: var(--p-color-bg-surface-secondary);
+  border-radius: var(--p-border-radius-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--p-color-border);
+  overflow: hidden;
+}
+
+.imageCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.imageCard:hover {
+  transform: scale(1.05);
+}
+
+.imagePreview {
+  aspect-ratio: 1;
+  background-color: var(--p-color-bg-surface-secondary);
+  border-radius: var(--p-border-radius-200);
+  overflow: hidden;
+  border: 1px solid var(--p-color-border);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Clipart Panel Styles */
+.stickyHeader {
+  position: var(--tool-panel-sticky, sticky);
+  top: 0;
+  z-index: 1;
+  flex-shrink: 0;
+  background-color: var(--p-color-bg-fill);
+  padding: 12px;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid var(--p-color-border-secondary, transparent);
+}
+
+.searchField {
+  width: 100%;
+}
+
+.tabsContainer {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.tab,
+.tabActive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 28px;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: var(--p-border-radius-button, 8px);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 550;
+  line-height: 16px;
+  color: var(--p-color-text, #303030);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.tab svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.tab:hover {
+  background-color: var(--p-color-bg-fill-transparent-hover, rgba(0, 0, 0, 0.04));
+}
+
+.tabActive {
+  background-color: var(--p-color-bg-fill-transparent-selected, rgba(0, 0, 0, 0.08));
+}
+
+.contentArea {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px;
+  position: relative;
+  /* Optimize scrolling performance */
+  -webkit-overflow-scrolling: touch;
+}
+
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.clipartListContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.gridWrapper {
+  /* Improve image rendering stability */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.clipartGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.clipartItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.clipartThumbnail {
+  width: 62px;
+  height: 62px;
+  border: 1px solid var(--p-color-border, #e3e3e3);
+  border-radius: 8px;
+  overflow: hidden;
+  transition:
+    border-width 0.15s ease,
+    border-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--p-color-bg-surface-secondary);
+}
+
+.clipartThumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.clipartItem:hover .clipartThumbnail {
+  border-width: 2px;
+  border-color: var(--p-color-border-hover, #cccccc);
+}
+
+.clipartTitle {
+  width: 62px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 16px;
+  color: var(--p-color-text, #303030);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+/* Skeleton loading states */
+.clipartThumbnailSkeleton {
+  width: 62px;
+  height: 62px;
+  border: 1px solid var(--p-color-border, #e3e3e3);
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.clipartTitleSkeleton {
+  width: 62px;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* More Elements Panel Styles */
+.moreElementsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.moreElementCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.moreElementPreview {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid var(--p-color-border, #e3e3e3);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--p-color-bg-surface);
+  transition:
+    border-color 0.15s ease,
+    border-width 0.15s ease;
+}
+
+/* Target the Polaris Icon wrapper */
+.moreElementPreview > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.moreElementPreview svg {
+  width: 60px !important;
+  height: 60px !important;
+  margin: 0;
+  display: block;
+}
+
+.moreElementCard:hover .moreElementPreview {
+  border-width: 2px;
+  border-color: var(--p-color-border-hover, #cccccc);
+}

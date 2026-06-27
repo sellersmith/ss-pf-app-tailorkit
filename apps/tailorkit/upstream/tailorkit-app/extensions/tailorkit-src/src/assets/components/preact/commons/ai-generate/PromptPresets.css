@@ -1,0 +1,147 @@
+/* PromptPresets Component Styles */
+
+.emtlkit--prompt-presets {
+  padding: 8px 0;
+}
+
+.emtlkit--prompt-presets-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.emtlkit--prompt-presets-grid {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+
+.emtlkit--prompt-preset-item {
+  position: relative;
+  cursor: pointer;
+  border: 2px solid var(--emtlkit-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--emtlkit-bg-primary);
+  transition: all 0.2s ease;
+  min-height: 80px;
+}
+
+.emtlkit--prompt-preset-item.hovered {
+  background: var(--emtlkit-bg-surface-hover);
+  /* border-color: var(--emtlkit-border-color); */
+}
+
+.emtlkit--prompt-preset-item.selected {
+  background: var(--emtlkit-bg-primary);
+  border-color: var(--emtlkit-option-border-active-color);
+}
+
+.emtlkit--prompt-preset-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.emtlkit--prompt-preset-thumbnail {
+  width: 100%;
+  height: 100%;
+  max-height: 108px;
+  display: block;
+  object-fit: cover;
+  border-radius: var(--emtlkit-border-radius-100);
+}
+
+.emtlkit--prompt-preset-name {
+  font-size: 11px;
+  color: var(--emtlkit-text-color);
+  text-align: center;
+  line-height: 1.3;
+  word-break: break-word;
+  max-width: 100%;
+  padding: 8px;
+}
+
+.emtlkit--prompt-preset-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.emtlkit--prompt-preset-checkbox {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.emtlkit--prompt-preset-view-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 32px;
+}
+
+.emtlkit--prompt-presets-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Skeleton loading styles */
+.emtlkit--prompt-preset-skeleton {
+  background: #f6f6f7;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 80px;
+  justify-content: center;
+}
+
+.emtlkit--prompt-preset-skeleton-thumbnail {
+  width: 40px;
+  height: 40px;
+  background: #e1e3e5;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.emtlkit--prompt-preset-skeleton-text {
+  width: 60px;
+  height: 12px;
+  background: #e1e3e5;
+  border-radius: 2px;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Responsive design */
+@media screen and (max-width: 320px) {
+  .emtlkit--prompt-presets-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

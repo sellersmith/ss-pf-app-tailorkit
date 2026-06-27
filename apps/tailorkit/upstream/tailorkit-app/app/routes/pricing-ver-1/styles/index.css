@@ -1,0 +1,4 @@
+.Polaris-Button--sizeLarge {
+  --pc-button-padding-block: var(--p-space-300);
+  --pc-button-padding-inline: var(--p-space-800);
+}

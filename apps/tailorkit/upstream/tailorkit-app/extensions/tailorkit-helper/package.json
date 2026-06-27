@@ -1,0 +1,19 @@
+{
+  "name": "tailorkit-helper",
+  "version": "1.0.0",
+  "description": "Helper script for TailorKit theme extension",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "dotenv -e ../../.env -- vite build",
+    "dev": "dotenv -e ../../.env -- vite build --watch"
+  },
+  "dependencies": {
+    "morphdom": "^2.7.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^7.3.0",
+    "vite-plugin-transform": "^2.0.1"
+  }
+}

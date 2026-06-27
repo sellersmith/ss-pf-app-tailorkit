@@ -1,0 +1,74 @@
+.SortableItem {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
+  align-items: center;
+  /* padding: 4px 16px; */
+  padding: var(--p-space-100) var(--p-space-400);
+  box-sizing: border-box;
+  list-style: none;
+  color: #333;
+  font-weight: 400;
+  font-size: 1rem;
+  font-family: sans-serif;
+
+  border-radius: var(--p-border-radius-200);
+}
+
+.SortableItem.active,
+.SortableItem:hover {
+  cursor: pointer;
+  /* box-shadow: 0 0 0 2px rgba(63, 63, 68, 0.05); */
+  background: var(--p-color-bg-surface-selected);
+}
+
+.SortableItem > .Polaris-InlineStack {
+  flex: 1;
+}
+
+.SortableItem .DragHandle {
+  display: flex;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  touch-action: none;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  appearance: none;
+  background-color: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.SortableItem .DragHandle,
+.SortableItem .Visible-Icon,
+.SortableItem .Lock-Icon {
+  visibility: hidden;
+}
+
+.SortableItem:hover .DragHandle,
+.SortableItem:hover .Visible-Icon,
+.SortableItem:hover .Lock-Icon {
+  visibility: visible;
+  display: flex;
+}
+
+.DragHandle:hover {
+  background-color: var(--p-color-bg-surface-hover);
+  cursor: move;
+}
+
+.DragHandle:focus-visible {
+  box-shadow: 0 0px 0px 2px #4c9ffe;
+}
+
+/* Always show drag handle & icons when explicit class added */
+.SortableItem.always-visible-actions .DragHandle,
+.SortableItem.always-visible-actions .Visible-Icon,
+.SortableItem.always-visible-actions .Lock-Icon,
+.SortableItem.always-visible-actions .Polaris-Button,
+.SortableItem.always-visible-actions .Polaris-Icon {
+  visibility: visible;
+  display: block;
+}

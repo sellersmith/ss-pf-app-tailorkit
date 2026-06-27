@@ -1,0 +1,25 @@
+.Polaris-BulkActions__BulkActionsLayout {
+  justify-content: flex-start;
+}
+
+.Polaris-VideoThumbnail__PlayButton:focus {
+  box-shadow: none;
+}
+
+.card-full-height,
+.card-full-height .Polaris-ShadowBevel {
+  height: 100%;
+}
+
+.Polaris-TextField__Spinner {
+  display: none;
+}
+
+.Polaris-Page-Header__Row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+}
+
+.Polaris-Collapsible {
+  overflow: hidden !important;
+}

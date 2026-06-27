@@ -1,0 +1,165 @@
+.editorContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+/* Main content area with canvas and optional sidebar */
+.mainContent {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  height: calc(100vh - 219px);
+  overflow: hidden;
+}
+
+/* Canvas column takes remaining space */
+.canvasColumn {
+  flex: 1 1 auto;
+  height: inherit;
+  min-height: 0;
+}
+
+.canvasWrapper {
+  flex: 1 1 auto;
+  height: inherit;
+  padding: 1rem;
+  position: relative; /* For absolute positioning of toolbar overlay */
+}
+
+/* Centered overlay on canvas — used for empty state CTAs, disappears when user starts working */
+.canvasOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.canvasOverlay > * {
+  pointer-events: auto;
+}
+
+/* Floating action buttons at bottom-left of canvas — mirrors zoom controls at bottom-right */
+.canvasActions {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 20;
+  display: flex;
+  gap: var(--p-space-200);
+  background: var(--p-color-bg-surface);
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-200);
+  padding: var(--p-space-100) var(--p-space-200);
+  box-shadow: var(--p-shadow-200);
+}
+
+/* Desktop: Sidebar slides in from right */
+.sidebarColumn {
+  width: 320px;
+  height: inherit;
+  border-left: 1px solid var(--p-color-border);
+  background: var(--p-color-bg-surface);
+  animation: slideInRight 0.2s ease-out;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile: Bottom panel — floats at the bottom of the modal content area
+   (positioned relative to editorContainer, not the viewport) */
+.bottomPanel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 45vh;
+  background: var(--p-color-bg-surface);
+  border-top: 1px solid var(--p-color-border);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  animation: slideInUp 0.2s ease-out;
+  /* Must exceed canvasActions (20) and canvasOverlay (15) which share the same stacking context */
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile: hide sidebar column, show bottom panel */
+@media (max-width: 768px) {
+  .sidebarColumn {
+    display: none;
+  }
+}
+
+/* Desktop: hide bottom panel */
+@media (min-width: 769px) {
+  .bottomPanel {
+    display: none;
+  }
+}
+
+.actionButtons {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  gap: 16px;
+}
+
+.errorContainer {
+  padding: 16px;
+}
+
+/* Mobile hint bar — positioned below the toolbar, lifted out of the scrollable toolbar element */
+.mobileToolbarHint {
+  position: absolute;
+  top: 62px;
+  left: 20px;
+  right: 20px;
+  z-index: 20;
+}
+
+/* Offset hint position when rulers are shown (ruler size = 24px) */
+.mobileToolbarHintWithRuler {
+  top: 86px;
+  left: 44px;
+  right: 20px;
+}

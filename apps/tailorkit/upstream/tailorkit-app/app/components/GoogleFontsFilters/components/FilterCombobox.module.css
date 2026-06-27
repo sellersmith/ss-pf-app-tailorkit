@@ -1,0 +1,6 @@
+.svgContainer {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  vertical-align: middle;
+}

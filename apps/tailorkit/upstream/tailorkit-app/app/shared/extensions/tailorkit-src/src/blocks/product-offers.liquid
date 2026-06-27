@@ -1,0 +1,47 @@
+{% liquid
+  assign is_design_mode = request.design_mode
+%}
+
+{% if is_design_mode %}
+  <div class='onetick-warning-banner' style='display: none;'>
+    {% render 'product-offers-banner',
+      description: 'The app block is already in use. You can only add one app block on a cart page.'
+    %}
+  </div>
+{% endif %}
+<onetick-product-offers-group 
+  data-trigger-product-id='{{ product.id }}'
+> </onetick-product-offers-group>
+
+{% schema %}
+{
+  "name": "Product offers",
+  "target": "section",
+  "settings": [],
+  "disabled_on": {
+    "templates": [
+      "404",
+      "article",
+      "blog",
+      "page",
+      "collection",
+      "customers/account",
+      "customers/activate_account",
+      "customers/addresses",
+      "customers/login",
+      "customers/order",
+      "customers/register",
+      "customers/reset_password",
+      "gift_card",
+      "index",
+      "list-collections",
+      "password",
+      "search",
+      "checkpoint",
+      "queue",
+      "metaobject"
+    ],
+    "groups": ["footer", "header"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,146 @@
+{% # theme-check-disable RemoteAsset %}
+<div class='{{ 'emtlkit--tab-content-container' }}' style='display:none'>
+  {% if em_tailorkit_variants %}
+    {% assign class = ' active' %}
+    {% assign selected_variant = product.selected_or_first_available_variant.id %}
+    {% for variant in em_tailorkit_variants %}
+      {% assign variant_str = variant | json | escape_once %}
+      {% if variant_str contains selected_variant %}
+        {% assign layer_integration = null %}
+        {% assign mockup = variant[1].mockup %}
+        {% assign print_areas = mockup.printAreas %}
+        {% assign print_areas_non_vsb = print_areas | where: 'vsb', false %}
+        {% assign layer_integrations = mockup.lis %}
+        {% assign print_areas_size = print_areas | size %}
+        {% assign print_areas_non_vsb_size = print_areas_non_vsb | size %}
+
+        {% for layer_integration_item in layer_integrations %}
+          {% if layer_integration_item.t == 'template' %}
+            {% assign layer_integration = layer_integration_item %}
+          {% endif %}
+        {% endfor %}
+
+        {% liquid
+          assign variant_attribute = ''
+          if layer_integration.v != blank
+            assign variant_attribute = 'data-variant-id="' | append: layer_integration.v | append: '"'
+          endif
+        %}
+        {% if layer_integration %}
+          {% assign product_featured_image = product.featured_image %}
+          {% assign product_featured_image_src = product_featured_image.src
+            | image_url: width: product_featured_image.width
+          %}
+          {% assign select_variant = product.selected_or_first_available_variant %}
+          {% assign variant_featured_image = select_variant.featured_image %}
+          {% assign variant_featured_image_src = variant_featured_image.src
+            | image_url: width: variant_featured_image.width
+          %}
+
+          {% assign data_product_image = '{"u": "'
+            | append: product_featured_image_src
+            | append: '", "w": "'
+            | append: product_featured_image.width
+            | append: '", "h": "'
+            | append: product_featured_image.height
+            | append: '"}'
+          %}
+
+          {% if variant_featured_image_src != blank %}
+            {% assign data_product_image = '{"u": "'
+              | append: variant_featured_image_src
+              | append: '", "w": "'
+              | append: variant_featured_image.width
+              | append: '", "h": "'
+              | append: variant_featured_image.height
+              | append: '"}'
+            %}
+          {% endif %}
+
+          {% if variant[1].baseProductImage %}
+            {% assign data_product_image = '{"u": "'
+              | append: variant[1].baseProductImage.url
+              | append: '", "w": "'
+              | append: variant[1].baseProductImage.width
+              | append: '", "h": "'
+              | append: variant[1].baseProductImage.height
+              | append: '"}'
+            %}
+          {% elsif mockup.pi.size > 0 %}
+            {% assign data_product_image = mockup.pi | json | escape_once %}
+          {% endif %}
+
+          {% if mockup.eot != null and mockup.eot == false %}
+            {% assign class = class | append: ' emtlkit--d-none' %}
+          {% endif %}
+
+          <tailorkit-product-personalizer
+            {{ variant_attribute }}
+            data-existed-option-set='{{ mockup.eot }}'
+            data-settings='{{ settings | json | escape_once }}'
+            data-personalized-design-title='{{ personalized_design_title | escape_once }}'
+            data-product-image='{{ data_product_image }}'
+            data-layer-integrations='{{ layer_integrations | json | escape_once }}'
+            data-print-areas='{{ print_areas | json | escape_once }}'
+            data-mockup='{{ variant[1].mockup | json | escape_once }}'
+            id='{{ 'tailorkit-content-' | append: layer_integration.i }}'
+            data-selected-variant-id='{{ product.selected_or_first_available_variant.id }}'
+            class='{{ 'emtlkit--product-personalizer emtlkit--option-set-container active emtlkit--overflow-hidden' | append: class }}'
+          >
+            {% assign ai_personalizer_product = em_tailorkit_app_settings.aiPersonalizerProduct %}
+            {% if settings.personalized_design_title != blank %}
+              <div class='emtlkit--d-flex emtlkit--flex-center {% if ai_personalizer_product %}emtlkit--flex-space-between emtlkit--flex-column{% else %}emtlkit--flex-justify-center{% endif %} emtlkit--personalize-container'>
+                <h3 class='emtlkit--personalize emtlkit--d-flex emtlkit--gap-8 emtlkit--flex-center'>
+                  {{
+                    personalized_design_title
+                    | default: settings.personalized_design_title
+                    | default: 'PERSONALIZED DESIGN'
+                  }}
+                </h3>
+                {% if ai_personalizer_product %}
+                  <tailorkit-ai-assistant></tailorkit-ai-assistant>
+                {% endif %}
+              </div>
+              <div class='emtlkit--personalize-divider'></div>
+            {% endif %}
+
+            <tailorkit-views-bar></tailorkit-views-bar>
+            <div class='emtlkit--personalization-area-container'>
+              {% for print_area in print_areas %}
+                {% if print_area.vsb == false %}
+                  <fieldset
+                    data-print-area-id='{{ print_area.i }}'
+                    data-print-area-vsb='{{ print_area.vsb }}'
+                  ></fieldset>
+                {% else %}
+                  <details open>
+                    <summary class='emtlkit--accordion-sub-header emtlkit--d-flex emtlkit--flex-center emtlkit--flex-space-between'>
+                      <span> {{ print_area.templateName | default: print_area.name }} </span>
+                      <span class='emtlkit--accordion-icon'>
+                        {{ accordion_icon }}
+                      </span>
+                    </summary>
+
+                    <div class='emtlkit--accordion-content'>
+                      {% assign layers = print_area.ls %}
+                      <fieldset data-print-area-id='{{ print_area.i }}'>
+                        {% for layer in layers %}
+                          {% if layer.preRender == true %}
+                            {% render 'pagefly-tailorkit-tlk-render-layer', layer: layer, layers: layers, print_area: print_area, in_multi_layout: false, layer_index: forloop.index0 %}
+                          {% elsif layer.t == 'charm-node' %}
+                            <div class='emtlkit--option-set-wrapper emtlkit--charm-picker-wrapper' data-layer-id='{{ layer.i }}'></div>
+                          {% endif %}
+                        {% endfor %}
+                      </fieldset>
+                    </div>
+                  </details>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </tailorkit-product-personalizer>
+        {% endif %}
+        {% assign class = '' %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</div>

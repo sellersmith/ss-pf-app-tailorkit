@@ -1,0 +1,5 @@
+export { collectCustomizationItems, collectCustomizationItemsFromPrintAreas } from './collector'
+export type { CollectorLayer } from './collector'
+export type { CustomizationItem, CustomizationItemType } from './types'
+export { CUSTOMIZATION_TYPE_LABELS, OPTION_SET_TYPE_MAP } from './types'
+export { resolveLegacyItemIndex } from './legacy-itemid-resolver'

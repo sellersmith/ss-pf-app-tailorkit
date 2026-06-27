@@ -1,0 +1,11 @@
+{% if section.settings.product %}
+  {% assign product = section.settings.product %}
+{% endif %}
+{% assign master_product_id = product.id | append: '' %}
+{% assign master_product_title = product.title %}
+<div
+  class='onetick-master-product'
+  data-target-product='{{ master_product_id }}'
+  data-target-product-title='{{ master_product_title }}'
+  style='display: none;'
+></div>

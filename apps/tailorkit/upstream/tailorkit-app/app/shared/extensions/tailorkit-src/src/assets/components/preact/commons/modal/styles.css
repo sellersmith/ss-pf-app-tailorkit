@@ -1,0 +1,543 @@
+/* Modal Backdrop */
+.emtlkit-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: emtlkit-modal-backdrop-fade-in 0.2s ease-out;
+}
+
+@keyframes emtlkit-modal-backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.emtlkit-modal {
+  background: var(--emtlkit-box-background-color, #ffffff);
+  border-radius: var(--emtlkit-box-border-radius, 8px);
+  border-style: var(--emtlkit-box-border-style, solid);
+  border-width: var(--emtlkit-box-border-width, 1px);
+  border-color: var(--emtlkit-box-border-color, rgba(204, 204, 204, 0.5));
+  box-shadow:
+    0px 3px 1px -1px rgba(26, 26, 26, 0.07),
+    0px 26px 80px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  outline: none;
+  animation: emtlkit-modal-slide-in 0.2s ease-out;
+}
+
+/* Mobile landscape orientation optimizations */
+@media (max-width: 1024px) and (max-height: 600px) {
+  .emtlkit-modal {
+    max-height: 95vh; /* Use more available height in landscape */
+  }
+}
+
+.emtlkit-modal--small {
+  max-width: 340px;
+}
+
+.emtlkit-modal--medium {
+  max-width: 1000px; /* Increased width to accommodate row layout */
+}
+
+.emtlkit-modal--large {
+  max-width: 1200px; /* Increased width for large modals */
+}
+
+@keyframes emtlkit-modal-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modal Header */
+.emtlkit-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--emtlkit-divider-color, #cccccc);
+  border-radius: var(--emtlkit-box-border-radius, 8px) var(--emtlkit-box-border-radius, 8px) 0 0;
+  flex-shrink: 0;
+}
+
+.emtlkit-modal__title {
+  font-size: var(--emtlkit-heading-font-size, inherit) !important;
+  color: var(--emtlkit-heading-color, inherit) !important;
+  font-weight: var(--emtlkit-heading-font-weight, 500) !important;
+  font-style: var(--emtlkit-heading-font-style, normal) !important;
+  text-decoration: var(--emtlkit-heading-text-decoration, none) !important;
+  margin: 0 !important;
+}
+
+.emtlkit-modal__close-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 8px;
+  color: #8a8a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.emtlkit-modal__close-button:hover {
+  background-color: #f5f5f5;
+}
+
+.emtlkit-modal__close-button:focus {
+  outline: 2px solid #007ace;
+  outline-offset: 2px;
+}
+
+/* Modal Content */
+.emtlkit-modal__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* max-height: calc(100vh - 270px); */
+  max-height: 90vh;
+  max-width: 100vw;
+}
+
+/* Modal Footer */
+.emtlkit-modal__footer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--emtlkit-box-border-color, #cccccc);
+  padding: 16px;
+  background: var(--emtlkit-box-background-color, #ffffff);
+  border-radius: 0 0 var(--emtlkit-box-border-radius, 8px) var(--emtlkit-box-border-radius, 8px);
+}
+
+.emtlkit-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.emtlkit-modal__primary-action {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 2px;
+  padding: 6px 12px;
+  font-family: 'ABeeZee', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: 0.046em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 60px;
+}
+
+.emtlkit-modal__primary-action:hover {
+  background: #333333;
+}
+
+.emtlkit-modal__primary-action:focus {
+  outline: 2px solid #007ace;
+  outline-offset: 2px;
+}
+
+.emtlkit-modal__primary-action:disabled,
+.emtlkit-modal__primary-action--loading {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Product Image Container */
+.emtlkit-modal__product-image-container {
+  position: relative;
+  width: 590px; /* Fixed width for desktop to match Figma design */
+  height: 590px; /* Fixed height for desktop to match Figma design */
+  min-height: 200px; /* Ensure minimum height for the image */
+  background: #f5f5f5;
+  border-style: solid;
+  border-width: var(--emtlkit-border-width-050);
+  border-color: var(--emtlkit-bg-secondary);
+  border-radius: var(--emtlkit-border-radius-200);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Mobile and touch device responsive sizing */
+@media (max-width: 1024px), (max-height: 600px), (hover: none) and (pointer: coarse) {
+  .emtlkit-modal__product-image-container {
+    width: 100%; /* Full width on mobile */
+    max-height: 300px; /* Reasonable max height for mobile */
+    aspect-ratio: 1; /* Maintain square aspect ratio on mobile */
+    flex-shrink: 0; /* Prevent shrinking */
+    /* Note: height: auto removed - Safari incorrectly calculates dimensions when
+       combining height: auto with aspect-ratio on flex children */
+  }
+}
+
+/* Mobile portrait */
+@media (max-width: 768px) and (orientation: portrait) {
+  .emtlkit-modal__product-image-container {
+    max-height: 250px; /* Smaller in portrait to leave more room for controls */
+  }
+}
+
+/* Mobile landscape */
+@media (max-width: 1024px) and (max-height: 600px) {
+  .emtlkit-modal__product-image-container {
+    max-height: 200px; /* Even smaller in landscape due to height constraints */
+    min-height: 150px; /* But ensure it's not too small */
+  }
+}
+
+/* Ensure canvas container fills the modal product image area consistently */
+.emtlkit-modal__product-image-container > div[id^='canvas-container-'] {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure the Konva canvas respects container bounds */
+.emtlkit-modal__product-image-container .emtlkit--canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.emtlkit-modal__product-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Customizer content styles */
+.emtlkit-modal__customizer-content {
+  display: flex;
+  flex-direction: row; /* Row layout for large screens */
+  gap: 16px;
+  height: 100%;
+  min-height: 0; /* Critical for proper flex shrinking */
+}
+
+/* Mobile and touch device layouts - Use column layout */
+@media (max-width: 1024px), (max-height: 600px) {
+  .emtlkit-modal__customizer-content {
+    align-items: center;
+    flex-direction: column; /* Column layout for mobile and short screens */
+  }
+}
+
+/* Mobile portrait - Column layout */
+@media (max-width: 768px) {
+  .emtlkit-modal__customizer-content {
+    flex-direction: column;
+  }
+}
+
+/* Mobile landscape - Still use column layout but optimize spacing */
+@media (max-width: 1024px) and (max-height: 600px) {
+  .emtlkit-modal__customizer-content {
+    flex-direction: column;
+    gap: 12px; /* Reduced gap for landscape */
+  }
+}
+
+/* Touch device detection - Always use column layout on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .emtlkit-modal__customizer-content {
+    flex-direction: column !important;
+  }
+}
+
+/* Tablet layout - Handle medium screens with sufficient height */
+@media (min-width: 769px) and (max-width: 1024px) and (min-height: 700px) {
+  .emtlkit-modal__product-image-container {
+    width: 270px; /* Smaller width for tablet */
+    height: 270px; /* Smaller height for tablet */
+  }
+
+  .emtlkit-modal__scrollable-content {
+    width: 300px; /* Smaller width for tablet */
+    min-width: 300px;
+  }
+}
+
+/* Large desktop layout - Ensure content fits on large screens */
+@media (min-width: 1200px) and (min-height: 700px) {
+  .emtlkit-modal--medium {
+    max-width: 1200px; /* Allow larger width on big screens */
+  }
+
+  .emtlkit-modal--large {
+    max-width: 1400px; /* Allow even larger width on big screens */
+  }
+}
+
+/* Print area selector */
+.emtlkit-modal__print-area-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #e3e3e3;
+  border: 1px solid #cccccc;
+  border-radius: 2px;
+  padding: 8px;
+  gap: 16px;
+}
+
+.emtlkit-modal__print-area-selector span {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: 0.046em;
+  color: #000000;
+  flex: 1;
+}
+
+.emtlkit-modal__print-area-selector svg {
+  width: 16px;
+  height: 16px;
+  color: #000000;
+}
+
+/* Option sets container */
+.emtlkit-modal__option-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+/* Scrollable content area */
+.emtlkit-modal__scrollable-content {
+  overflow-y: auto;
+  flex: 1;
+  width: 357px; /* Fixed width for desktop to match Figma design */
+  min-width: 357px;
+  /* min-height: 200px;  */
+}
+
+/* Mobile and touch device responsive sizing for scrollable content */
+@media (max-width: 1024px), (max-height: 600px), (hover: none) and (pointer: coarse) {
+  .emtlkit-modal__scrollable-content {
+    width: 100%; /* Full width on mobile */
+    min-width: auto; /* Reset min-width on mobile */
+    flex: 1;
+    /* min-height: 300px; */
+  }
+}
+
+/* Mobile portrait - Optimize for portrait orientation */
+@media (max-width: 768px) {
+  .emtlkit-modal__scrollable-content {
+    width: 100%; /* Full width on mobile */
+    min-width: auto; /* Reset min-width on mobile */
+    /* min-height: 270px; */
+  }
+}
+
+/* Mobile landscape - Optimize for landscape orientation */
+@media (max-width: 1024px) and (max-height: 600px) {
+  .emtlkit-modal__scrollable-content {
+    width: 100%;
+    min-width: auto;
+    flex: 1;
+    /* min-height: 250px; */
+    max-height: calc(100vh - 300px); /* Ensure it doesn't exceed available space */
+  }
+}
+
+/* Custom scrollbar */
+.emtlkit-modal__scrollable-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.emtlkit-modal__scrollable-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.emtlkit-modal__scrollable-content::-webkit-scrollbar-thumb {
+  background: #cccccc;
+  border-radius: 3px;
+}
+
+.emtlkit-modal__scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
+/* Modal Trigger Button */
+.emtlkit-modal-trigger {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  /* Font properties use CSS vars so customizer.ts can mirror the theme ATC button.
+     Defaults preserve prior hardcoded look when ATC font can't be detected. */
+  font-family: var(--emtlkit-trigger-font-family, 'Helvetica Neue', Arial, sans-serif);
+  font-weight: var(--emtlkit-trigger-font-weight, 600);
+  font-size: var(--emtlkit-trigger-font-size, 14px);
+  line-height: var(--emtlkit-trigger-line-height, 1.4);
+  text-transform: var(--emtlkit-trigger-text-transform, uppercase);
+  letter-spacing: var(--emtlkit-trigger-letter-spacing, 0.5px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.emtlkit-modal-trigger:hover {
+  background: #333333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.emtlkit-modal-trigger:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.emtlkit-modal-trigger:focus {
+  outline: 2px solid #007ace;
+  outline-offset: 2px;
+}
+
+.emtlkit-modal-trigger:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive trigger button */
+@media (max-width: 768px) {
+  .emtlkit-modal-trigger {
+    font-size: 16px;
+    padding: 16px 24px;
+    min-height: 48px;
+  }
+}
+
+/* Image placeholder styles */
+.emtlkit-modal__image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #f8f8f8;
+  border-radius: 4px;
+}
+
+.emtlkit-modal__image-placeholder svg {
+  opacity: 0.5;
+}
+
+/* Modal Trigger Container */
+.emtlkit-modal-trigger-container {
+  width: 100%;
+  margin: 16px 0;
+  padding: 0;
+}
+
+.emtlkit-modal-trigger-container button {
+  border-width: 3px;
+  border-radius: 8px;
+  min-height: 50px;
+}
+
+/* Integration with existing customizer styles */
+.emtlkit--tab-content-container + .emtlkit-modal-trigger-container {
+  margin-top: 0;
+}
+
+/* Hide customizer when modal is enabled */
+.emtlkit--tab-content-container[style*='display: none'] {
+  display: none !important;
+}
+
+/* Loading state for modal trigger */
+.emtlkit-modal-trigger-container.loading .emtlkit-modal-trigger {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* Animation for modal trigger appearance */
+.emtlkit-modal-trigger-container {
+  animation: emtlkit-trigger-fade-in 0.3s ease-out;
+}
+
+@keyframes emtlkit-trigger-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.emtlkit-modal__product-image-container .emtlkit--live-preview {
+  width: 100% !important;
+  height: 100% !important;
+}
+.emtlkit-modal__product-image-container .gallery__zoom {
+  display: none !important;
+}
+
+.emtlkit--live-preview > img {
+  object-fit: contain !important;
+}
+
+/* Footer wrapper for confirmation checkbox + actions */
+.emtlkit-modal__footer-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.emtlkit-modal__button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

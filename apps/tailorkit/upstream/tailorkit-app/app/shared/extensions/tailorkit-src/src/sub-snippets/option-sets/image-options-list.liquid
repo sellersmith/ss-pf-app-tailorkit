@@ -1,0 +1,43 @@
+{% for option in option_set_ol %}
+  {% liquid
+    assign radio_name = current_print_area_id | append: ' / ' | append: current_option_set_id
+    assign option_class = 'emtlkit-image-option'
+
+    if option_set_type == 'mask_option'
+      assign option_class = 'emtlkit-mask-option'
+    endif
+
+    # Get pricing data for this option
+    assign pricing_data = ''
+    if option.additionalPricing
+      assign pricing_json = option.additionalPricing | json
+      assign pricing_data = pricing_json | escape_once
+    endif
+  %}
+  {% if option != blank %}
+    <div class='{{ 'emtlkit--option-container ' | append: option_class }}'>
+      {% liquid
+        assign is_shopify_cdn = false
+        if option.v contains 'cdn.shopify.com' or option.v contains 'cdn/shop/files'
+          assign is_shopify_cdn = true
+        endif
+        if is_shopify_cdn
+          assign option_url = option.v | append: '&width=120'
+        else
+          assign option_url = option.v
+        endif
+      %}
+      <img width='60' height='60' alt='{{ option.l }}' src='{{ option_url }}' loading='lazy'>
+      <input
+        type='radio'
+        name='{{ radio_name }}'
+        value='{{ option.v }}'
+        data-id='{{ option.i }}'
+        data-name='{{ option.l }}'
+        {% if pricing_data != blank and option_set_type == 'image_option' %}
+          data-pricing='{{ pricing_data }}'
+        {% endif %}
+      >
+    </div>
+  {% endif %}
+{% endfor %}

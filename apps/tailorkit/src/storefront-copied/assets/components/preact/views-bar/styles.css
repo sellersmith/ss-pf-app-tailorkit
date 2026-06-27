@@ -1,0 +1,48 @@
+tailorkit-views-bar > div {
+  border-radius: 8px;
+  border: var(--tlk-views-bar-border, 1px solid var(--emtlkit-border-color-secondary));
+  margin: var(--tlk-views-bar-margin, 14px);
+  margin-bottom: 0;
+  display: block;
+}
+
+.emtlkit--views-bar {
+  padding: var(--emtlkit-space-300) var(--emtlkit-space-350);
+}
+
+.emtlkit--view-title {
+  position: relative;
+  font-size: var(--emtlkit-option-label-size, 13px);
+  font-weight: var(--emtlkit-option-label-weight, 550);
+  color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  font-style: var(--emtlkit-option-label-font-style, normal);
+  text-decoration: var(--emtlkit-option-label-decoration, none);
+}
+.emtlkit--view-thumb {
+  height: 60px;
+}
+
+/* For view thumb */
+.emtlkit--view-thumb canvas {
+  border: var(--emtlkit-border-width-025) solid var(--emtlkit-border-color-secondary);
+  border-radius: var(--emtlkit-border-radius-100);
+  width: 60px;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  object-fit: contain;
+  transition: border linear;
+}
+
+.emtlkit--view-thumb:hover {
+  background-color: unset;
+}
+
+.emtlkit--view-thumb:hover canvas {
+  border: var(--emtlkit-border-width-025) solid var(--emtlkit-border-color-active);
+}
+
+.emtlkit--view-thumb.active > canvas {
+  position: relative;
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-option-border-active-color);
+  padding: 0px;
+}

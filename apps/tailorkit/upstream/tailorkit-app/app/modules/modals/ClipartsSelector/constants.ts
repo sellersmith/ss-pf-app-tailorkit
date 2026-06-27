@@ -1,0 +1,11 @@
+import { TEMPLATE_TYPE } from '~/routes/api.templates/constants'
+
+export const CLIPART_SOURCE_LABEL = {
+  [TEMPLATE_TYPE.CLIPART]: 'your-cliparts',
+  [TEMPLATE_TYPE.PREMADE_TEMPLATE]: 'tailorkit-cliparts',
+}
+
+export const CLIPART_SOURCE_OPTIONS = [
+  { label: CLIPART_SOURCE_LABEL[TEMPLATE_TYPE.CLIPART], value: TEMPLATE_TYPE.CLIPART },
+  { label: CLIPART_SOURCE_LABEL[TEMPLATE_TYPE.PREMADE_TEMPLATE], value: TEMPLATE_TYPE.PREMADE_TEMPLATE },
+]

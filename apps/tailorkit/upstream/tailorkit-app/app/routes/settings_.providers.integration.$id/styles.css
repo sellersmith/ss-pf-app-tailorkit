@@ -1,0 +1,16 @@
+.temporary-product-row:hover {
+  background: var(--p-color-bg-surface-hover);
+  cursor: pointer;
+}
+
+.temporary-product-row .Polaris-Icon:last-child {
+  visibility: hidden;
+}
+
+.temporary-product-row:hover .Polaris-Icon:last-child {
+  visibility: visible;
+}
+
+.product-selected-table-wrapper .Polaris-IndexTable__IndexTableWrapper {
+  border-radius: var(--p-border-radius-200) !important;
+}

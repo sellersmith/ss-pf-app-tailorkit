@@ -1,0 +1,20 @@
+export const INTEGRATION_ACTION = {
+  FETCH_ALL_PRODUCT_VARIANTS: 'fetchAllProductVariants',
+  FETCH_PRODUCT_VARIANTS_BY_VARIANT_IDS: 'fetchProductVariantsByVariantIds',
+  DIS_INTEGRATE_TEMPLATE: 'disIntegrateTemplate',
+  RESET_INTEGRATE_TEMPLATE: 'resetIntegrateTemplate',
+  DELETE_INTEGRATE_TEMPLATE: 'deleteIntegrateTemplate',
+  DIS_RESET_INTEGRATE_TEMPLATE: 'disResetIntegrationTemplate',
+  FETCH_PRODUCT_VARIANT_METAFIELDS: 'fetchProductVariantMetafields',
+  FETCH_PRODUCT_BY_PRODUCT_ID: 'fetchProductByProductId',
+  DELETE_DISINTEGRATED_MOCKUP: 'deleteDisintegratedMockup',
+
+  UNPUBLISH_PERSONALIZED_PRODUCTS: 'unpublishPersonalizedProducts',
+  PUBLISH_PERSONALIZED_PRODUCTS: 'publishPersonalizedProducts',
+  DELETE_PERSONALIZED_PRODUCTS: 'deletePersonalizedProducts',
+  FETCH_INTEGRATIONS_BY_VARIANT_IDS: 'fetchIntegrationsByVariantIds',
+  FETCH_INTEGRATIONS_BY_TEMPLATE: 'fetchIntegrationsByTemplate',
+  CHECK_SHARED_TEMPLATES_WITH_PUBLISHED: 'checkSharedTemplatesWithPublished',
+  FETCH_COLLECTIONS: 'fetchCollections',
+  FETCH_COLLECTION_PRODUCTS: 'fetchCollectionProducts',
+}

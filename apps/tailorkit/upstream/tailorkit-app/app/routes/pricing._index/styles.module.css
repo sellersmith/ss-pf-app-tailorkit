@@ -1,0 +1,112 @@
+/* ============================================================================
+ * Pricing Page CRO Styles
+ * Conversion-centered design tokens and overrides for the pricing page.
+ * Uses Polaris CSS custom properties where possible.
+ * ============================================================================ */
+
+/* ---------- Growth Plan Card — Premium visual weight ---------- */
+.growthPlanCard {
+  position: relative;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 2px solid var(--p-color-border-success);
+  border-radius: var(--p-border-radius-300);
+  background: linear-gradient(
+    180deg,
+    var(--p-color-bg-surface) 0%,
+    color-mix(in srgb, var(--p-color-bg-fill-success) 6%, var(--p-color-bg-surface)) 100%
+  );
+}
+
+/* Inner padding for Growth plan (replaces Polaris Card which has its own border) */
+.growthCardInner {
+  padding: var(--p-space-400);
+}
+
+/* ---------- ROI Calculator — Counting animation ---------- */
+.roiAmount {
+  display: inline-block;
+  transition: opacity 0.15s ease;
+}
+
+.roiAmountAnimating {
+  opacity: 0.6;
+}
+
+/* Net profit — oversized for emphasis */
+.netProfitAmount {
+  font-size: 2rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/* Revenue row — clean receipt-style line */
+.revenueRow {
+  padding: var(--p-space-200) 0;
+  border-bottom: 1px solid var(--p-color-border-secondary);
+}
+
+/* Fee row — clean receipt-style line */
+.feeRow {
+  padding: var(--p-space-200) 0;
+  border-bottom: 1px solid var(--p-color-border-secondary);
+}
+
+/* Profit row — prominent background */
+.profitRow {
+  background: color-mix(in srgb, var(--p-color-bg-fill-success) 8%, var(--p-color-bg-surface));
+  border: 1px solid color-mix(in srgb, var(--p-color-border-success) 40%, transparent);
+  border-radius: var(--p-border-radius-300);
+  padding: var(--p-space-400);
+}
+
+/* ---------- Feature Comparison Table — Hover rows ---------- */
+.featureRow {
+  transition: background-color 0.15s ease;
+}
+
+.featureRow:hover {
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+/* Feature group header — bold sub-section */
+.featureGroupHeader {
+  padding: var(--p-space-200) var(--p-space-300);
+  background: var(--p-color-bg-surface-secondary);
+  border-radius: var(--p-border-radius-200);
+  margin-top: var(--p-space-200);
+}
+
+/* ---------- Social Proof Section ---------- */
+.socialProofCard {
+  background: var(--p-color-bg-surface-secondary);
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-300);
+  padding: var(--p-space-500);
+}
+
+/* Large decorative opening quotation mark */
+.quoteIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+  font-weight: 700;
+  color: var(--p-color-text-secondary);
+  opacity: 0.5;
+}
+
+.quoteText {
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--p-color-text);
+}
+
+.quoteAttribution {
+  color: var(--p-color-text-secondary);
+}
+
+/* Star rating */
+.starRating {
+  color: #f5a623;
+  letter-spacing: 2px;
+}

@@ -1,0 +1,111 @@
+/* Confirmation Checkbox Component Styles */
+.emtlkit-confirmation-checkbox {
+  position: relative;
+  padding: 12px 8px;
+  overflow: hidden;
+}
+
+.emtlkit-confirmation-checkbox__label {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  user-select: none;
+  gap: 10px;
+}
+
+.emtlkit-confirmation-checkbox__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.emtlkit-confirmation-checkbox__checkmark {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  border-radius: 4px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  margin-top: 2px;
+}
+
+.emtlkit-confirmation-checkbox__checkmark::after {
+  content: '';
+  display: none;
+  width: 5px;
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+.emtlkit-confirmation-checkbox__input:checked + .emtlkit-confirmation-checkbox__checkmark {
+  background-color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  border-color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+}
+
+.emtlkit-confirmation-checkbox__input:checked + .emtlkit-confirmation-checkbox__checkmark::after {
+  display: block;
+}
+
+.emtlkit-confirmation-checkbox__input:focus + .emtlkit-confirmation-checkbox__checkmark {
+  box-shadow: 0 0 0 2px currentColor;
+}
+
+.emtlkit-confirmation-checkbox__label:hover .emtlkit-confirmation-checkbox__checkmark {
+  box-shadow: 0 0 0 2px currentColor;
+}
+
+.emtlkit-confirmation-checkbox__text {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 550;
+  color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  padding-top: var(--emtlkit-space-050);
+}
+
+/* Disabled state */
+.emtlkit-confirmation-checkbox--disabled .emtlkit-confirmation-checkbox__label {
+  cursor: not-allowed;
+}
+
+.emtlkit-confirmation-checkbox--disabled .emtlkit-confirmation-checkbox__checkmark {
+  background-color: #f6f6f7;
+  border-color: #d2d5d8;
+}
+
+.emtlkit-confirmation-checkbox--disabled .emtlkit-confirmation-checkbox__text {
+  color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  opacity: 0.5;
+}
+
+/* Shake animation - only on text content to prevent layout shift */
+/* Note: @keyframes emtlkit-shake is defined in tailorkit.css (shared) */
+.emtlkit-confirmation-checkbox--shake .emtlkit-confirmation-checkbox__text {
+  animation: emtlkit-shake 0.5s ease-in-out;
+  color: #d72c0d;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.emtlkit-confirmation-checkbox--shake .emtlkit-confirmation-checkbox__checkmark {
+  border-color: #d72c0d;
+  box-shadow: 0 0 0 2px rgba(215, 44, 13, 0.2);
+}
+
+/* Inline checkbox container */
+.emtlkit-inline-confirmation-checkbox-container {
+  margin: 8px 0 16px 0;
+}

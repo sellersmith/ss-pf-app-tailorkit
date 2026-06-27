@@ -1,0 +1,28 @@
+enum WindowFunctionKeys {
+  GET_REMOVE_ADD_ON_PRODUCT = 'GET_REMOVE_ADD_ON_PRODUCT',
+  RESET_INTERCEPTOR_FETCH_API = 'RESET_INTERCEPTOR_FETCH_API',
+  HANDLE_REMOVE_CART_ITEMS = 'HANDLE_REMOVE_CART_ITEMS',
+  GET_FORM_CART = 'GET_FORM_CART',
+  USAGE_REMOVE_ADD_ONE_WITH_ACTION = 'USAGE_REMOVE_ADD_ONE_WITH_ACTION',
+  ADD_ADDON_PRODUCT_FROM_CHECKBOXES = 'ADD_ADDON_PRODUCT_FROM_CHECKBOXES',
+  ADD_ADDON_PRODUCT_FROM_CHECKBOXES_WITH_RESPONSE = 'ADD_ADDON_PRODUCT_FROM_CHECKBOXES_WITH_RESPONSE',
+  LIST_QUERY_REFRESH_CART = 'LIST_QUERY_REFRESH_CART',
+  ADD_NODE_CUSTOMIZE = 'ADD_NODE_CUSTOMIZE',
+  DONT_CLICK_CART_ICON_WHEN_UPDATE = 'DONT_CLICK_CART_ICON_WHEN_UPDATE',
+  USING_FALLBACK_REFRESH_CART = 'USING_FALLBACK_REFRESH_CART',
+}
+
+export const windowFunctionCustom = () => ({
+  [WindowFunctionKeys.GET_REMOVE_ADD_ON_PRODUCT]: window.getRemoveAddOnProduct,
+  [WindowFunctionKeys.RESET_INTERCEPTOR_FETCH_API]: window.resetInterceptorFetchApi,
+  [WindowFunctionKeys.HANDLE_REMOVE_CART_ITEMS]: window.handleRemoveCartItems,
+  [WindowFunctionKeys.GET_FORM_CART]: window.getFormCart,
+  [WindowFunctionKeys.USAGE_REMOVE_ADD_ONE_WITH_ACTION]: window.usageRemoveAddOneWithAction,
+  [WindowFunctionKeys.ADD_ADDON_PRODUCT_FROM_CHECKBOXES]: window.addAddonProductFromCheckboxes,
+  [WindowFunctionKeys.ADD_ADDON_PRODUCT_FROM_CHECKBOXES_WITH_RESPONSE]:
+    window.addAddonProductFromCheckboxesWithResponse,
+  [WindowFunctionKeys.LIST_QUERY_REFRESH_CART]: window.listQueryRefreshCart,
+  [WindowFunctionKeys.ADD_NODE_CUSTOMIZE]: window.addNodeCustomize,
+  [WindowFunctionKeys.DONT_CLICK_CART_ICON_WHEN_UPDATE]: window.clickCartIconWhenUpdate,
+  [WindowFunctionKeys.USING_FALLBACK_REFRESH_CART]: window.usingFallbackRefreshCart,
+})

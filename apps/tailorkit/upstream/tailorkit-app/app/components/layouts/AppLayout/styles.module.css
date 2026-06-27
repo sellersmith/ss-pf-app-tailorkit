@@ -1,0 +1,56 @@
+.mainContent {
+  width: 100%;
+  height: 100%;
+  transition: padding-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-bottom: 80px;
+}
+
+@media (max-width: 48em) {
+  .mainContent {
+    padding-bottom: 0;
+  }
+}
+
+.mainContentOnMaxModal {
+  padding-bottom: 0;
+}
+
+.mainContentWithDrawer {
+  padding-right: var(--chat-bot-drawer-width);
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--chat-bot-drawer-width);
+  transform: translateX(100%);
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* background-color: var(--p-color-bg-surface); */
+  /* background: linear-gradient(129deg, #1c6443 0%, #449c73 35%, #76b79a 100%); */
+  background: transparent;
+  border: 2px solid #76b79a;
+  border-radius: var(--p-border-radius-300);
+
+  /* border-left: var(--p-border-width-025) solid var(--p-color-border); */
+  /* We set 518 to make sure it's under the modal and above others elements */
+  z-index: 518;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  /* padding: var(--p-space-200); */
+}
+
+.drawerOpen {
+  transform: translateX(0);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Add reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .mainContent,
+  .drawer {
+    transition: none;
+  }
+}

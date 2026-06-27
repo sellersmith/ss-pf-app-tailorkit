@@ -1,0 +1,24 @@
+.loading-icon,
+.loading-icon-loading {
+  width: 20px;
+  height: 20px;
+}
+
+.loading-icon-loading svg {
+  animation: spin 1.5s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#recent-templates .Polaris-IndexTable__StickyTableHeadings {
+  display: none;
+}

@@ -1,0 +1,59 @@
+{% if option_set and print_area %}
+  {% liquid
+    # Find selected option or use first option as default
+    assign selected_option = option_set.ol.first
+    for option in option_set.ol
+      if option.s == 1
+        assign selected_option = option
+        break
+      endif
+    endfor
+  %}
+  <fieldset
+    class='emtlkit--option-set'
+    data-print-area-id='{{ print_area.i }}'
+    data-option-type='{{ option_set.t }}'
+    data-layer-id='{{ layer_id }}'
+    data-type='emtlkit--option-set'
+    data-id='{{ option_set.i }}'
+    data-label='{{ option_set.l | escape_once }}'
+    data-layer-index='{{ forloop.parentloop.index0 }}'
+    id='{{ 'option-set-' | append: option_set.i }}'
+    value='{{ selected_option.v }}'
+    data-name='{{ selected_option.l | escape_once }}'
+  >
+    <label
+      class='emtlkit--option-set-label {% if option_set.required %}emtlkit--required-indicator{% endif %}'
+      data-label='{{ option_set.l | escape_once }}'
+    >
+      {{- option_set.l -}}
+    </label>
+    {% if option_set_type == 'image_option' %}
+      {% assign allow_customer_upload_image = option_set.allowCustomerUploadImage %}
+      {% assign allow_customer_generate_image_with_ai = option_set.allowCustomerGenerateImageWithAI %}
+    {% endif %}
+    <div class='emtlkit--d-flex emtlkit--flex-column emtlkit--gap-8'>
+      {% if option_set_type == 'image_option' %}
+        <div class='emtlkit--d-flex emtlkit--flex-center emtlkit--flex-column emtlkit--gap-8'>
+          {% if allow_customer_generate_image_with_ai %}
+            <tailorkit-ai-image-generator
+              class='emtlkit--generate-image-with-ai emtlkit--w-100'
+              data-layer-id='{{ layer_id }}'
+              data-option-set-id='{{ option_set.i }}'
+              data-print-area-id='{{ print_area.i }}'
+            ></tailorkit-ai-image-generator>
+          {% endif %}
+          {% if allow_customer_upload_image %}{% subsnippet 'commons.upload-button' %}{% endif %}
+        </div>
+      {% endif %}
+      <div class='image-uploaded-generated-option-set-container'></div>
+      <tailorkit-image-options-list
+        data-option-set-data='{{ option_set | json | escape_once }}'
+        data-current-print-area-id='{{ print_area.i }}'
+        data-current-option-set-id='{{ option_set.i }}'
+        data-option-set-type='{{ option_set_type }}'
+        data-value-from-fieldset=''
+      ></tailorkit-image-options-list>
+    </div>
+  </fieldset>
+{% endif %}

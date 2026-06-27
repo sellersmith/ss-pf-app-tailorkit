@@ -1,0 +1,5 @@
+.stepContent {
+  flex: 1;
+  min-width: 0;
+  padding: var(--p-space-300) var(--p-space-300) var(--p-space-300) 0;
+}

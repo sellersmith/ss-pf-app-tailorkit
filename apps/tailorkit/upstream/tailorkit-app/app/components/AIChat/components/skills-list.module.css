@@ -1,0 +1,39 @@
+.SkillsListContainer {
+  background: var(--p-color-bg-surface);
+  border: var(--p-border-width-025) solid var(--p-color-border);
+  border-radius: var(--p-border-radius-200);
+  box-shadow: var(--p-shadow-200);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.SkillItem {
+  display: flex;
+  width: 100%;
+  padding: var(--p-space-150) var(--p-space-200);
+  border: none;
+  border-radius: var(--p-border-radius-100);
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--p-motion-duration-100) var(--p-motion-ease);
+}
+
+.SkillItem:hover,
+.SkillItemActive {
+  background: var(--p-color-bg-surface-hover);
+}
+
+.SkillItem:active {
+  background: var(--p-color-bg-surface-active);
+}
+
+.SkillItemDisabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.SkillItemDisabled:hover,
+.SkillItemDisabled:active {
+  background: transparent;
+}

@@ -1,0 +1,53 @@
+.timeline {
+  width: 100%;
+  padding-bottom: 16px;
+}
+
+.timelineItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: fit-content;
+  padding-right: 10px;
+}
+
+.progressBar {
+  position: relative;
+}
+
+.indicator::before {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: -16px;
+  bottom: -6px;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.indicator.completedIndicator::before {
+  content: '✓';
+  font-size: 16px;
+  font-weight: 600;
+  background: white;
+  border: 1px solid var(--p-color-icon-success);
+  color: var(--p-color-icon-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.indicator.dot::before {
+  content: '';
+  background: var(--p-color-bg-fill-tertiary);
+  border: 1px solid var(--p-color-border);
+}
+
+[data-direction='vertical'] .progressSection {
+  height: 160px;
+}
+
+[data-direction='vertical'] .progressBar.indicator::before {
+  left: -6px;
+}

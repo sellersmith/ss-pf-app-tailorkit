@@ -1,0 +1,3 @@
+export const VARIANTS_INTEGRATIONS_ACTIONS = {
+  GET_INTEGRATION_BY_VARIANT_ID: 'getIntegrationByVariantId',
+}

@@ -1,0 +1,60 @@
+.badgeWrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.animatedBadge {
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.animatedBadge:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgb(175, 254, 191, 0.7);
+}
+
+.animatedBadge:active {
+  transform: scale(0.95);
+}
+
+/* Bold radiating glow animation around the badge */
+.glowRadiate {
+  position: relative;
+}
+
+.glowRadiate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 rgb(175, 254, 191, 0.7);
+  animation: badgeRadiate 2.4s ease-out infinite;
+}
+
+@keyframes badgeRadiate {
+  0% {
+    box-shadow: 0 0 0 0 rgb(175, 254, 191, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgb(175, 254, 191, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(175, 254, 191, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animatedBadge,
+  .glowRadiate {
+    transition: none;
+    animation: none;
+  }
+
+  .glowRadiate::after {
+    display: none;
+  }
+}

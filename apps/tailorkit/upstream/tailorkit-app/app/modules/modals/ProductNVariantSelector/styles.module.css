@@ -1,0 +1,39 @@
+.productLineItem {
+  cursor: default;
+  width: 100%;
+  transition: background-color 0.1s ease;
+}
+
+.productLineItem:hover {
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+.cursorPointer {
+  cursor: pointer;
+}
+
+.panelContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.headerSection {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--p-color-border);
+  padding: 12px;
+}
+
+.contentSection {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.footerSection {
+  flex-shrink: 0;
+  border-top: 1px solid var(--p-color-border);
+  padding: 12px;
+  background: var(--p-color-bg-fill);
+}

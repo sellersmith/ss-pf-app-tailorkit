@@ -1,0 +1,86 @@
+/* TrialDealWidget — fixed bottom-left card shown during trial when $1 deal is active */
+
+.widget {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 100;
+  width: 200px;
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+  user-select: none;
+}
+
+.widget:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.widget:active {
+  transform: translateY(0);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+  font-size: 10px;
+  transition: color 0.15s ease;
+}
+
+.closeButton:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.trialDays {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
+}
+
+.headline {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1px;
+}
+
+.deadline {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+}
+
+.ctaButton {
+  width: 100%;
+  padding: 6px 12px;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  pointer-events: none; /* Widget itself is clickable; button is visual only */
+}

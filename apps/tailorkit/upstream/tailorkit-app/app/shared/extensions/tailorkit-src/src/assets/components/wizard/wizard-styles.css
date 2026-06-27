@@ -1,0 +1,330 @@
+/* ============================================================
+   TailorKit Wizard Styles
+   All class names use the emtlkit--wizard-* prefix.
+   CSS custom properties allow future merchant theming.
+   ============================================================ */
+
+:root {
+  --emtlkit-wizard-step-circle-size: 28px;
+  --emtlkit-wizard-connector-height: 2px;
+}
+
+/* ============================================================
+   Container & Host
+   ============================================================ */
+
+tailorkit-wizard {
+  display: block;
+  font-size: 14px;
+  color: var(--emtlkit-text-color);
+}
+
+/* ============================================================
+   Progress — Mobile
+   ============================================================ */
+
+.emtlkit--wizard-progress-mobile {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--emtlkit-space-300) var(--emtlkit-space-350) 0;
+}
+
+.emtlkit--wizard-progress-mobile-text {
+  font-size: 13px;
+  font-weight: var(--emtlkit-font-weight-semibold);
+  color: var(--emtlkit-text-color);
+  letter-spacing: 0.01em;
+}
+
+.emtlkit--wizard-progress-mobile-bar {
+  height: 3px;
+  background: var(--emtlkit-bg-fill);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.emtlkit--wizard-progress-mobile-bar-fill {
+  height: 100%;
+  background: var(--emtlkit-button-primary-bg);
+  border-radius: 3px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   Progress — Desktop Stepper
+   ============================================================ */
+
+.emtlkit--wizard-progress-desktop {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  padding: var(--emtlkit-space-300) var(--emtlkit-space-200) var(--emtlkit-space-100);
+  overflow-x: auto;
+  /* Hide scrollbar for cleaner look */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.emtlkit--wizard-progress-desktop::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Step --- */
+
+.emtlkit--wizard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 56px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* --- Step circle (number / check / dash) --- */
+
+.emtlkit--wizard-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--emtlkit-wizard-step-circle-size);
+  height: var(--emtlkit-wizard-step-circle-size);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  /* Default: upcoming — subtle border, no fill */
+  border: 1.5px solid var(--emtlkit-border-color-secondary);
+  background: var(--emtlkit-bg-primary);
+  color: var(--emtlkit-text-color-subdued);
+  transition:
+    background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Step label --- */
+
+.emtlkit--wizard-step-label {
+  font-size: 11px;
+  text-align: center;
+  color: var(--emtlkit-text-color-subdued);
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+  transition:
+    color 0.2s,
+    font-weight 0.2s;
+}
+
+.emtlkit--wizard-step-optional {
+  font-size: 10px;
+  color: var(--emtlkit-text-color-subdued);
+}
+
+/* --- Active step --- */
+
+.emtlkit--wizard-step--active .emtlkit--wizard-step-number {
+  background: var(--emtlkit-button-primary-bg);
+  border-color: var(--emtlkit-button-primary-bg);
+  color: var(--emtlkit-button-primary-text);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--emtlkit-button-primary-bg) 20%, transparent);
+  transform: scale(1.08);
+}
+
+.emtlkit--wizard-step--active .emtlkit--wizard-step-label {
+  color: var(--emtlkit-text-color);
+  font-weight: var(--emtlkit-font-weight-semibold);
+}
+
+/* --- Completed step --- */
+
+.emtlkit--wizard-step--completed .emtlkit--wizard-step-number {
+  background: var(--emtlkit-button-primary-bg);
+  border-color: var(--emtlkit-button-primary-bg);
+  color: var(--emtlkit-button-primary-text);
+}
+
+.emtlkit--wizard-step--completed .emtlkit--wizard-step-label {
+  color: var(--emtlkit-text-color);
+}
+
+/* --- Skipped step --- */
+
+.emtlkit--wizard-step--skipped .emtlkit--wizard-step-number {
+  background: var(--emtlkit-bg-fill);
+  border-color: var(--emtlkit-border-color-secondary);
+  color: var(--emtlkit-text-color-subdued);
+}
+
+/* --- Clickable (free navigation) --- */
+
+.emtlkit--wizard-step--clickable {
+  cursor: pointer;
+}
+
+.emtlkit--wizard-step--clickable:hover .emtlkit--wizard-step-number {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+/* --- Connector between steps --- */
+
+.emtlkit--wizard-step-connector {
+  flex: 1 1 0%;
+  height: var(--emtlkit-wizard-connector-height);
+  min-width: 24px;
+  /* Align connector vertically to the center of the step circle */
+  margin-top: calc(var(--emtlkit-wizard-step-circle-size) / 2 - var(--emtlkit-wizard-connector-height) / 2);
+  background: var(--emtlkit-border-color-secondary);
+  border-radius: 1px;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.emtlkit--wizard-step-connector--filled {
+  background: var(--emtlkit-button-primary-bg);
+}
+
+/* ============================================================
+   Step visibility
+   ============================================================ */
+
+.emtlkit--wizard-step-active {
+  display: block;
+}
+
+.emtlkit--wizard-step-hidden {
+  display: none !important;
+}
+
+/* ============================================================
+   Navigation Buttons
+   ============================================================ */
+
+.emtlkit--wizard-nav {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: var(--emtlkit-space-300) 0 var(--emtlkit-space-100);
+}
+
+/* Shake animation on validation failure */
+@keyframes emtlkit-wizard-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.emtlkit--wizard-btn-next--shake {
+  animation: emtlkit-wizard-shake 0.4s ease;
+}
+
+/* ============================================================
+   Field Error States
+   ============================================================ */
+
+.emtlkit--wizard-field-error {
+  border-color: var(--emtlkit-text-critical-color) !important;
+  outline: 2px solid var(--emtlkit-text-critical-color);
+  outline-offset: 1px;
+}
+
+@keyframes emtlkit-wizard-field-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+.emtlkit--wizard-field-error--shake {
+  animation: emtlkit-wizard-field-shake 0.35s ease;
+}
+
+/* ============================================================
+   Progress Slot wrapper
+   ============================================================ */
+
+.emtlkit--wizard-progress-slot {
+  width: 100%;
+}
+
+/* ============================================================
+   Responsive — Desktop (>= 768px)
+   ============================================================ */
+
+@media (min-width: 768px) {
+  .emtlkit--wizard-progress-mobile {
+    display: none;
+  }
+
+  .emtlkit--wizard-progress-desktop {
+    display: flex;
+  }
+
+  .emtlkit--wizard-nav {
+    position: static;
+    box-shadow: none;
+  }
+}
+
+/* ============================================================
+   Responsive — Mobile (< 768px)
+   ============================================================ */
+
+@media (max-width: 767px) {
+  .emtlkit--wizard-progress-desktop {
+    display: none;
+  }
+
+  .emtlkit--wizard-progress-mobile {
+    display: flex;
+  }
+
+  .emtlkit--wizard-nav {
+    position: sticky;
+    bottom: 0;
+    background: var(--emtlkit-bg-primary);
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.06);
+    z-index: 100;
+    padding: var(--emtlkit-space-200) 0;
+  }
+
+  .emtlkit--wizard-btn {
+    min-width: 64px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+}

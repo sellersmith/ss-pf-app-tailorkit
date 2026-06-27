@@ -1,0 +1,1202 @@
+/*
+  !IMPORTANT:
+  1. NAMING CONVENTION: emtlkit--${selector}
+*/
+
+/* Import popover styles */
+@import './components/commons/popover/styles.css';
+@import './components/commons/ai-generate/generate-text/generate-text-content.css';
+@import './components/commons/ai-generate/generate-image/generate-image-content-handler.css';
+@import './components/commons/modal/styles.css';
+@import './components/commons/options-list/styles.css';
+@import './components/commons/textfield/styles.css';
+@import './components/commons/button/styles.css';
+@import './components/commons/ai-generate/suggestion-list/styles.css';
+@import './components/preact/commons/magic-textfield/styles.css';
+@import './components/commons/tooltip/styles.css';
+@import './components/preact/commons/modal/styles.css';
+@import '../shared/components/TextOptionSet/styles.css';
+@import '../shared/components/ColorOptionSet/styles.css';
+@import '../shared/components/ImageOptionSet/styles.css';
+@import '../shared/components/FontOptionSet/styles.css';
+@import '../shared/components/ImagelessOptionSet/styles.css';
+@import '../shared/components/MultiLayoutOptionSet/styles.css';
+@import './components/preact/commons/ai-generate/PromptPresets.css';
+@import './components/preact/views-bar/styles.css';
+@import './components/preact/commons/carousel/style.css';
+@import './components/preact/commons/confirmation-checkbox/styles.css';
+@import './components/layer-controls/styles.css';
+@import './components/wizard/wizard-styles.css';
+@import './components/cross-product-modal/styles.css';
+
+:root {
+  --emtlkit-bg-primary: #fff;
+  --emtlkit-bg-secondary: #000;
+  --emtlkit-bg-fill: #e9e9e9;
+  --emtlkit-bg-surface-hover: #f7f7f7;
+
+  --emtlkit-text-color: #303030;
+  --emtlkit-text-color-secondary: #fff;
+  --emtlkit-text-color-plain: #005bd3;
+  --emtlkit-text-critical-color: rgba(142, 11, 33, 1);
+  --emtlkit-text-color-subdued: #999;
+
+  --emtlkit-border-color: #ccc;
+  --emtlkit-border-color-primary: rgb(0, 0, 0, 0.8);
+  --emtlkit-border-color-secondary: rgba(227, 227, 227, 1);
+  --emtlkit-option-border-active-color: var(--emtlkit-option-border-active-color, #0d0324);
+  --emtlkit-border-inverse-active: rgba(97, 97, 97, 1);
+  --emtlkit-border-color-magic-active: #29845a;
+  --emtlkit-border-color-success-active: #29845a;
+  --emtlkit-border-input-color: #ababab;
+
+  /* Button styling defaults */
+  --emtlkit-button-primary-bg: #202223;
+  --emtlkit-button-primary-text: #fff;
+  --emtlkit-button-primary-border: #202223;
+  --emtlkit-button-secondary-bg: #fff;
+  --emtlkit-button-secondary-text: #303030;
+  --emtlkit-button-secondary-border: #e3e3e3;
+  --emtlkit-button-border-radius: 8px;
+  --emtlkit-button-min-height: 50px;
+
+  --emtlkit-border-width-025: 1px;
+  --emtlkit-border-width-050: 2px;
+  --emtlkit-border-width-075: 3px;
+
+  --emtlkit-border-radius-100: 4px;
+  --emtlkit-border-radius-200: 8px;
+
+  --emtlkit-space-025: 1px;
+  --emtlkit-space-050: 2px;
+  --emtlkit-space-100: 4px;
+  --emtlkit-space-150: 6px;
+  --emtlkit-space-200: 8px;
+  --emtlkit-space-250: 10px;
+  --emtlkit-space-300: 12px;
+  --emtlkit-space-350: 14px;
+  --emtlkit-space-400: 16px;
+  --emtlkit-space-1000: 40px;
+  --emtlkit-space-1500: 60px;
+  --emtlkit-space-2400: 6rem;
+
+  --emtlkit-font-weight-semibold: 550;
+  --p-color-backdrop: rgba(33, 43, 54, 0.4);
+
+  --emtlkit-motion-duration-200: 200ms;
+  --emtlkit-motion-ease: ease;
+}
+
+@media screen and (max-width: 768px) {
+  :root {
+    --emtlkit-heading-font-size: 16px;
+  }
+}
+
+.mg-top-100 {
+  margin-top: var(--emtlkit-space-100);
+}
+
+.emtlkit--d-none {
+  display: none !important;
+}
+
+.emtlkit--d-grid {
+  display: grid;
+}
+
+.emtlkit--grid-template-columns-1 {
+  grid-template-columns: 1fr;
+}
+
+.emtlkit--grid-template-columns-3 {
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+}
+
+.emtlkit--d-flex {
+  display: flex;
+}
+
+.emtlkit--flex-center {
+  align-items: center;
+}
+
+.emtlkit--flex-space-between {
+  justify-content: space-between;
+}
+
+.emtlkit--flex-justify-center {
+  justify-content: center;
+}
+
+.emtlkit--flex-1 {
+  flex: 1;
+}
+
+.emtlkit--gap-4 {
+  gap: 4px;
+}
+
+.emtlkit--gap-8 {
+  gap: 8px;
+}
+
+.emtlkit--gap-12 {
+  gap: 12px;
+}
+
+.emtlkit--w-100 {
+  width: 100%;
+}
+
+.emtlkit--h-100 {
+  height: 100%;
+}
+
+.emtlkit--gap-16 {
+  gap: 16px;
+}
+
+.emtlkit--overflow-hidden {
+  overflow: hidden;
+}
+
+.emtlkit--product-personalizer {
+  background: var(--emtlkit-inline-box-background-color, var(--emtlkit-bg-primary)) !important;
+  border-color: var(--emtlkit-box-border-color, var(--emtlkit-border-color-primary)) !important;
+  border-style: var(--emtlkit-box-border-style, solid) !important;
+  border-width: var(--emtlkit-box-border-width, 1px) !important;
+  border-radius: var(--emtlkit-box-border-radius, 8px) !important;
+}
+
+/* The trigger button (modal mode: "Personalize Design" button) must always render with button
+ * primary styling. It shares `emtlkit--product-personalizer` with the inline box, but it should
+ * NOT inherit background/border transparency when those toggles are disabled. The more-specific
+ * two-class selector wins over the single-class rule above (and later !important breaks the tie). */
+.emtlkit--personalize.emtlkit--product-personalizer {
+  background: var(--emtlkit-button-primary-bg, #202223) !important;
+  color: var(--emtlkit-button-primary-text, #fff) !important;
+  border-color: var(--emtlkit-button-primary-border, #202223) !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: var(--emtlkit-button-border-radius, 8px) !important;
+}
+
+.emtlkit--personalize-container {
+  font-size: var(--emtlkit-heading-font-size, inherit) !important;
+  color: var(--emtlkit-heading-color, inherit) !important;
+  font-weight: var(--emtlkit-heading-font-weight, 500) !important;
+  font-style: var(--emtlkit-heading-font-style, normal) !important;
+  text-decoration: var(--emtlkit-heading-text-decoration, none) !important;
+  padding: 0px var(--emtlkit-space-150);
+}
+
+.emtlkit--personalize-divider {
+  display: var(--emtlkit-divider-display, block) !important;
+  border-bottom: var(--emtlkit-divider-width, 1px) var(--emtlkit-divider-style, solid)
+    var(--emtlkit-divider-color, var(--emtlkit-border-inverse-active)) !important;
+}
+
+.emtlkit--personalize {
+  line-height: 1.8;
+  font-weight: var(--emtlkit-heading-font-weight, 500) !important;
+  text-align: center;
+  margin: var(--emtlkit-space-100) 0 var(--emtlkit-space-100) 0 !important;
+  font-size: var(--emtlkit-heading-font-size, inherit);
+  color: var(--emtlkit-heading-color, inherit) !important;
+  font-style: var(--emtlkit-heading-font-style, normal) !important;
+  text-decoration: var(--emtlkit-heading-text-decoration, none) !important;
+}
+
+.emtlkit-modal-instance .emtlkit--personalize-container,
+[data-modal-instance='true'] .emtlkit--personalize-container,
+.emtlkit-modal-instance .emtlkit--personalize-divider,
+[data-modal-instance='true'] .emtlkit--personalize-divider {
+  display: none !important;
+}
+
+.emtlkit--option-set-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--emtlkit-space-200);
+  word-break: break-word;
+}
+
+.emtlkit--option-set-container fieldset {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  word-break: break-word;
+}
+
+.emtlkit--thumbnail {
+  cursor: pointer;
+  width: var(--emtlkit-space-1500);
+  height: var(--emtlkit-space-1500);
+  border: var(--emtlkit-border-width-025) solid var(--emtlkit-border-input-color);
+  border-radius: var(--emtlkit-option-border-radius, --emtlkit-border-radius-100);
+  overflow: hidden;
+  user-select: none;
+}
+
+.emtlkit--thumbnail.active {
+  position: relative;
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-option-border-active-color);
+}
+
+.emtlkit--option-set-label {
+  position: relative;
+  display: inline-block;
+  font-size: var(--emtlkit-option-label-size, 13px);
+  font-weight: var(--emtlkit-option-label-weight, 550);
+  color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  font-style: var(--emtlkit-option-label-font-style, normal);
+  text-decoration: var(--emtlkit-option-label-decoration, none);
+  margin-bottom: 8px;
+}
+
+.emtlkit--required-indicator::after {
+  content: ' *';
+  color: var(--emtlkit-text-critical-color);
+  font-size: 12px;
+  font-weight: 550;
+}
+
+/* Shared shake animation for validation feedback */
+@keyframes emtlkit-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Shake animation for required field validation */
+.emtlkit--required-indicator--shake {
+  display: inline-block;
+  animation: emtlkit-shake 0.5s ease-in-out;
+  color: var(--emtlkit-text-critical-color) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Shake animation for modal trigger button when user clicks theme ATC without personalizing */
+.emtlkit-modal-trigger--shake {
+  animation: emtlkit-shake 0.5s ease-in-out;
+  box-shadow: 0 0 0 2px var(--emtlkit-text-critical-color, #d72c0d) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.emtlkit--flex-column {
+  flex-direction: column;
+}
+
+.emtlkit--flex-wrap {
+  flex-wrap: wrap;
+}
+
+.emtlkit--flex-no-wrap {
+  flex-wrap: nowrap;
+}
+
+.emtlkit--shape-label {
+  display: block;
+  font-size: 1em;
+  font-weight: 550;
+  unicode-bidi: isolate;
+  margin-bottom: 12px;
+}
+
+.emtlkit--text-input {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: var(--emtlkit-border-width-025) solid var(--emtlkit-border-color-secondary);
+  border-radius: var(--emtlkit-border-radius-100);
+  margin: var(--emtlkit-space-100) 0;
+  padding: var(--emtlkit-space-150) var(--emtlkit-space-300);
+  justify-content: space-between;
+}
+.emtlkit--option-set-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.emtlkit--text-input:focus-within {
+  outline: none;
+  border-color: var(--emtlkit-border-color-primary);
+}
+
+.emtlkit--text-input input[type='text'] {
+  border: none;
+  outline: none;
+  padding: 0%;
+  background-color: inherit;
+}
+
+.emtlkit--text-input input[type='text']:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.emtlkit--text-input .character-count {
+  line-height: 15px;
+}
+
+.emtlkit--input-note {
+  margin: 0;
+  font-style: italic;
+  white-space: pre-wrap;
+}
+
+/* Style the tab content */
+.emtlkit--tab-content {
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-border-color-primary);
+  border-radius: var(--emtlkit-border-radius-200);
+  /* padding: var(--emtlkit-space-400) var(--emtlkit-space-350) var(--emtlkit-space-150); */
+  display: none;
+}
+
+.emtlkit--personalization-area-container {
+  overflow: auto;
+  padding: var(--emtlkit-space-400) var(--emtlkit-space-350) var(--emtlkit-space-150);
+}
+
+.emtlkit--tab-content-container.no-tabs > .emtlkit--tab-content {
+  border: 0;
+  padding: 0;
+}
+
+.emtlkit--tab-content.active {
+  display: flex;
+}
+
+.emtlkit--tab-content input[type='radio'] {
+  display: none;
+}
+
+/* Style for preview image*/
+.emtlkit--preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.emtlkit--select-input-container {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.emtlkit--select-input-container .emtlkit-select-input__toggle-icon {
+  position: absolute;
+  top: 50%;
+  right: var(--emtlkit-space-200);
+  transform: translateY(-50%);
+}
+
+.emtlkit--select-input {
+  width: 100%;
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  background-color: white;
+  color: #333;
+  border: 1px solid var(--emtlkit-border-color-secondary);
+  border-radius: var(--emtlkit-border-radius-100);
+  cursor: pointer;
+  text-align: left;
+  box-sizing: border-box;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.emtlkit--select-input:focus {
+  outline: none;
+  border-color: var(--emtlkit-border-color-primary);
+}
+
+.emtlkit--select-input__popover {
+  display: none;
+  width: 100%;
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 0 var(--emtlkit-space-250) rgba(0, 0, 0, 0.1);
+  border-radius: var(--emtlkit-border-radius-100);
+  z-index: 999;
+  margin-top: var(--emtlkit-space-150);
+  overflow: hidden;
+}
+
+.emtlkit--select-input__popover.active {
+  display: block;
+}
+
+.emtlkit--select-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--emtlkit-space-100);
+  padding: var(--emtlkit-space-250);
+  cursor: pointer;
+}
+
+.emtlkit--select-option:hover {
+  background-color: var(--emtlkit-bg-fill);
+}
+
+.emtlkit--select-option input[type='radio'] {
+  margin-right: var(--emtlkit-space-250);
+  user-select: none;
+  pointer-events: none;
+}
+
+.emtlkit--select-option {
+  margin-right: var(--emtlkit-space-250);
+  border-radius: var(--emtlkit-border-radius-100);
+}
+
+.emtlkit--select-option__thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* For accordion header */
+.emtlkit--accordion-header,
+.emtlkit--accordion-sub-header {
+  list-style: none;
+  padding: var(--emtlkit-space-400);
+  font-weight: var(--emtlkit-font-weight-semibold);
+  border-bottom: 1px solid var(--emtlkit-border-color-secondary);
+  cursor: pointer;
+}
+
+.emtlkit--accordion-sub-header {
+  display: var(--emtlkit-personalization-area-display, flex);
+  padding: var(--emtlkit-space-150) var(--emtlkit-space-300);
+  border-bottom: none;
+  margin-bottom: var(--emtlkit-space-200);
+  background-color: var(--emtlkit-bg-surface-hover);
+  font-weight: var(--emtlkit-personalization-area-font-weight, var(--emtlkit-font-weight-semibold));
+  color: var(--emtlkit-personalization-area-font-color, var(--emtlkit-text-color));
+  font-size: var(--emtlkit-personalization-area-font-size, 13px);
+  font-style: var(--emtlkit-personalization-area-font-style, normal);
+  text-decoration: var(--emtlkit-personalization-area-font-decoration, none);
+  background-color: var(--emtlkit-personalization-area-background-color, var(--emtlkit-bg-surface-hover));
+  border-radius: var(--emtlkit-personalization-area-border-radius, 4px);
+}
+
+.emtlkit--accordion-header:hover,
+.emtlkit--accordion-sub-header:hover {
+  /* background-color: var(--emtlkit-bg-surface-hover); */
+  /* Make the background color more contrast */
+  filter: brightness(0.9);
+}
+
+/* For accordion icon */
+.emtlkit--accordion-icon {
+  display: flex;
+  fill: var(--emtlkit-personalization-area-font-color, var(--emtlkit-text-color));
+  width: 20px;
+  height: 20px;
+}
+
+details[open] .emtlkit--accordion-icon {
+  transform: rotate(180deg);
+}
+
+.emtlkit--product-personalizer input[type='radio'] {
+  display: none;
+}
+
+.emtlkit--personalized-title {
+  font-weight: var(--emtlkit-font-weight-semibold);
+  text-align: center;
+  padding: var(--emtlkit-space-200) 0;
+  border-bottom: 1px solid var(--emtlkit-border-inverse-active);
+  margin: auto 0px;
+}
+
+.emtlkit--personalized-content-wrapper > hr {
+  border: 1px solid rgba(97, 97, 97, 1);
+}
+
+/* For text option set */
+.emtlkit-text-option {
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+}
+
+.emtlkit-text-option.active {
+  position: relative;
+  background: var(--emtlkit-bg-surface-hover);
+  box-shadow: 0 0 0 var(--emtlkit-border-width-050) var(--emtlkit-option-border-active-color);
+  border-radius: var(--emtlkit-option-border-radius, --emtlkit-border-radius-100);
+}
+
+/* For image option set */
+.emtlkit-image-option img,
+.emtlkit-mask-option img {
+  border: var(--emtlkit-border-width-025) solid var(--emtlkit-border-color-secondary);
+  border-radius: var(--emtlkit-option-border-radius, --emtlkit-border-radius-100);
+  width: 60px;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  object-fit: contain;
+  transition: border linear;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .emtlkit--option-container,
+  .emtlkit--option-container img,
+  .emtlkit--option-container.emtlkit-color-option {
+    width: 52px;
+    aspect-ratio: 1/1;
+    height: auto;
+  }
+}
+
+.emtlkit--option-container.emtlkit-image-option:hover,
+.emtlkit--option-container.emtlkit-mask-option:hover {
+  background-color: unset;
+}
+
+.emtlkit--option-container.emtlkit-image-option:hover img,
+.emtlkit--option-container.emtlkit-mask-option:hover img {
+  border: var(--emtlkit-border-width-025) solid var(--emtlkit-option-border-active-color);
+}
+
+.emtlkit--option-container.emtlkit-image-option.active img:first-of-type,
+.emtlkit--option-container.emtlkit-mask-option.active img:first-of-type {
+  position: relative;
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-option-border-active-color);
+  padding: 0px;
+}
+
+.emtlkit--option-container.emtlkit-image-option.active,
+.emtlkit--option-container.emtlkit-mask-option.active {
+  padding: 0px;
+}
+
+/* For image color set */
+.emtlkit-color-option {
+  width: 60px;
+  height: auto;
+  aspect-ratio: 1/1;
+  border: var(--emtlkit-border-width-025) solid var(--emtlkit-border-color-secondary);
+  border-radius: var(--emtlkit-option-border-radius, --emtlkit-border-radius-100);
+}
+
+.emtlkit--option-container.emtlkit-color-option:hover {
+  box-shadow: 0 0 0 var(--emtlkit-border-width-025) var(--emtlkit-option-border-active-color);
+  border-radius: var(--emtlkit-option-border-radius, --emtlkit-border-radius-100);
+}
+
+.emtlkit--option-container.emtlkit-color-option.active {
+  position: relative;
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-option-border-active-color);
+}
+
+.emtlkit--option-container.emtlkit-color-option.active::after,
+.emtlkit--option-container.emtlkit-image-option.active::after,
+.emtlkit--option-container.emtlkit-mask-option.active::after {
+  display: none;
+}
+
+/* For option set selecting state */
+.emtlkit--option-container {
+  cursor: pointer;
+}
+
+.emtlkit--option-container.active {
+  position: relative;
+}
+
+.emtlkit--option-container:hover {
+  filter: brightness(1.05);
+  background-color: var(--emtlkit-bg-surface-hover);
+  border-radius: var(--emtlkit-option-border-radius, --emtlkit-border-radius-100);
+}
+
+.emtlkit--canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+/* Loading indicator */
+.emtlkit--loading:not(.first-time) img {
+  visibility: hidden;
+}
+.emtlkit--loading:not(.first-time) canvas {
+  opacity: 0.5;
+}
+
+.emtlkit--loading.first-time img,
+.emtlkit--loading #tlk-preview-placeholder {
+  opacity: 0.5;
+  visibility: visible;
+}
+
+@keyframes emtlkit_loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.emtlkit--loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -30px;
+  margin-left: -30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  border: 5px solid var(--emtlkit-border-color-secondary);
+  border-top-color: var(--emtlkit-bg-secondary);
+  animation: emtlkit_loading 1s linear infinite;
+  z-index: 10;
+}
+
+.emtlkit--magic-icon,
+.emtlkit--success-icon {
+  padding: 2px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.emtlkit--magic-icon:hover,
+.emtlkit--success-icon:hover {
+  background-color: var(--emtlkit-bg-surface-hover);
+  border-radius: var(--emtlkit-border-radius-100);
+}
+
+/* Styles for Image Editor Modal in TailorKit */
+.emtlkit-image-editor-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.emtlkit--justify-content-end {
+  justify-content: flex-end;
+}
+
+.emtlkit-image-editor-preview-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  min-height: 200px;
+  overflow: hidden;
+  max-height: 270px;
+}
+
+[id^='image-editor-preview-img'] {
+  max-width: 100%;
+  max-height: 270px;
+  display: block;
+  object-fit: contain;
+  transform-origin: center;
+  transition: transform 0.1s ease-out;
+}
+
+.emtlkit-image-editor-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* Gap between control groups */
+}
+
+.emtlkit-control-group {
+  display: flex;
+  gap: 8px; /* Gap within a control group (e.g., label and its input) */
+}
+
+.emtlkit-control-group hr {
+  border: none;
+  border-top: 1px solid #cccccc; /* Figma divider color */
+  margin: 8px 0; /* More spacing around dividers */
+}
+
+.emtlkit-control-label {
+  font-weight: 700; /* Bold labels as in Figma (style_G1F8AS) */
+  font-size: 13px; /* Figma font size */
+  color: #000000; /* Figma text color */
+  margin-bottom: 4px;
+}
+
+.emtlkit-radio-group {
+  display: flex;
+  gap: 16px; /* Spacing between radio options */
+  align-items: center;
+}
+
+.emtlkit-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Gap between radio button and its text */
+  font-size: 13px;
+  font-weight: 400; /* Normal weight for radio text */
+  color: #000000;
+}
+
+/* Custom Styling for Range Sliders */
+.emtlkit-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px; /* Overall height of the slider track area */
+  background: #e0e0e0; /* Light grey for the track background (Figma's bg color of slider frame) */
+  border-radius: 999px; /* Rounded track */
+  outline: none;
+  padding: 0;
+  margin: 0; /* Reset margin if it's inside a flex group like emtlkit-slider-input-group */
+}
+
+/* Webkit (Chrome, Safari, Edge) */
+.emtlkit-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px; /* Diameter of the thumb */
+  height: 18px; /* Diameter of the thumb */
+  background: #000000; /* Changed from #007AFF to black */
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff; /* White border around thumb as in Figma */
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2); /* Slight shadow for thumb */
+  margin-top: -5px; /* Adjust thumb position to align with track center */
+}
+
+.emtlkit-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #000000; /* Changed from #007AFF to black */
+  border-radius: 999px;
+}
+
+/* Mozilla Firefox */
+.emtlkit-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #000000; /* Changed from #007AFF to black */
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.emtlkit-slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #e0e0e0; /* Track background */
+  border-radius: 999px;
+}
+
+.emtlkit-slider::-moz-range-progress {
+  /* For the filled part in Firefox */
+  height: 8px;
+  background: var(--emtlkit-bg-secondary); /* Changed from #007AFF to black */
+  border-radius: 999px;
+}
+
+.emtlkit-input-number {
+  width: 55px; /* Figma's 48px + some padding/border */
+  padding: 6px 8px;
+  border: 1px solid var(--emtlkit-border-color-secondary); /* Figma stroke_XL8MN0 */
+  border-radius: 6px; /* Slightly rounded corners for input */
+  font-size: 13px;
+  text-align: center;
+  -moz-appearance: textfield; /* Remove spinners in Firefox */
+}
+
+.emtlkit-input-number::-webkit-outer-spin-button,
+.emtlkit-input-number::-webkit-inner-spin-button {
+  -webkit-appearance: none; /* Remove spinners in Webkit */
+  margin: 0;
+}
+
+/* Group for slider and its input */
+.emtlkit-slider-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Figma gap 16px, adjusted to 12px */
+}
+.emtlkit-slider-input-group .emtlkit-slider {
+  flex-grow: 1;
+}
+
+#remove-background-btn {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.emtlkit-history-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.emtlkit-history-buttons .emtlkit-button-icon {
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emtlkit-history-buttons .emtlkit-button-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--emtlkit-border-inverse-active);
+}
+
+input[type='radio'] {
+  margin-right: 4px;
+  accent-color: #000000;
+}
+
+/* Font Dropdown Popover Styles */
+.emtlkit--font-dropdown-popover {
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 99999 !important;
+}
+
+.emtlkit--font-dropdown-popover .emtlkit--popover-content {
+  padding: 0 !important;
+}
+
+.emtlkit--font-dropdown-content {
+  width: 100%;
+  padding: 8px;
+}
+
+.emtlkit--font-dropdown-content .emtlkit--option-container {
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s ease;
+  display: block;
+  width: 100%;
+}
+
+.emtlkit--font-dropdown-content .emtlkit--option-container:hover {
+  background: var(--emtlkit-bg-surface-hover);
+}
+
+.emtlkit--font-dropdown-content .emtlkit--option-container.active {
+  background-color: var(--emtlkit-bg-fill);
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.emtlkit--font-dropdown-content .emtlkit--option-container input {
+  display: none;
+}
+
+.emtlkit--font-option-set {
+  position: relative;
+  width: 100%;
+}
+
+.emtlkit--font-selector {
+  border: 1px solid var(--emtlkit-border-color-secondary);
+  border-radius: var(--emtlkit-border-radius-200);
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  background-color: var(--emtlkit-bg-primary);
+  cursor: pointer;
+  margin-bottom: var(--emtlkit-space-100);
+  min-height: 40px;
+}
+
+.emtlkit--font-selector:hover {
+  background-color: var(--emtlkit-bg-surface-hover);
+}
+
+.emtlkit--font-selector[aria-expanded='true'] {
+  border: 1px solid var(--emtlkit-border-color-primary);
+}
+
+.emtlkit--selected-font {
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.emtlkit--dropdown-arrow {
+  width: 16px;
+  height: 16px;
+}
+
+.emtlkit--dropdown-arrow svg.up {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.emtlkit--dropdown-arrow svg.down {
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+
+.emtlkit--loading-spinner svg {
+  animation: spin 1.5s linear infinite;
+  transform-origin: center;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.emtlkit--loading-spinner {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 8px;
+}
+
+.emtlkit--loading-text {
+  font-size: 13px;
+  color: #637381;
+}
+
+.emtlkit-button-can-open::after {
+  content: '';
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: #777 transparent transparent transparent;
+  margin-left: 6px;
+}
+
+.emtlkit-button-can-open.up::after {
+  transform: rotate(180deg);
+}
+
+.emtlkit-button-can-open.down::after {
+  transform: rotate(0deg);
+}
+
+/* Generating button animation */
+@keyframes generating-pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.emtlkit--generating {
+  position: relative;
+  padding-left: 32px !important;
+  animation: generating-pulse 1.5s infinite ease-in-out;
+}
+
+.emtlkit--generating::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: tlk_generating_spin 1s linear infinite;
+}
+
+@keyframes tlk_generating_spin {
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+/* ERROR MESSAGE STYLES */
+.emtlkit--error-message {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  color: #8e0b21;
+  gap: 4px;
+}
+
+.emtlkit--option-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  /* transition: all 0.2s ease-in-out; */
+}
+
+/* ============================================
+   Colour Guide — link below Text Colour swatches + modal body styles.
+   Modal chrome inherits from .emtlkit-modal infrastructure.
+   ============================================ */
+
+.emtlkit-colour-guide-link {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--emtlkit-text-color, #303030);
+  opacity: 0.75;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s ease;
+}
+
+.emtlkit-colour-guide-link:hover,
+.emtlkit-colour-guide-link:focus {
+  opacity: 1;
+}
+
+.emtlkit-colour-guide-link:focus-visible {
+  outline: 2px solid var(--emtlkit-focus-color, #005bd3);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Modal body — image + dynamic swatch list */
+.emtlkit-colour-guide__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.emtlkit-colour-guide__image {
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+.emtlkit-colour-guide__swatches {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.emtlkit-colour-guide__swatch-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--emtlkit-border-color, #e1e3e5);
+  border-radius: 6px;
+}
+
+.emtlkit-colour-guide__swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.emtlkit-colour-guide__swatch-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.emtlkit-colour-guide__swatch-name {
+  font-size: 13px;
+  color: var(--emtlkit-text-color, #202223);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.emtlkit-colour-guide__swatch-description {
+  font-size: 11px;
+  color: var(--emtlkit-text-secondary, #6d7175);
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.emtlkit-colour-guide__intro {
+  margin: 0;
+  font-size: 13px;
+  color: var(--emtlkit-text-secondary, #6d7175);
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 480px) {
+  .emtlkit-colour-guide__swatches {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Stack above the Personalise customizer modal (default z-index ~9998-10000).
+   The className prop on <Modal> lands on the backdrop element itself, not a
+   descendant — use a compound selector, not :has(). */
+.emtlkit-modal-backdrop.emtlkit-colour-guide-modal {
+  z-index: 10001;
+}

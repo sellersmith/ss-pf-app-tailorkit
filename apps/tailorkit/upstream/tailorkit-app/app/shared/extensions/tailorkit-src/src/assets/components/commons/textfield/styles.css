@@ -1,0 +1,249 @@
+/* TextField Component Styles */
+.emtlkit-textfield {
+  position: relative;
+}
+
+.emtlkit-textfield__label {
+  display: block;
+  font-weight: 500;
+  color: #202223;
+  margin-bottom: 4px;
+  line-height: 16px;
+}
+
+.emtlkit-textfield__label--required::after {
+  content: ' *';
+  color: #d72c0d;
+}
+
+.emtlkit-textfield__label--disabled {
+  color: #8c9196;
+}
+
+.emtlkit-textfield__input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  /* Prevent iOS Safari auto-zoom on focus by ensuring computed font-size >= 16px */
+  font-size: 16px;
+}
+
+.emtlkit-textfield__input {
+  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 36px;
+  padding: 8px 12px;
+  font-family: inherit;
+  /* Ensure input inherits from wrapper (set to 16px above) */
+  font-size: inherit;
+  line-height: 20px;
+  color: #202223;
+  background-color: #ffffff;
+  border: 1px solid #8c9196;
+  border-radius: 6px;
+  transition:
+    border-color 0.1s ease,
+    box-shadow 0.1s ease;
+  outline: none;
+}
+
+.emtlkit-textfield__input:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 0.5px #000;
+}
+
+.emtlkit-textfield__input:hover:not(:focus):not(:disabled) {
+  border-color: #5c5f62;
+}
+
+.emtlkit-textfield__input:disabled {
+  background-color: #f6f6f7;
+  border-color: #d2d5d8;
+  color: #8c9196;
+  cursor: not-allowed;
+}
+
+.emtlkit-textfield__input--error {
+  border-color: #d72c0d;
+}
+
+.emtlkit-textfield__input--error:focus {
+  border-color: #d72c0d;
+  box-shadow: 0 0 0 1px #d72c0d;
+}
+
+.emtlkit-textfield__input--multiline {
+  min-height: 72px;
+  resize: vertical;
+  padding-top: 8px;
+}
+
+.emtlkit-textfield__input--large {
+  min-height: 44px;
+  padding: 12px 16px;
+}
+
+.emtlkit-textfield__input--with-prefix {
+  padding-left: 0;
+}
+
+.emtlkit-textfield__input--with-suffix {
+  padding-right: 0;
+}
+
+.emtlkit-textfield__prefix,
+.emtlkit-textfield__suffix {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: #6d7175;
+  background-color: #f6f6f7;
+  border: 1px solid #8c9196;
+  white-space: nowrap;
+}
+
+.emtlkit-textfield__prefix {
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+}
+
+.emtlkit-textfield__suffix {
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+}
+
+.emtlkit-textfield__prefix + .emtlkit-textfield__input {
+  border-left: none;
+  border-radius: 0;
+}
+
+.emtlkit-textfield__input:has(+ .emtlkit-textfield__suffix) {
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+}
+
+.emtlkit-textfield__connected-fields {
+  display: flex;
+}
+
+.emtlkit-textfield__connected-fields .emtlkit-textfield__input {
+  border-radius: 0;
+  border-right: none;
+}
+
+.emtlkit-textfield__connected-fields .emtlkit-textfield__input:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.emtlkit-textfield__connected-fields .emtlkit-textfield__input:last-child {
+  border-right: 1px solid #8c9196;
+  border-radius: 0 6px 6px 0;
+}
+
+.emtlkit-textfield__help-text {
+  margin-top: 4px;
+  color: #6d7175;
+  line-height: 16px;
+  font-size: 12px;
+}
+
+.emtlkit-textfield__error {
+  margin-top: 4px;
+  color: #d72c0d;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.emtlkit-textfield__character-count {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+  color: #6d7175;
+  padding: 0 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Single-line: place counter inside input, right-middle */
+.emtlkit-textfield__input-wrapper
+  .emtlkit-textfield__input:not(.emtlkit-textfield__input--multiline)
+  + .emtlkit-textfield__character-count {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+  padding: 0;
+  white-space: nowrap;
+}
+
+/* Remove extra bottom padding when counter is inline */
+.emtlkit-textfield__input:not(.emtlkit-textfield__input--multiline).emtlkit-textfield__input--with-counter {
+  padding-bottom: 8px !important;
+  padding-right: 65px !important; /* more space to avoid overlap */
+}
+
+.emtlkit-textfield__character-count--error {
+  color: #d72c0d;
+}
+
+.emtlkit-textfield__input--with-suffix .emtlkit-textfield__character-count {
+  right: 40px; /* Adjust based on suffix width */
+}
+
+.emtlkit-textfield__clear-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: #6d7175;
+  display: none;
+}
+
+.emtlkit-textfield__clear-button:hover {
+  background-color: #f1f2f3;
+}
+
+.emtlkit-textfield__clear-button--visible {
+  display: block;
+}
+
+.emtlkit-textfield--readonly .emtlkit-textfield__input {
+  background-color: #f6f6f7;
+  cursor: default;
+}
+
+/* Loading state */
+.emtlkit-textfield--loading .emtlkit-textfield__input {
+  background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(100% + 200px) 0;
+  }
+}
+
+.emtlkit-textfield__input--multiline + .emtlkit-textfield__character-count {
+  bottom: 8px;
+}
+
+.emtlkit-textfield__clear-button--visible ~ .emtlkit-textfield__character-count {
+  right: 36px; /* Move character count to make room for clear button */
+}
+
+.emtlkit-textfield__input--with-counter {
+  padding-bottom: 24px !important; /* Ensure there's space for the character count */
+}

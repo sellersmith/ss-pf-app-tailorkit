@@ -1,0 +1,8 @@
+.imported-products-selector .Polaris-TextField,
+.imported-products-selector input {
+  cursor: pointer !important;
+}
+
+.personalized-product-row {
+  cursor: pointer;
+}

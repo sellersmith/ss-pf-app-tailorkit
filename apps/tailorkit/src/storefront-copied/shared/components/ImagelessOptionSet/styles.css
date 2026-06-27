@@ -1,0 +1,74 @@
+/* Imageless option set custom dropdown styles */
+
+/* Trigger button — matches text/font dropdown button pattern */
+.emtlkit--imageless-selector-button {
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-border-color);
+  border-radius: var(--emtlkit-border-radius-200);
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  background-color: var(--emtlkit-bg-primary);
+  margin-bottom: var(--emtlkit-space-100);
+  cursor: pointer;
+  min-height: 34px;
+}
+
+/* Listbox container inside popover */
+.emtlkit--imageless-options-listbox {
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  max-width: 574px;
+}
+
+.emtlkit--imageless-options-listbox input[type='radio'] {
+  display: none;
+}
+
+/* Option row — full width, no fixed aspect ratio */
+.emtlkit--option-container.emtlkit-imageless-dropdown-option {
+  width: auto;
+  height: auto;
+  aspect-ratio: unset;
+}
+
+/* Right-side container for pricing + check icon */
+.emtlkit--imageless-option-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Pricing label — subtle, right-aligned */
+.emtlkit--imageless-option-pricing {
+  color: var(--emtlkit-text-secondary-color, #6b7280);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Checkbox display style */
+.emtlkit--checkbox-container {
+  cursor: pointer;
+  padding: var(--emtlkit-space-200) 0;
+  user-select: none;
+}
+
+.emtlkit--checkbox-input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--emtlkit-option-border-active-color, #0d0324);
+}
+
+.emtlkit--checkbox-label {
+  font-size: var(--emtlkit-option-label-size, 13px);
+  font-weight: var(--emtlkit-option-label-weight, 550);
+  color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  font-style: var(--emtlkit-option-label-font-style, normal);
+  text-decoration: var(--emtlkit-option-label-decoration, none);
+}
+
+.emtlkit--checkbox-pricing {
+  color: var(--emtlkit-option-label-color, var(--emtlkit-text-color));
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0.7;
+}

@@ -1,0 +1,21 @@
+{% if option_set and print_area %}
+  {% liquid
+    # Find selected option or use first option as default
+    assign selected_option = option_set.ol.first
+    for option in option_set.ol
+      if option.s == 1
+        assign selected_option = option
+        break
+      endif
+    endfor
+  %}
+  <fieldset class='emtlkit--option-set' data-print-area-id='{{ print_area.i }}' data-option-type='{{ option_set.t }}' data-layer-id='{{ layer_id }}' data-type='emtlkit--option-set' data-id='{{ option_set.i }}' data-label='{{ option_set.l | escape_once }}' data-layer-index='{{ forloop.parentloop.index0 }}' id='{{ 'option-set-' | append: option_set.i }}' value='{{ selected_option.v }}' data-name='{{ selected_option.l | escape_once }}'>
+    <label class='emtlkit--option-set-label' data-label='{{ option_set.l | escape_once }}'>{{- option_set.l -}}</label>
+    <tailorkit-color-options-list
+      data-current-print-area-id='{{ print_area.i }}'
+      data-current-option-set-id='{{ option_set.i }}'
+      data-option-set-data='{{ option_set | json | escape_once }}'
+      data-value-from-fieldset=''
+    ></tailorkit-color-options-list>
+  </fieldset>
+{% endif %}

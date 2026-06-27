@@ -1,0 +1,68 @@
+.emtlkit--popover-content-wrapper .emtlkit--generate-text-wrapper {
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+
+.emtlkit--popover-footer .emtlkit--tone-dropdown {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 30px;
+}
+
+/* TONE SELECTOR STYLES */
+.emtlkit--tone-selector {
+  position: relative;
+  display: inline-block;
+  display: flex;
+  align-items: center;
+}
+
+.emtlkit--tone-button {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+}
+
+.emtlkit--tone-button:hover {
+  text-decoration: underline;
+}
+
+.emtlkit--tone-listbox {
+  position: absolute;
+  bottom: 48px;
+  left: 16px;
+  right: 0;
+  z-index: 9999;
+  border: 1px solid #ddd;
+  margin-top: -12px;
+  max-height: 252px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 10px;
+  padding: 0;
+  overflow-y: auto;
+  width: 200px;
+}
+
+.emtlkit--tone-selector-footer {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  border-top: 1px solid #eaeaea;
+  padding: 12px;
+}

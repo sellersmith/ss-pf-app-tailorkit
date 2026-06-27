@@ -25,11 +25,6 @@ Suggested stages:
 ```bash
 npm install
 npm run ci:contract
-```
-
-After TailorKit source lands in this repo, enable `SOURCE_MIGRATED=true` and run:
-
-```bash
 npm run build:admin-artifact
 npm run deploy:admin-artifact:dry-run -- \
   --artifact artifacts/tailorkit-admin-static \
@@ -61,6 +56,9 @@ releases/ledger.jsonl
 
 Rollback is pointer/copy promotion to a previous release, not rebuild.
 
-## Current Limitation
+## What DevOps Needs To Provide
 
-This repo currently contains the CI/CD contract skeleton. TailorKit source migration into `apps/tailorkit` is pending, so build stage will fail until source lands.
+- Jenkins job wired to this repo's `Jenkinsfile`.
+- GitHub credential that can read this private repo.
+- CI/CD deploy identity with write permission to `/var/www/pf-beta/public/app-platform/apps/tailorkit`.
+- Decision whether Jenkins runs on beta host or deploys via mounted path/SSH wrapper.

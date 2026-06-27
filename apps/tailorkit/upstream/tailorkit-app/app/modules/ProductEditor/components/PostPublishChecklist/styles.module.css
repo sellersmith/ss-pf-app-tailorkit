@@ -1,0 +1,40 @@
+/* PostPublishChecklist modal styles */
+
+.checklistItem {
+  padding: var(--p-space-300) 0;
+}
+
+.checklistItem:not(:last-child) {
+  border-bottom: 1px solid var(--p-color-border-secondary);
+}
+
+.itemContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--p-space-300);
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemCta {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.socialButtons {
+  display: flex;
+  gap: var(--p-space-200);
+  margin-top: var(--p-space-200);
+  flex-wrap: wrap;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--p-space-300);
+}

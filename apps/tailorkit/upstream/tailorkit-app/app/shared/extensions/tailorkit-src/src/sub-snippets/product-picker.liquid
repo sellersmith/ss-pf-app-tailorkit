@@ -1,0 +1,26 @@
+{% if layer and print_area %}
+  <div class='emtlkit--option-set-wrapper' style='{{ style }}'>
+    <div class='emtlkit--option-set-container'>
+      <fieldset
+        class='emtlkit--option-set'
+        data-print-area-id='{{ print_area.i }}'
+        data-option-type='product_picker'
+        data-type='emtlkit--option-set'
+        data-layer-id='{{ layer_id }}'
+        data-id='{{ layer_id }}'
+        data-layer-index='{{ forloop.index0 }}'
+        data-label='{{ layer.s.storefrontLabel | escape_once }}'
+        value=''
+      >
+        <label class='emtlkit--option-set-label {% if layer.s.required %}emtlkit--required-indicator{% endif %}'>
+          {{- layer.s.storefrontLabel }}
+        </label>
+        <tailorkit-product-picker
+          data-layer-id='{{ layer_id }}'
+          data-print-area-id='{{ print_area.i }}'
+          data-layer='{{ layer | json | escape }}'
+        ></tailorkit-product-picker>
+      </fieldset>
+    </div>
+  </div>
+{% endif %}

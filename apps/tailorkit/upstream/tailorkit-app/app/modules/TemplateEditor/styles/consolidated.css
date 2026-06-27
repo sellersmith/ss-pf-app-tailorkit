@@ -1,0 +1,13 @@
+/* Template Editor Consolidated Stylesheet */
+
+/* Core Template Editor Styles */
+@import './index.css';
+
+/* Module Dependencies */
+@import '../../GroupableItemList/style.css';
+@import '../components/Navigation/OptionSetDrawer/Options/ImageOption/style.css';
+
+/* Theme Helper Styles (TailorKit Extension) */
+@import '../../../shared/extensions/tailorkit-src/src/assets/tailorkit.css';
+
+/* Additional template editor specific overrides can go here */

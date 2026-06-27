@@ -1,0 +1,14 @@
+.linkButton {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--p-color-text-link);
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  text-decoration: underline;
+}
+
+.linkButton:hover {
+  color: var(--p-color-text-link-hover, var(--p-color-text-link));
+}

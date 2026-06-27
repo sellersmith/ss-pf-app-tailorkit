@@ -1,0 +1,107 @@
+.border-radius-100 {
+  border-radius: var(--p-border-radius-100);
+}
+
+.canvas-bg {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background-position: -1px -1px;
+  background-repeat: repeat;
+  background-size: 1.25rem 1.25rem;
+  background-color: rgb(243, 243, 243);
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    rgb(227, 227, 227) 0,
+    rgb(227, 227, 227) 1.25px,
+    transparent 1.25px
+  );
+  /* border: 2px solid rgba(228, 229, 231, 1); */
+  transform-origin: top left;
+  transition: transform 0.25s ease-in-out;
+  overflow: hidden;
+}
+
+#canvas-editor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.template-container {
+  display: grid;
+  height: 100vh;
+  width: 100%;
+  overflow: auto;
+  background-color: #fff;
+}
+
+#template-header {
+  grid-column: 1 / -1;
+}
+
+.template-outline {
+  overflow: hidden;
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.emtlkit-collapsible:hover {
+  background-color: var(--p-color-bg-fill-transparent-secondary-hover);
+}
+
+.tailorkit-input_field.custom-prefix-suffix .Polaris-TextField__Suffix,
+.tailorkit-input_field.custom-prefix-suffix .Polaris-TextField__Prefix {
+  margin-left: var(--p-space-100);
+  margin-right: var(--p-space-100);
+}
+
+.tailorkit-action-list.custom-action-link-component button {
+  padding: var(--p-space-0);
+  margin: var(--p-space-0);
+}
+
+.tailorkit-input_field.custom-prefix-suffix .Polaris-TextField__Suffix > span,
+.tailorkit-input_field.custom-prefix-suffix .Polaris-TextField__Prefix > span {
+  display: flex;
+}
+
+.Polaris-ButtonGroup_ .Polaris-ButtonGroup > .Polaris-ButtonGroup__Item:nth-child(1) {
+  width: 100%;
+}
+
+.Polaris-ButtonGroup_ .Polaris-ButtonGroup > .Polaris-ButtonGroup__Item:nth-child(1) button {
+  max-height: 16px;
+}
+
+.Polaris-ButtonGroup_ .Polaris-ButtonGroup > .Polaris-ButtonGroup__Item:nth-child(1) button > span {
+  display: flex;
+}
+
+/* TODO: Add global css class */
+
+.d-none {
+  display: none;
+}
+
+.d-block {
+  display: block;
+}
+
+.custom-text-field-component input {
+  font-family: inherit !important;
+}
+
+.custom-text-field-component .Polaris-Label {
+  width: 100%;
+}

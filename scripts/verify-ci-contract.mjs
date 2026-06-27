@@ -11,9 +11,11 @@ const requiredFiles = [
   'scripts/build-admin-artifact.mjs',
   'scripts/package-app-platform-admin-artifact.mjs',
   'scripts/deploy-app-platform-admin-artifact.mjs',
+  'apps/tailorkit/package.json',
 ]
 
 const packageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'))
+const tailorkitPackageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, 'apps/tailorkit/package.json'), 'utf8'))
 const requiredScripts = [
   'build:admin-artifact',
   'package:admin-artifact',
@@ -33,5 +35,8 @@ for (const script of requiredScripts) {
   }
 }
 
-process.stdout.write('ci-contract-ok\n')
+if (tailorkitPackageJson.scripts?.['build:admin-artifact'] !== 'npm run build:copied-routes-runtime && npm run package:admin-artifact') {
+  throw new Error('TailorKit package is missing build:admin-artifact contract')
+}
 
+process.stdout.write('ci-contract-ok\n')

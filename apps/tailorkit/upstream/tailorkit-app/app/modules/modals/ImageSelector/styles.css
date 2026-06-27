@@ -1,0 +1,74 @@
+.w-100 {
+  width: 100%;
+}
+
+.w-100vw {
+  width: 100vw;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.h-100vh {
+  height: 100vh;
+}
+
+.emtlkit--d-flex {
+  display: flex;
+}
+
+.emtlkit--flex-center {
+  align-items: center;
+}
+
+.emtlkit--flex-justify-center {
+  justify-content: center;
+}
+
+.emtlkit--flex-justify-between {
+  justify-content: space-between;
+}
+
+.emtlkit--flex-column {
+  flex-direction: column;
+}
+
+.emtlkit--w-100 {
+  width: 100%;
+}
+
+.emtlkit-loading-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.emtlkit-loading-media .Polaris-Spinner svg {
+  fill: rgba(227, 227, 227, 1);
+}
+
+.emtlkit-image-list-select {
+  cursor: pointer;
+}
+
+.emtlkit-image-list-select:hover {
+  background: var(--p-color-bg-surface-hover);
+}
+
+.filter-product-selector-modal
+  .Polaris-Filters-FilterPill__PlainButton.Polaris-Filters-FilterPill__ToggleButton
+  .Polaris-Text--root.Polaris-Text--bodySm {
+  max-width: calc(61.25rem - 144px);
+  white-space: nowrap;
+  scrollbar-width: none;
+  overflow-x: scroll;
+}

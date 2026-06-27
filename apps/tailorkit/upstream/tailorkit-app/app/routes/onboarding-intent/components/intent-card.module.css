@@ -1,0 +1,33 @@
+.cardButton,
+.cardLink {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--p-border-radius-300);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.cardButton:hover:not(:disabled),
+.cardLink:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--p-shadow-300);
+}
+
+.cardButton:focus-visible,
+.cardLink:focus-visible {
+  outline: 2px solid var(--p-color-border-focus);
+  outline-offset: 2px;
+}
+
+.cardButton:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}

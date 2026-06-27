@@ -1,0 +1,611 @@
+/* ============================================================================
+ * Simplified Onboarding Wizard — shared styles
+ * ============================================================================ */
+
+/* MockupWizard wrapper (step 3 canvas mode) — hide footer offscreen so Process
+   button stays in DOM for triggerProcess() imperative click. */
+.mockupWizardWrapper {
+  position: relative;
+
+  /* Hide MockupWizard footer off-screen (only in canvas mode, not result view) */
+  &:not([data-show-result]) > div > div:last-child {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+  }
+}
+
+/* Product selector wrapper — hide info banner, stretch to card edges for full-width divider */
+.productSelectorWrapper {
+  /* Hide the "Choose a product to personalize..." info banner */
+  & [class*='Polaris-Banner--toneInfo']:first-of-type {
+    display: none;
+  }
+
+  /* Force 4 columns in product grid to match the image grid in step 2 */
+  & [class*='Polaris-InlineGrid'] {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+
+  /* When the wrapper has a fixed height (dynamic scrollable), make the ProductGrid/List
+     fill the space via flex layout. The Polaris Scrollable fills remaining space after
+     the Filters bar, overriding its inline maxHeight so it fits exactly. */
+  & > div > [class*='Polaris-BlockStack'] {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  & [class*='Polaris-Scrollable'] {
+    flex: 1;
+    min-height: 0;
+    max-height: none !important;
+  }
+
+  /* Stretch to card edges so Polaris Filters divider spans full card width.
+     Polaris components add their own internal horizontal padding for content. */
+  margin-left: calc(-1 * var(--p-space-400));
+  margin-right: calc(-1 * var(--p-space-400));
+  /* Balance spacing above search bar with spacing below it (above the divider) */
+  margin-top: calc(-1 * var(--p-space-100));
+}
+
+/* Mobile actions row — full-width buttons above product grid */
+.mobileActionsRow {
+  display: flex;
+  gap: var(--p-space-150);
+  margin-top: var(--p-space-150);
+  margin-bottom: var(--p-space-100);
+}
+
+.mobileActionsRow > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* On mobile, adjust negative margins to match mobile cardBody padding (--p-space-300) */
+.productSelectorWrapperMobile {
+  margin-left: calc(-1 * var(--p-space-300));
+  margin-right: calc(-1 * var(--p-space-300));
+
+  /* Responsive grid: 2 columns on small screens */
+  & [class*='Polaris-InlineGrid'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Step indicator — horizontal stepper */
+.stepIndicatorContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--p-space-200) 0;
+}
+
+.stepNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+}
+
+.stepCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.stepCircleActive {
+  background: var(--p-color-bg-fill-brand);
+  color: var(--p-color-text-inverse);
+  border: 2px solid var(--p-color-bg-fill-brand);
+}
+
+.stepCircleCompleted {
+  background: var(--p-color-bg-fill-success);
+  color: var(--p-color-text-inverse);
+  border: 2px solid var(--p-color-bg-fill-success);
+}
+
+.stepCircleFuture {
+  background: transparent;
+  color: var(--p-color-text-secondary);
+  border: 2px solid var(--p-color-border);
+}
+
+.stepLabel {
+  font-size: 12px;
+  color: var(--p-color-text-secondary);
+  text-align: center;
+  margin-top: var(--p-space-100);
+  white-space: nowrap;
+}
+
+.stepLabelActive {
+  color: var(--p-color-text);
+  font-weight: 600;
+}
+
+.stepLine {
+  height: 2px;
+  flex: 1;
+  background: var(--p-color-border);
+  margin-top: 16px; /* vertically align with circle center (32px / 2) */
+  min-width: 24px;
+}
+
+.stepLineCompleted {
+  background: var(--p-color-bg-fill-success);
+}
+
+/* Mobile step indicator */
+.mobileStepIndicator {
+  padding: var(--p-space-200) 0;
+}
+
+/* Image selection grid — matches product grid card style */
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--p-space-400);
+}
+
+@media (max-width: 768px) {
+  .imageGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .imageGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.imageCard {
+  position: relative;
+  border-radius: var(--p-border-radius-300);
+  border: 2px solid var(--p-color-border);
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  aspect-ratio: 1;
+  background: var(--p-color-bg-surface-secondary);
+}
+
+.imageCard:hover {
+  border-color: var(--p-color-border-hover);
+  box-shadow: var(--p-shadow-200);
+}
+
+.imageCardSelected {
+  border-color: var(--p-color-border-interactive);
+  box-shadow: 0 0 0 1px var(--p-color-border-interactive);
+}
+
+/* Radio indicator on image cards — matches product grid radio style */
+.imageRadio {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--p-color-border);
+  background: var(--p-color-bg-surface);
+  pointer-events: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.imageRadioSelected {
+  border-color: var(--p-color-bg-fill-brand);
+  background: var(--p-color-bg-fill-brand);
+  /* Inner white dot */
+  box-shadow: inset 0 0 0 3px var(--p-color-bg-surface);
+}
+
+.imageCardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Template composite preview — height controlled by parent (ResultView containerHeight) */
+.compositeContainer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--p-border-radius-200);
+  background: var(--p-color-bg-surface-secondary);
+}
+
+.compositeBaseImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Personalization zone indicator — dashed border at the drawn selection position */
+.compositeZoneLabel {
+  position: absolute;
+  border: 2px dashed rgba(0, 120, 212, 0.6);
+  border-radius: var(--p-border-radius-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: rgba(0, 120, 212, 0.08);
+}
+
+.compositeZoneText {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(0, 120, 212, 0.8);
+  text-align: center;
+  padding: var(--p-space-100);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Template thumb card */
+.thumbCard {
+  display: flex;
+  align-items: center;
+  gap: var(--p-space-300);
+  padding: var(--p-space-300);
+  border: 2px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-200);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.thumbCard:hover {
+  border-color: var(--p-color-border-hover);
+}
+
+.thumbCardSelected {
+  border-color: var(--p-color-border-interactive);
+  background: var(--p-color-bg-surface-selected);
+}
+
+.thumbCardError {
+  border-color: var(--p-color-border-critical);
+}
+
+.thumbCardDisabled {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* Inline spinner for pre-made template cloning */
+.thumbSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--p-color-border);
+  border-top-color: var(--p-color-border-interactive);
+  border-radius: 50%;
+  animation: thumbSpin 0.6s linear infinite;
+}
+
+@keyframes thumbSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* "Let AI regenerate" — styled as a text link, not a button */
+.regenerateLink {
+  all: unset;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--p-color-text-interactive);
+  text-decoration: underline;
+}
+
+.regenerateLink:hover {
+  color: var(--p-color-text-interactive-hover);
+}
+
+.thumbCardThumbnail {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--p-border-radius-100);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.thumbCardPlaceholder {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--p-border-radius-100);
+  background: var(--p-color-bg-surface-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Skeleton shimmer for generating state */
+.thumbCardSkeleton {
+  background: linear-gradient(
+    90deg,
+    var(--p-color-bg-surface-secondary) 25%,
+    var(--p-color-bg-surface-tertiary) 50%,
+    var(--p-color-bg-surface-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Magic wand: transparent background so only the icon shows */
+.thumbCardWandIdle,
+.thumbCardWandBounce {
+  background: transparent;
+}
+
+/* Magic wand animation: bounce + zoom → sway + zoom → spin + zoom → loop (3.2s cycle) */
+.thumbCardWandBounce {
+  animation: wandBounceSwaySpn 3.2s ease-in-out infinite;
+}
+
+@keyframes wandBounceSwaySpn {
+  /* Bounce phase: 0–44% — three bounces with zoom-in */
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.8);
+  }
+  7% {
+    transform: translateY(-5px) rotate(0deg) scale(0.86);
+  }
+  15% {
+    transform: translateY(0) rotate(0deg) scale(0.9);
+  }
+  22% {
+    transform: translateY(-4px) rotate(0deg) scale(0.96);
+  }
+  30% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  37% {
+    transform: translateY(-3px) rotate(0deg) scale(1.05);
+  }
+  44% {
+    transform: translateY(0) rotate(0deg) scale(1.08);
+  }
+  /* Sway phase: 44–78% — gentle rock with zoom */
+  55% {
+    transform: translateY(0) rotate(12deg) scale(1.12);
+  }
+  66% {
+    transform: translateY(0) rotate(-10deg) scale(1.18);
+  }
+  78% {
+    transform: translateY(0) rotate(0deg) scale(1.22);
+  }
+  /* Spin phase: 78–95% — fast 360° at peak zoom */
+  86% {
+    transform: translateY(0) rotate(180deg) scale(1.25);
+  }
+  95% {
+    transform: translateY(0) rotate(360deg) scale(1.25);
+  }
+  /* Reset: snap back for seamless loop */
+  100% {
+    transform: translateY(0) rotate(360deg) scale(0.8);
+  }
+}
+
+/* Simulated preview */
+.simulatedPreviewContainer {
+  background: var(--p-color-bg-surface);
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-300);
+  padding: var(--p-space-400);
+  overflow: hidden;
+}
+
+.simulatedInput {
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-200);
+  padding: var(--p-space-200) var(--p-space-300);
+  color: var(--p-color-text-secondary);
+  background: var(--p-color-bg-surface);
+  width: 100%;
+}
+
+/* Two-column layout — height controlled by parent (ResultView containerHeight) */
+.twoColumnLayout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--p-space-400);
+}
+
+.templateListScroll {
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .twoColumnLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Product title truncation */
+.productTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Congratulations phase (Step 5 Phase C) */
+.congratsContainer {
+  padding: var(--p-space-400);
+}
+
+.congratsEmoji {
+  font-size: 48px;
+  margin-bottom: var(--p-space-200);
+  text-align: center;
+}
+
+/* Cost comparison box */
+.comparisonBox {
+  background: var(--p-color-bg-surface-secondary);
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-200);
+  padding: var(--p-space-300) var(--p-space-400);
+}
+
+.comparisonRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--p-space-200);
+  padding: var(--p-space-100) 0;
+  flex-wrap: wrap;
+}
+
+.comparisonSavings {
+  border-top: 1px solid var(--p-color-border);
+  padding-top: var(--p-space-200);
+  margin-top: var(--p-space-100);
+}
+
+/* Aha reminder — product thumbnail callout */
+.ahaReminder {
+  display: flex;
+  align-items: center;
+  gap: var(--p-space-300);
+  background: var(--p-color-bg-surface-success);
+  border: 1px solid var(--p-color-border-success);
+  border-radius: var(--p-border-radius-200);
+  padding: var(--p-space-300) var(--p-space-400);
+}
+
+.ahaThumbnail {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--p-border-radius-200);
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--p-color-border);
+}
+
+@media (max-width: 480px) {
+  .congratsContainer {
+    padding: var(--p-space-300);
+  }
+
+  .comparisonBox {
+    padding: var(--p-space-200) var(--p-space-300);
+  }
+
+  /* Stack label + price vertically on very narrow screens */
+  .comparisonRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .ahaReminder {
+    padding: var(--p-space-200) var(--p-space-300);
+  }
+}
+
+/* ============================================================================
+ * Product tab bar — bulk mode product switcher (steps 2-5)
+ * ============================================================================ */
+
+.productTabBar {
+  display: flex;
+  gap: var(--p-space-100);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding: var(--p-space-100) 0;
+}
+
+.productTab {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--p-space-200);
+  padding: var(--p-space-200) var(--p-space-300);
+  border-radius: var(--p-border-radius-200);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.productTab:hover {
+  background: var(--p-color-bg-surface-hover);
+}
+
+.productTabActive {
+  background: var(--p-color-bg-surface-selected);
+  border-color: var(--p-color-border-interactive);
+}
+
+.productTabThumb {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--p-border-radius-100);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.productTabThumbPlaceholder {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--p-border-radius-100);
+  background: var(--p-color-bg-surface-secondary);
+  flex-shrink: 0;
+}
+
+.productTabTitle {
+  font-size: 13px;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.productTabBadge {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .productTabTitle {
+    display: none;
+  }
+}

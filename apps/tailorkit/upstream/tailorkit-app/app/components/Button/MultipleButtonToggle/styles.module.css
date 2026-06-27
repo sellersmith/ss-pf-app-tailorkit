@@ -1,0 +1,66 @@
+.ButtonToggle {
+  width: 100%;
+}
+
+.ButtonToggle > :global(button) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 375px) {
+  .ButtonToggle > :global(button) {
+    width: auto;
+    flex-shrink: 0;
+  }
+}
+
+.ButtonToggle > :global(button.Polaris-Button--iconOnly.Polaris-Button--variantTertiary) {
+  margin: 0 !important;
+}
+
+.ButtonToggle > :global(button:not(.Polaris-Button--variantTertiary)) {
+  box-shadow: var(--p-shadow-200);
+}
+
+.ButtonToggle > button:hover {
+  background-color: var(--p-color-bg-surface);
+  box-shadow: var(--p-shadow-200);
+}
+
+.ButtonToggle > :global(button.Polaris-Button--variantTertiary:hover) {
+  background-color: #f7f7f7;
+  box-shadow: unset;
+}
+
+.ButtonToggle.ButtonToggleDisabled {
+  cursor: not-allowed;
+}
+
+.ButtonToggle:not(.ButtonToggleDisabled) svg > path {
+  fill: #4a4a4a !important;
+}
+
+.ScrollContainer {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.ScrollContainer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.ScrollContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ScrollContainer::-webkit-scrollbar-thumb {
+  background: var(--p-color-border-subdued);
+  border-radius: 3px;
+}
+
+.ScrollContainer::-webkit-scrollbar-thumb:hover {
+  background: var(--p-color-border);
+}

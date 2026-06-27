@@ -1,0 +1,6 @@
+export const MODAL_CANCEL_TEMPLATE_EDITOR_QUICK_TOUR_KEY = 'modal-cancel-template-editor-quick-tour'
+export const MODAL_CANCEL_PROVIDER_TOUR_KEY = 'modal-cancel-provider-tour'
+export const CONFETTI_QUICK_TOUR_KEY = 'confetti-template-editor-quick-tour'
+export const NAVIGATE_TO_INTEGRATION_MODAL_KEY = 'navigate-to-integration-modal'
+export const NAVIGATE_TO_DISCOVERY_MODAL_KEY = 'navigate-to-discovery-modal'
+export const NAVIGATE_TO_PUBLISH_PRODUCT_MODAL_KEY = 'navigate-to-publish-product-modal'

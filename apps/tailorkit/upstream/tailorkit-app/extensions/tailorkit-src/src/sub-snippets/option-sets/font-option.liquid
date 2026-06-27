@@ -1,0 +1,29 @@
+{% if option_set and print_area %}
+  {% liquid
+    # Prepare default font data
+    assign default_font_data = '{"src": "' | append: layer.s.fontFamily.src | append: '", "family": "' | append: layer.s.fontFamily.family | append: '"'
+
+    if layer.s.fontFamily.additionalPricing
+      assign pricing_json = layer.s.fontFamily.additionalPricing | json
+      assign default_font_data = default_font_data | append: ', "additionalPricing": ' | append: pricing_json
+    endif
+
+    assign default_font_data = default_font_data | append: '}'
+
+    # Get pricing data for the default font option
+    assign pricing_data = ''
+    if layer.s.fontFamily.additionalPricing
+      assign pricing_data = layer.s.fontFamily.additionalPricing | json | escape_once
+    endif
+  %}
+  <fieldset class='emtlkit--option-set' data-print-area-id='{{ print_area.i }}' data-option-type='{{ option_set.t }}' data-layer-id='{{ layer_id }}' data-type='emtlkit--option-set' data-id='{{ option_set.i }}' data-label='{{ option_set.l | escape_once }}' data-layer-index='{{ forloop.parentloop.index0 }}' id='{{ 'option-set-' | append: option_set.i }}' value='{{ layer.s.fontFamily.src }}' data-name='{{ layer.s.fontFamily.family }}' data-family='{{ layer.s.fontFamily.family }}' data-default='true'{% if pricing_data != blank %} data-pricing='{{ pricing_data }}'{% endif %}>
+    <label class='emtlkit--option-set-label' data-label='{{ option_set.l | escape_once }}'>{{- option_set.l -}}</label>
+    <tailorkit-font-options-list
+      data-default-font='{{ default_font_data | escape_once }}'
+      data-option-set-data='{{ option_set | json | escape_once }}'
+      data-current-print-area-id='{{ print_area.i }}'
+      data-current-option-set-id='{{ option_set.i }}'
+      data-value-from-fieldset=''
+    ></tailorkit-font-options-list>
+  </fieldset>
+{% endif %}

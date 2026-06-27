@@ -1,0 +1,22 @@
+.OptionListWrapper {
+  margin-left: -12px;
+}
+
+.OptionListWrapper button {
+  color: rgba(12, 81, 50, 1) !important;
+}
+
+.OptionListWrapper button:hover,
+.OptionListWrapper button[aria-pressed='true'] {
+  background: rgba(37, 235, 146, 0.075) !important;
+}
+
+/* Target the magic icon globally */
+:global(.Polaris-Icon--toneMagic svg) {
+  fill: var(--p-color-icon-magic) !important;
+}
+
+/* Target the magic icon globally */
+:global(.Polaris-Icon--toneSuccess svg) {
+  fill: var(--p-color-icon-success) !important;
+}

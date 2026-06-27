@@ -1,0 +1,5 @@
+export { SantaHatIcon } from './SantaHatIcon'
+export { SnowflakeIcon } from './SnowflakeIcon'
+export { GiftIcon } from './GiftIcon'
+export { CandleIcon } from './CandleIcon'
+export { TreeIcon } from './TreeIcon'

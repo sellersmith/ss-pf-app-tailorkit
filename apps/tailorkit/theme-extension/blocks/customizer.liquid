@@ -1,0 +1,98 @@
+{% # theme-check-disable %}
+
+{% liquid
+  assign product_id = product.id | append: ''
+  assign product_name = product.title | append: ''
+  assign variant_id = product.selected_or_first_available_variant.id | append: ''
+  assign em_tailorkit_variants = app.metafields.em_tailorkit[variant_id].value
+  assign metafield_key = 'variant'
+
+  if em_tailorkit_variants == blank
+    assign em_tailorkit_variants = app.metafields.em_tailorkit[product_id].value
+    assign metafield_key = 'product'
+  endif
+
+  assign em_tailorkit_app_settings = app.metafields.em_tailorkit.app_settings.value
+%}
+
+{% if request.design_mode and em_tailorkit_variants == blank %}
+  {% render 'pagefly-tailorkit-placeholder' %}
+{% endif %}
+
+{% capture accordion_icon %}
+  {% render 'pagefly-tailorkit-icons', icon_type: 'accordion' %}
+{% endcapture %}
+
+<tailorkit-product-personalizer-customizer
+  data-product-id='{{ product_id }}'
+  data-product-name='{{ product_name | escape }}'
+  data-variant-id='{{ variant_id }}'
+  data-metafield-key='{{ metafield_key }}'
+  data-app-settings='{{ em_tailorkit_app_settings | json | escape }}'
+  data-tlk-instance-id='{{ product_id }}::page'
+>
+  {% liquid
+    if em_tailorkit_app_settings.globalStyling.heading.text != blank
+      assign personalized_design_title = em_tailorkit_app_settings.globalStyling.heading.text
+    else
+      assign personalized_design_title = block.settings.personalized_design_title
+    endif
+
+    render 'pagefly-tailorkit-print-areas', em_tailorkit_app_settings: em_tailorkit_app_settings, em_tailorkit_variants: em_tailorkit_variants, settings: block.settings, personalized_design_title: personalized_design_title, product: product, accordion_icon: accordion_icon
+  %}
+
+  <script type='application/json' data-tailorkit-variant-data>
+    {{ em_tailorkit_variants | json }}
+  </script>
+</tailorkit-product-personalizer-customizer>
+
+{% schema %}
+{
+  "name": "TailorKit",
+  "target": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "General"
+    },
+    {
+      "id": "personalized_design_title",
+      "type": "text",
+      "label": "Personalized design title",
+      "default": "PERSONALIZED DESIGN"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "id": "featured_image_container_selector",
+      "type": "text",
+      "label": "Featured image container selector",
+      "info": "CSS selector for the product image the live preview overlays. Leave blank to auto-detect."
+    },
+    {
+      "id": "featured_image_position",
+      "type": "number",
+      "label": "Featured image position",
+      "info": "1-based gallery position of the image to preview on (1 = first).",
+      "default": 1
+    },
+    {
+      "id": "auto_navigate_on_focus",
+      "type": "checkbox",
+      "label": "Auto-navigate gallery on focus",
+      "default": false
+    },
+    {
+      "id": "always_render_live_preview",
+      "type": "checkbox",
+      "label": "Always render live preview",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

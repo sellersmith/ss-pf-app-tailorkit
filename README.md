@@ -6,9 +6,9 @@ This repo exists to split TailorKit admin build/deploy from the PageFly Core Jen
 
 ## Status
 
-Phase 0 CI/CD skeleton.
+Build-ready TailorKit admin artifact repo.
 
-The artifact contract and deploy scripts are present. Full TailorKit source migration is still pending, so `npm run build:admin-artifact` intentionally fails until `apps/tailorkit` source lands in this repo.
+TailorKit admin source is present under `apps/tailorkit`. CI can build and package the admin static artifact without PageFly Core.
 
 ## Target Flow
 
@@ -92,4 +92,3 @@ artifacts/tailorkit-admin-static/
 ```
 
 Default promote strategy is copy. Symlink can be enabled with `--strategy symlink` if static hosting supports it.
-

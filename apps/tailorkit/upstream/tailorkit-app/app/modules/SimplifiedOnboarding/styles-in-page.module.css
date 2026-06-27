@@ -1,0 +1,48 @@
+/* WizardInPage layout — card grows with content, page scrolls naturally.
+   Works well on low-resolution screens (Windows PCs) where fixed viewport height is too cramped. */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--p-color-bg-surface);
+  border-radius: var(--p-border-radius-300);
+  box-shadow: var(--p-shadow-100);
+}
+
+.cardHeader {
+  flex-shrink: 0;
+  padding: var(--p-space-400) var(--p-space-400) var(--p-space-300);
+  border-bottom: 1px solid var(--p-color-border);
+}
+.cardHeader:empty {
+  padding: 0;
+  border-bottom: 0;
+}
+
+.cardBody {
+  padding: var(--p-space-400);
+}
+
+.cardFooter {
+  flex-shrink: 0;
+  padding: var(--p-space-300) var(--p-space-400) var(--p-space-400);
+  border-top: 1px solid var(--p-color-border);
+}
+
+@media (max-width: 768px) {
+  .cardHeader {
+    padding: var(--p-space-150) var(--p-space-300);
+  }
+  .cardHeader:empty {
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .cardBody {
+    padding: var(--p-space-300);
+  }
+
+  .cardFooter {
+    padding: var(--p-space-150) var(--p-space-300);
+  }
+}

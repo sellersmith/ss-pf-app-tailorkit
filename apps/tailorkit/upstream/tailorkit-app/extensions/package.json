@@ -1,0 +1,31 @@
+{
+  "name": "tailorkit-extensions",
+  "version": "1.0.0",
+  "description": "TailorKit theme extensions - helper and main app",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "yarn build:main & yarn build:helper & yarn build:onetick & wait",
+    "build:helper": "yarn workspace tailorkit-helper run build",
+    "build:main": "yarn workspace tailorkit-app-block run build",
+    "build:features": "yarn workspace tailorkit-app-block run build:features",
+    "build:onetick": "yarn workspace onetick run build",
+    "dev": "yarn dev:helper & yarn dev:main & yarn dev:onetick & wait",
+    "dev:helper": "yarn workspace tailorkit-helper run dev",
+    "dev:main": "yarn workspace tailorkit-app-block run dev",
+    "dev:features": "yarn workspace tailorkit-app-block run dev:features",
+    "dev:onetick": "yarn workspace onetick run dev",
+    "install:all": "yarn install",
+    "clean": "rm -rf tailorkit/assets/*",
+    "clean:build": "yarn clean && yarn build"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.4.2",
+    "vite": "^7.3.0"
+  },
+  "workspaces": [
+    "tailorkit-helper",
+    "tailorkit-src",
+    "onetick-src"
+  ]
+}

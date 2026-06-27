@@ -1,0 +1,125 @@
+/* DrawModeSection styles - Shape selection and AI generation panel */
+
+/* Shape grid layout */
+.shapeGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+
+/* Shape item button */
+.shapeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: var(--p-border-radius-200);
+  border: 2px solid transparent;
+  background: var(--p-color-bg-surface);
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    border-color 0.1s ease,
+    background 0.1s ease;
+  color: var(--p-color-text);
+  min-height: 44px;
+}
+
+.shapeItem:hover {
+  background: var(--p-color-bg-surface-hover);
+  border-color: var(--p-color-border);
+}
+
+.shapeItem svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.shapeItemSelected {
+  border-color: var(--p-color-border-interactive);
+  background: var(--p-color-bg-surface-selected);
+}
+
+.shapeItemSelected:hover {
+  border-color: var(--p-color-border-interactive-focus);
+}
+
+.shapeItemLabel {
+  font-size: 11px;
+  color: var(--p-color-text-subdued);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Shape groups container & section headers */
+.shapeGroupsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shapeGroupSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shapeGroupLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--p-color-text-subdued);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 2px;
+}
+
+/* Freehand button - full width with border */
+.freehandButton {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--p-color-border);
+  min-height: 56px;
+}
+
+.freehandButton:hover {
+  border-color: var(--p-color-border-hover);
+}
+
+.freehandButton.shapeItemSelected {
+  border-width: 2px;
+}
+
+/* Divider label - single line */
+.dividerLabel {
+  font-size: 13px;
+  color: var(--p-color-text-subdued);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .shapeGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .shapeItem {
+    padding: 6px 2px;
+    min-height: 40px;
+  }
+
+  .shapeItem svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .freehandButton {
+    padding: 10px;
+    min-height: 48px;
+  }
+}

@@ -1,0 +1,113 @@
+/* SUGGESTIONS STYLES */
+.emtlkit--suggestions-container {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-top: 15px;
+}
+
+.emtlkit--suggestions-header {
+  font-weight: 600;
+  margin: 0;
+  margin-bottom: 12px;
+  color: #000;
+}
+
+.emtlkit--suggestion-grid-container {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.emtlkit--suggestion-option {
+  border-radius: 6px;
+  padding: 8px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+  color: rgba(41, 132, 90, 1);
+}
+
+.emtlkit--suggestion-option:hover {
+  background-color: rgba(41, 132, 90, 0.05);
+}
+
+.emtlkit--suggestion-option:active {
+  transform: translateY(0);
+}
+
+/* Selected suggestion option */
+.emtlkit--suggestion-option-selected {
+  background-color: rgba(41, 132, 90, 0.05);
+  border: 1px solid rgba(41, 132, 90, 1);
+}
+
+.emtlkit--suggestion-option-image {
+  align-items: start;
+  background-color: transparent;
+  padding: 0;
+  display: flex;
+}
+
+@media screen and (max-width: 320px) {
+  .emtlkit--suggestion-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.emtlkit--suggestion-option-image img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 2px solid #cccccc;
+}
+
+.emtlkit--suggestion-option-image:hover {
+  border-color: rgba(41, 132, 90, 0.75);
+}
+
+.emtlkit--suggestion-option-selected.emtlkit--suggestion-option-image {
+  border: 2px solid rgba(41, 132, 90, 1);
+}
+
+.emtlkit--regenerate-button {
+  border: 1px solid #000;
+  background-color: #fff;
+  margin-right: 8px;
+}
+
+.emtlkit--regenerate-button:hover {
+  border: 1px solid #000 !important;
+  background-color: rgba(243, 243, 243, 1) !important;
+}
+
+.emtlkit--image-skeleton {
+  position: relative;
+  background: linear-gradient(173deg, #7fb87d 0.24%, #badba0 52.94%, #f4fdc3 95.89%);
+  border-radius: 4px;
+  overflow: hidden;
+  display: block !important;
+  width: 100%;
+  height: 100%;
+}
+
+.emtlkit--image-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

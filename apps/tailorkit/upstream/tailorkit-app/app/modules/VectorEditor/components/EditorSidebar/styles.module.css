@@ -1,0 +1,192 @@
+/* EditorSidebar styles */
+
+/* Sidebar container - responsive wrapper styles are in VectorEditor/styles.module.css */
+.sidebar {
+  background: var(--p-color-bg-surface);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Header with title and close button - sticky at top when scrolling */
+.sidebarHeader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--p-color-border);
+  flex-shrink: 0;
+  background: var(--p-color-bg-surface);
+}
+
+.sidebarContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Gradient swatches */
+.gradientSwatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 2px solid var(--p-color-border);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.gradientSwatch:hover {
+  border-color: var(--p-color-border-hover);
+}
+
+.gradientSwatchActive {
+  border-color: var(--p-color-border-interactive);
+  box-shadow:
+    0 0 0 2px var(--p-color-bg-surface),
+    0 0 0 4px var(--p-color-border-interactive);
+}
+
+/* Gradient preview bar */
+.gradientPreviewBar {
+  height: 24px;
+  border-radius: 4px;
+  border: 1px solid var(--p-color-border);
+}
+
+/* Stop color swatch */
+.stopColorSwatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 2px solid var(--p-color-border);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.stopColorSwatchSelected {
+  border-color: var(--p-color-border-interactive);
+}
+
+/* Slider wrapper for consistent spacing */
+.sliderWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Filter Preset Thumbnails */
+.presetThumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid var(--p-color-border);
+  background: var(--p-color-bg-surface);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.presetThumbnail:hover {
+  border-color: var(--p-color-border-hover);
+  background: var(--p-color-bg-surface-hover);
+}
+
+.presetThumbnailActive {
+  border-color: var(--p-color-border-interactive);
+  background: var(--p-color-bg-surface-selected);
+}
+
+.presetPreview {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--p-color-text);
+  background: var(--p-color-bg-surface-secondary);
+  border-radius: 4px;
+}
+
+/* Foil Color Swatches */
+.foilColorSwatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.foilColorSwatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 2px solid var(--p-color-border);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.foilColorSwatch:hover {
+  border-color: var(--p-color-border-hover);
+  transform: scale(1.05);
+}
+
+.foilColorSwatchActive {
+  border-color: var(--p-color-border-interactive);
+  box-shadow:
+    0 0 0 2px var(--p-color-bg-surface),
+    0 0 0 4px var(--p-color-border-interactive);
+}
+
+/* Holographic swatch with shimmer animation */
+.foilColorSwatchHolographic {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 20%, #6bcb77 40%, #4d96ff 60%, #9b59b6 80%, #ff6b6b 100%);
+  background-size: 200% 200%;
+  animation: holographicShimmer 3s ease infinite;
+}
+
+@keyframes holographicShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .sidebarContent {
+    padding: 12px;
+  }
+
+  .presetThumbnail {
+    padding: 8px;
+  }
+
+  .presetPreview {
+    width: 40px;
+    height: 40px;
+  }
+
+  .foilColorSwatch {
+    width: 28px;
+    height: 28px;
+  }
+}

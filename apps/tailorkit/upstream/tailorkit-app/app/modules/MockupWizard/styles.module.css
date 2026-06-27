@@ -1,0 +1,593 @@
+.MockupWizardContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 1rem;
+  background: var(--p-color-bg-surface);
+  border-bottom: 1px solid var(--p-color-border);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.footer {
+  padding: 1rem;
+  margin-top: auto;
+  background: var(--p-color-bg-surface);
+  border-top: 1px solid var(--p-color-border);
+}
+
+.canvasContainer {
+  width: 100%;
+  height: var(--mockup-canvas-height, 100%);
+  /* Outer Polaris Card supplies the border + surface; canvasContainer keeps
+     border-radius + overflow:hidden so the canvas content respects the
+     Card's rounded corners. No inner border / background → no nested-card. */
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--p-border-radius-200);
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+  touch-action: none; /* Prevent page scroll when interacting with canvas */
+  position: absolute;
+  top: 0;
+  left: 0;
+  outline: none; /* Remove focus outline */
+}
+
+.canvas:hover {
+  cursor: crosshair;
+}
+
+.canvas:focus {
+  outline: none; /* Ensure no focus outline even when explicitly focused */
+}
+
+.loading {
+  gap: 1rem;
+  display: flex;
+  padding: 3rem;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.imageWrapper {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  align-items: start;
+  /* Use margin:auto on children instead of justify-content:center.
+     justify-content:center shifts overflowing content to negative offsets
+     which are unreachable by scrolling (can't scroll left). margin:auto
+     centers when content is smaller but stays at 0 when it overflows. */
+  /* Fixed height keeps wrapper stable during zoom — prevents zoom controls from shifting */
+  height: calc(100vh - 278px);
+  border: 2px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-300);
+  background: var(--p-color-bg-surface);
+  box-shadow: var(--p-shadow-100);
+  padding: var(--p-space-300);
+}
+
+/* Prevent zoomed canvas content from pushing the grid column wider.
+   CSS Grid items default to min-width:auto which expands to fit content.
+   overflow:hidden on the column contains the scrollable imageWrapper. */
+.stickyImageColumn {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.imageLoading {
+  top: 50%;
+  left: 50%;
+  gap: 0.5rem;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  flex-direction: column;
+  transform: translate(-50%, -50%);
+}
+
+.reprocessImage {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Layered image container system */
+.layeredImageContainer {
+  height: auto;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--p-border-radius-200);
+}
+
+/* Zoom controls for result view */
+.zoomControls {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.mobileZoomControls {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 10;
+  background: var(--p-color-bg-surface);
+  border-radius: var(--p-border-radius-200);
+  box-shadow: var(--p-shadow-200);
+  padding: 2px;
+}
+
+/* Processed image and settings layout */
+.settingsContainer {
+  margin-top: -0.5rem;
+}
+
+.tabContentContainer {
+  overflow: auto;
+  height: calc(100vh - 314px);
+}
+
+/* Mobile Result View with sticky preview */
+.mobileResultContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.mobileResultPreview {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  touch-action: none; /* Prevent browser zoom; pinch-to-zoom handled by JS */
+  background: var(--p-color-bg-surface);
+  border-radius: var(--p-border-radius-200);
+  border: 1px solid var(--p-color-border);
+  padding: 8px;
+  height: 50vh;
+  max-height: 50vh;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileResultControls {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: 100px; /* Space for floating buttons */
+}
+
+/* Mobile toolbar — top-right, horizontal, scrollable.
+   No outer surface; each button carries its own Polaris Button background.
+   Spacing matches the zoom-control offset (12px) for visual symmetry. */
+.mobileToolbarArea {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  max-width: calc(100% - 24px);
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.mobileToolbarArea::-webkit-scrollbar {
+  display: none;
+}
+/* Children must NOT flex-shrink — buttons keep intrinsic width so labels
+   stay single-line. Overflow is handled by the parent's overflow-x: auto. */
+.mobileToolbarArea > *,
+.mobileToolbarArea button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Mode selector + sub-controls (vector, node editing) inline horizontally */
+.drawingModeToolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+.drawingModeToolbar > *,
+.drawingModeToolbar button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.drawingModeHint {
+  padding: 4px 8px;
+  background: var(--p-color-bg-surface-caution);
+  color: var(--p-color-text-caution);
+  font-size: 12px;
+  border-radius: 4px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Desktop drawing toolbar — top-right, horizontal, scrollable. Mirrors mobile.
+   No outer surface; each Polaris Button supplies its own background.
+   Spacing matches the zoom-control offset (12px) for visual symmetry. */
+.desktopDrawingToolbar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  max-width: calc(100% - 24px);
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.desktopDrawingToolbar::-webkit-scrollbar {
+  display: none;
+}
+/* Buttons keep intrinsic width / single-line labels; toolbar scrolls
+   horizontally if the row exceeds canvas width. */
+.desktopDrawingToolbar > *,
+.desktopDrawingToolbar button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Sub-control groups (vector, magic wand, paint, auto detect) — inline beside
+   the active tool button. */
+.desktopVectorControls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+.desktopVectorControls > *,
+.desktopVectorControls button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Magic Wand sensitivity slider and controls */
+.magicWandControls {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  min-width: 160px;
+}
+
+.magicWandSliderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.magicWandSliderRow input[type='range'] {
+  flex: 1;
+  min-width: 80px;
+  accent-color: var(--p-color-bg-primary);
+}
+
+.magicWandSliderRow span {
+  min-width: 28px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--p-color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.magicWandActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.magicWandLoadingBadge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--p-color-text-secondary);
+  background: var(--p-color-bg-surface-secondary);
+  border-radius: var(--p-border-radius-100);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile-specific styles for FAB and collapsible toolbar */
+/* Floating zoom buttons — bottom-left of canvas, no card background */
+.floatingZoomControls {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 100;
+}
+
+/* Floating hint banner — sits just below the toolbar. Visual surface is
+   provided by the shared HintBanner component; only positioning lives here. */
+.canvasHintBanner {
+  position: absolute;
+  top: 56px;
+  left: 12px;
+  right: 12px;
+  z-index: 9;
+}
+
+.mobileControlsContainer {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--p-color-bg-primary);
+  color: var(--p-color-text-inverse);
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 24px;
+}
+
+.fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.collapsibleToolbar {
+  background: var(--p-color-bg-surface);
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-300);
+  padding: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  /* Mobile Result View specific styles */
+  .mobileResultContainer {
+    height: calc(100vh - 154px); /* Adjust for header/footer */
+  }
+
+  .mobileResultPreview {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Ensure preview stays on top when scrolling */
+  .mobileResultControls {
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+
+  /* Adjust preview panel for smaller screens */
+  @media (max-height: 700px) {
+    .mobileResultPreview {
+      height: 50vh;
+      max-height: 50vh;
+    }
+  }
+
+  .footer {
+    padding: 0.75rem;
+  }
+
+  .header {
+    padding: 0.75rem;
+  }
+
+  /* Mobile-specific canvas container */
+  .canvasContainer {
+    height: calc(100vh - 215px); /* Adjust for mobile UI elements */
+  }
+
+  /* Mobile: Stack vertically, remove sticky behavior */
+  .stickyImageColumn {
+    top: auto;
+    position: relative;
+  }
+
+  .scrollableSettingsColumn {
+    max-height: none;
+    padding-right: 0;
+    overflow-y: visible;
+  }
+
+  /* Mobile footer adjustments for non-modal UI */
+  .footer.mobileFooter {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .footer.mobileFooter .zoomControlsWrapper {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .footer.mobileFooter .actionButtonsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer.mobileFooter .actionButtonsWrapper button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Hide desktop-only controls on mobile */
+  .mobileControlsContainer {
+    display: flex;
+  }
+
+  /* Ensure proper spacing for mobile interaction */
+  .imageWrapper {
+    padding: var(--p-space-200);
+    height: calc(100vh - 320px);
+  }
+
+  /* Mobile parameter controls container */
+  .mobileParameterControls {
+    padding: 0;
+  }
+
+  /* Mobile canvas adjustments */
+  .canvas {
+    touch-action: manipulation; /* Enable pinch-zoom and pan */
+  }
+}
+
+/* Desktop-only styles (hide mobile controls) */
+@media (min-width: 769px) {
+  .mobileControlsContainer {
+    display: none;
+  }
+}
+
+/* Auto-detect button — icon color set via Polaris <Icon tone="success" /> */
+
+/* Block interaction while processing — keeps icon color intact (no Polaris disabled graying) */
+.autoDetectBtnDisabled {
+  pointer-events: none;
+}
+
+/* Scanning line overlay animation during auto-detect processing */
+.scanningOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scanningLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(120, 0, 255, 0.1) 15%,
+    rgba(120, 0, 255, 0.5) 50%,
+    rgba(120, 0, 255, 0.1) 85%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px 4px rgba(120, 0, 255, 0.25);
+  animation: scanMove 2s ease-in-out infinite;
+}
+
+@keyframes scanMove {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+/* Bounce+sway+spin animation on the icon when auto-detect is processing */
+.autoDetectBtnAnimating svg {
+  animation: autoDetectWandBounce 3.2s ease-in-out infinite;
+}
+
+@keyframes autoDetectWandBounce {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(0.8);
+  }
+  7% {
+    transform: translateY(-5px) rotate(0deg) scale(0.86);
+  }
+  15% {
+    transform: translateY(0) rotate(0deg) scale(0.9);
+  }
+  22% {
+    transform: translateY(-4px) rotate(0deg) scale(0.96);
+  }
+  30% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  37% {
+    transform: translateY(-3px) rotate(0deg) scale(1.05);
+  }
+  44% {
+    transform: translateY(0) rotate(0deg) scale(1.08);
+  }
+  55% {
+    transform: translateY(0) rotate(12deg) scale(1.12);
+  }
+  66% {
+    transform: translateY(0) rotate(-10deg) scale(1.18);
+  }
+  78% {
+    transform: translateY(0) rotate(0deg) scale(1.22);
+  }
+  86% {
+    transform: translateY(0) rotate(180deg) scale(1.25);
+  }
+  95% {
+    transform: translateY(0) rotate(360deg) scale(1.25);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg) scale(0.8);
+  }
+}

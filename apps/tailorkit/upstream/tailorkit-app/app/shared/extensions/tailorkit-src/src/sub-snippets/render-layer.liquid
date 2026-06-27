@@ -1,0 +1,22 @@
+{% liquid
+  assign layer_type = layer.t
+  assign layer_id = layer.i
+  assign option_set_list = layer.osl
+  assign text_create_by = layer.s.textCreatedBy
+
+  assign style = ''
+  if in_multi_layout or layer.isControlledBy != blank
+    assign style = 'display: none'
+  endif
+%}
+
+{% if layer_type == 'multi-layout' %}
+  {% subsnippet 'multi-layout' %}
+
+{% else %}
+  {% if layer_type == 'text' and text_create_by == 'customers' %}
+    {% subsnippet 'text-customers' %}
+  {% endif %}
+
+  {% subsnippet 'option-sets.index' %}
+{% endif %}

@@ -1,0 +1,243 @@
+.canvasContainer {
+  position: relative;
+  width: 100%;
+  height: calc(100%);
+  border: 1px solid var(--p-color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  /* Checkerboard pattern as background (behind SVG preview layer) */
+  background-color: #f0f0f0;
+  background-image:
+    linear-gradient(45deg, #e0e0e0 25%, transparent 25%), linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e0e0e0 75%), linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+  background-size: 20px 20px;
+  background-position:
+    0 0,
+    0 10px,
+    10px -10px,
+    -10px 0px;
+}
+
+/* Background canvas - draws viewBox overlay and border */
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none; /* Background layer - no events */
+}
+
+/* SVG Preview Layer - renders SVG with effects (non-interactive) */
+/* Dimensions are set via inline styles based on viewBox * scale for sharp rendering */
+.svgPreviewLayer {
+  /* position, left, top, width, height set via inline styles */
+  /* NOTE: z-index intentionally NOT set here to avoid creating stacking context */
+  /* This allows mix-blend-mode on SVG paths to blend with raster background layer */
+  /* Layer order is controlled by DOM order: raster layer -> SVG layer -> interaction canvas */
+  pointer-events: none;
+  /* Allow overflow for content outside viewBox during editing (viewport resize) */
+  overflow: visible;
+  /* No will-change: transform since we no longer use CSS transform for scaling */
+}
+
+/* Interaction canvas - draws nodes, handles, selection, captures events */
+.interactionCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Above SVG content */
+}
+
+.svgContainer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.svgContainer svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Canvas Interaction Layer - handles node editing and hit detection */
+.canvasInteractionLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: transparent;
+}
+
+/* Zoom controls container */
+.zoomControls {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  z-index: 2;
+}
+
+/* ============================================
+   Mobile Responsive Styles
+   ============================================ */
+
+/* Mobile breakpoint - small screens */
+@media (max-width: 768px) {
+  .canvasContainer {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .zoomControls {
+    /* Match desktop positioning - no bottom sheet in VectorEditor */
+    bottom: 8px;
+    right: 12px;
+    padding: 4px 6px;
+  }
+}
+
+/* Small mobile screens (phones) */
+@media (max-width: 480px) {
+  .zoomControls {
+    bottom: 8px;
+    right: 8px;
+    padding: 2px 4px;
+  }
+}
+
+/* Touch-friendly styles for coarse pointer devices (touch screens) */
+@media (pointer: coarse) {
+  .canvasContainer {
+    /* Prevent accidental browser gestures */
+    touch-action: none;
+  }
+
+  /* Ensure interaction canvas captures all touch events */
+  .interactionCanvas {
+    touch-action: none;
+  }
+}
+
+/* Safe area insets for devices with notch/home indicator */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  @media (max-width: 768px) {
+    .canvasContainer {
+      /* Account for safe area at bottom */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .zoomControls {
+      bottom: calc(8px + env(safe-area-inset-bottom));
+    }
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .zoomControls {
+    bottom: 8px;
+  }
+}
+
+/* ============================================
+   Raster Background Layer (Overlay Mode)
+   ============================================ */
+
+/* Container for raster background image */
+.rasterBackgroundLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* NOTE: z-index intentionally NOT set here to avoid creating stacking context */
+  /* This allows SVG paths with mix-blend-mode to blend with the raster image */
+  /* Layer order is controlled by DOM order: canvas -> raster layer -> SVG layer -> interaction canvas */
+  pointer-events: none; /* Locked - no interaction */
+  overflow: hidden;
+}
+
+/* Raster background image */
+.rasterImage {
+  display: block;
+  transform-origin: top left;
+  /* Prevent selection/dragging */
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Locked indicator badge */
+.lockedIndicator {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.lockedIndicator svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* Mobile adjustments for locked indicator */
+@media (max-width: 768px) {
+  .lockedIndicator {
+    top: 4px;
+    left: 4px;
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+
+  .lockedIndicator svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* ============================================
+   Preview Background Layer (TemplateEditor Preview)
+   ============================================ */
+
+/* Container for preview background image from TemplateEditor */
+.previewBackgroundLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Layer order controlled by DOM order - renders above checkerboard, below grid canvas */
+  pointer-events: none; /* Non-interactive */
+  overflow: hidden;
+}
+
+/* Preview background image */
+.previewImage {
+  display: block;
+  /* Prevent selection/dragging */
+  user-select: none;
+  -webkit-user-drag: none;
+}

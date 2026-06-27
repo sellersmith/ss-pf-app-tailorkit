@@ -1,0 +1,230 @@
+.toolbar {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 20; /* Above rulers (z-index: 10-11) */
+  width: calc(100% - 48px); /* 24px padding on each side */
+  overflow-x: auto;
+}
+
+/* Offset toolbar position when rulers are shown (ruler size = 24px) */
+.toolbarWithRuler {
+  top: 48px; /* 24px default + 24px ruler height */
+  left: 48px; /* 24px default + 24px ruler width */
+  width: calc(100% - 72px); /* 48px left offset + 24px right padding */
+}
+
+.toolbar > div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+/* Override Polaris disabled button styling to match VectorWizard */
+.toolbar :global(.Polaris-Button:disabled),
+.toolbar :global(.Polaris-Button--disabled) {
+  opacity: 1;
+  background: #eaeaea;
+}
+
+/* Keep icon faded for disabled state */
+.toolbar :global(.Polaris-Button:disabled) :global(.Polaris-Icon),
+.toolbar :global(.Polaris-Button--disabled) :global(.Polaris-Icon) {
+  opacity: 1;
+}
+
+.colorButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-100);
+  background: var(--p-color-bg-surface);
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.colorButton:hover:not(:disabled) {
+  background: var(--p-color-bg-surface-hover);
+}
+
+.colorButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.colorButton[aria-pressed='true'] {
+  background: var(--p-color-bg-surface-selected);
+  border-color: var(--p-color-border-interactive);
+  box-shadow: 0 0 0 1px var(--p-color-border-interactive-focus);
+}
+
+.colorButton svg {
+  display: block;
+}
+
+/* ============================================
+   Mobile Horizontal Scrollable Toolbar
+   ============================================ */
+
+@media (max-width: 768px) {
+  .toolbar {
+    top: 20px;
+    left: 20px;
+    width: calc(100% - 40px); /* 20px padding on each side */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Offset toolbar position when rulers are shown on mobile (ruler size = 24px) */
+  .toolbarWithRuler {
+    top: 44px; /* 20px default + 24px ruler height */
+    left: 44px; /* 20px default + 24px ruler width */
+    width: calc(100% - 64px); /* 44px left offset + 20px right padding */
+  }
+
+  /* Hide scrollbar on mobile toolbar */
+  .toolbar::-webkit-scrollbar {
+    height: 0;
+    display: none;
+  }
+
+  /* Ensure ButtonGroup doesn't wrap */
+  .toolbar :global(.Polaris-ButtonGroup) {
+    flex-wrap: nowrap !important;
+  }
+}
+
+/* ============================================
+   Shapes Popover Grid
+   ============================================ */
+
+.shapeGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+
+.shapeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border-radius: var(--p-border-radius-200);
+  border: 2px solid transparent;
+  background: var(--p-color-bg-surface);
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    border-color 0.1s ease,
+    background 0.1s ease;
+  color: var(--p-color-text);
+  min-height: 44px;
+}
+
+.shapeItem:hover {
+  background: var(--p-color-bg-surface-hover);
+  border-color: var(--p-color-border);
+}
+
+.shapeItem svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.shapeItemSelected {
+  border-color: var(--p-color-border-interactive);
+  background: var(--p-color-bg-surface-selected);
+}
+
+.shapeItemSelected:hover {
+  border-color: var(--p-color-border-interactive-focus);
+}
+
+.shapeItemLabel {
+  font-size: 11px;
+  color: var(--p-color-text-subdued);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ============================================
+   Shape Groups Container & Section Headers
+   ============================================ */
+
+.shapeGroupsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shapeGroupSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shapeGroupLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--p-color-text-subdued);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 2px;
+}
+
+/* Freehand button - full width with border */
+.freehandButton {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--p-color-border);
+  min-height: 56px;
+}
+
+.freehandButton:hover {
+  border-color: var(--p-color-border-hover);
+}
+
+.freehandButton.shapeItemSelected {
+  border-width: 2px;
+}
+
+/* Draw mode buttons (Freehand, AI Generate) - half width each */
+.drawModeButton {
+  flex: 1;
+  padding: 12px 8px;
+  border: 1px solid var(--p-color-border);
+  min-height: 56px;
+}
+
+.drawModeButton:hover {
+  border-color: var(--p-color-border-hover);
+}
+
+.drawModeButton.shapeItemSelected {
+  border-width: 2px;
+}
+
+/* Divider label - single line */
+.dividerLabel {
+  font-size: 13px;
+  color: var(--p-color-text-subdued);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Touch-friendly button sizes for tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .colorButton {
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+  }
+}

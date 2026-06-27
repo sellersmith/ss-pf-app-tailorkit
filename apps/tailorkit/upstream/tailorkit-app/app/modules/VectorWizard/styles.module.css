@@ -1,0 +1,504 @@
+.VectorWizardContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 1rem;
+  background: var(--p-color-bg-surface);
+  border-bottom: 1px solid var(--p-color-border);
+}
+
+.content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.footer {
+  padding: 1rem;
+  margin-top: auto;
+  background: var(--p-color-bg-surface);
+  border-top: 1px solid var(--p-color-border);
+}
+
+.canvasContainer {
+  width: 100%;
+  height: calc(100vh - 267px);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-200);
+  background: var(--p-color-bg-surface-secondary);
+}
+
+.zoomControls {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+  padding: 0.5rem;
+  background: var(--p-color-bg-surface);
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-200);
+  box-shadow: var(--p-shadow-100);
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+  position: absolute;
+  top: 0;
+  left: 0;
+  outline: none; /* Remove focus outline */
+}
+
+.canvas:hover {
+  cursor: crosshair;
+}
+
+.canvas:focus {
+  outline: none; /* Ensure no focus outline even when explicitly focused */
+}
+
+.loading {
+  gap: 1rem;
+  display: flex;
+  padding: 3rem;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.imageColumn {
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.imageWrapper {
+  display: flex;
+  overflow: auto;
+  position: relative;
+  align-items: start;
+  justify-content: center;
+  max-height: calc(100vh - 278px);
+  border: 2px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-300);
+  background: var(--p-color-bg-surface);
+  box-shadow: var(--p-shadow-100);
+  padding: var(--p-space-300);
+}
+
+.imageLoading {
+  top: 50%;
+  left: 50%;
+  gap: 0.5rem;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  flex-direction: column;
+  transform: translate(-50%, -50%);
+}
+
+.reprocessImage {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Layered image container system */
+.layeredImageContainer {
+  height: auto;
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--p-border-radius-200);
+}
+
+/* Processed image and settings layout */
+.settingsContainer {
+  margin-top: -0.5rem;
+}
+
+.tabContentContainer {
+  overflow: auto;
+  height: calc(100vh - 314px);
+}
+
+/* Mobile Result View with sticky preview */
+.mobileResultContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.mobileResultPreview {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--p-color-bg-surface);
+  border-bottom: 2px solid var(--p-color-border);
+  padding: 8px;
+  max-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+
+.mobileResultControls {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  padding-bottom: 100px; /* Space for floating buttons */
+}
+
+/* Floating preview toggle button */
+.previewToggleButton {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--p-color-bg-primary);
+  color: var(--p-color-text-inverse);
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.previewToggleButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile drawing mode toggle */
+.mobileDrawingModeToggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.drawingModeHint {
+  padding: 4px 8px;
+  background: var(--p-color-bg-surface-caution);
+  color: var(--p-color-text-caution);
+  font-size: 12px;
+  border-radius: 4px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Expandable preview panel */
+.expandedPreview {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--p-color-bg-surface);
+  border-top: 2px solid var(--p-color-border);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 95;
+  transition: height 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.expandedPreview.collapsed {
+  height: 60px;
+}
+
+.expandedPreview.expanded {
+  height: 50vh;
+}
+
+.previewHandle {
+  height: 60px;
+  padding: 12px;
+  border-bottom: 1px solid var(--p-color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.previewContent {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Mobile-specific styles for FAB and collapsible toolbar */
+.mobileControlsContainer {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--p-color-bg-primary);
+  color: var(--p-color-text-inverse);
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 24px;
+}
+
+.fab:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.collapsibleToolbar {
+  background: var(--p-color-bg-surface);
+  border: 1px solid var(--p-color-border);
+  border-radius: var(--p-border-radius-300);
+  padding: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.stickyFooter {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--p-color-bg-surface);
+  border-top: 1px solid var(--p-color-border);
+  padding: 16px;
+  z-index: 90;
+}
+
+.mobileInstructionBanner {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.instructionToggle {
+  cursor: pointer;
+  padding: 12px;
+  background: var(--p-color-bg-info);
+  border: 1px solid var(--p-color-border-info);
+  border-radius: var(--p-border-radius-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.instructionContent {
+  padding: 12px;
+  background: var(--p-color-bg-info-subdued);
+  border: 1px solid var(--p-color-border-info);
+  border-top: none;
+  border-radius: 0 0 var(--p-border-radius-200) var(--p-border-radius-200);
+}
+
+.stickyImageColumn {
+  position: relative;
+}
+
+/* Touch target improvements */
+.touchTarget {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  /* Mobile Result View specific styles */
+  .mobileResultContainer {
+    height: calc(100vh - 154px); /* Adjust for header/footer */
+  }
+
+  .mobileResultPreview {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Ensure preview stays on top when scrolling */
+  .mobileResultControls {
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+
+  /* Adjust preview panel for smaller screens */
+  @media (max-height: 700px) {
+    .mobileResultPreview {
+      max-height: 30vh;
+    }
+
+    .expandedPreview.expanded {
+      height: 40vh;
+    }
+  }
+  .footer {
+    padding: 0.75rem;
+  }
+
+  .header {
+    padding: 0.75rem;
+  }
+
+  /* Mobile-specific canvas container */
+  .canvasContainer {
+    height: calc(100vh - 215px); /* Adjust for mobile UI elements */
+  }
+
+  /* Mobile: Stack vertically, remove sticky behavior */
+  .stickyImageColumn {
+    top: auto;
+    position: relative;
+  }
+
+  .scrollableSettingsColumn {
+    max-height: none;
+    padding-right: 0;
+    overflow-y: visible;
+  }
+
+  /* Mobile footer adjustments for non-modal UI */
+  .footer.mobileFooter {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .footer.mobileFooter .zoomControlsWrapper {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .footer.mobileFooter .actionButtonsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer.mobileFooter .actionButtonsWrapper button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  /* Hide desktop-only controls on mobile */
+  .mobileControlsContainer {
+    display: flex;
+  }
+
+  /* Ensure proper spacing for mobile interaction */
+  .imageWrapper {
+    padding: var(--p-space-200);
+    max-height: calc(100vh - 320px);
+  }
+
+  /* Mobile parameter controls container */
+  .mobileParameterControls {
+    padding: 0;
+  }
+
+  /* Mobile canvas adjustments */
+  .canvas {
+    touch-action: manipulation; /* Enable pinch-zoom and pan */
+  }
+}
+
+/* Desktop-only styles (hide mobile controls) */
+@media (min-width: 769px) {
+  .mobileControlsContainer {
+    display: none;
+  }
+
+  .mobileInstructionBanner {
+    display: none;
+  }
+
+  .stickyFooter {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+  }
+}
+
+/* Rectangle delete button styles */
+.rectangleDeleteButton {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  background: var(--p-color-bg-critical);
+  border: 2px solid var(--p-color-border-inverse);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--p-color-text-inverse);
+  font-weight: bold;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.rectangleDeleteButton:hover {
+  background: var(--p-color-bg-critical-strong);
+  transform: scale(1.1);
+}
+
+.rectangleDeleteButton:active {
+  transform: scale(0.95);
+}

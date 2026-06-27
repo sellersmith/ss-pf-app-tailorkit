@@ -1,0 +1,26 @@
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: var(--p-border-radius-200);
+  background: rgba(255, 197, 61, 0.85);
+  color: var(--p-color-text-caution);
+  pointer-events: none;
+}
+
+.banner.interactive {
+  pointer-events: auto;
+}
+
+.content {
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Override Polaris plain button to inherit caution text color */
+.banner :global(.Polaris-Button--plain) {
+  color: var(--p-color-text-caution);
+}

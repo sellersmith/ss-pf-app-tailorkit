@@ -1,0 +1,287 @@
+@import './polaris-customization.css';
+
+.page-loading-container {
+  width: 200px;
+  height: 200px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Clip path styling */
+.cls1 {
+  clip-path: url(#clippath);
+}
+
+.cls2,
+.cls3 {
+  fill: none;
+}
+
+.cls2,
+.cls4,
+.cls5,
+.cls6,
+.cls7 {
+  stroke-width: 0px;
+}
+
+.cls3 {
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 36px;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 0.6s ease-in-out 0.3s forwards;
+}
+
+.cls4 {
+  fill: #1c5925;
+  fill-rule: evenodd;
+  opacity: 0;
+  animation: revealUp 0.5s ease-out 0.4s forwards;
+}
+
+.cls5 {
+  fill: #fff;
+  fill-rule: evenodd;
+  opacity: 0;
+  animation: revealUp 0.5s ease-out 0.4s forwards;
+}
+
+.cls6 {
+  fill: #46b931;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.cls7 {
+  fill: #fff;
+  opacity: 0;
+  animation: fadeIn 0.4s ease-out 0.2s forwards;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes revealUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes draw {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Christmas theme styles */
+.christmas-snowfall-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.christmas-snowflake {
+  position: absolute;
+  top: -40px;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  animation:
+    snowfall linear infinite,
+    snowflakeFadeIn 0.5s ease-out forwards;
+}
+
+.christmas-decoration {
+  position: absolute;
+  z-index: 3;
+}
+
+.christmas-santa-hat {
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-15deg);
+  width: 70px;
+  height: 70px;
+  animation: santaHatBounce 2s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.christmas-gift-left {
+  bottom: -10px;
+  left: -20px;
+  width: 38px;
+  height: 38px;
+  animation: giftBounce 2.5s ease-in-out infinite;
+}
+
+.christmas-candle-left {
+  bottom: 0px;
+  left: -5px;
+  width: 50px;
+  height: 32px;
+  animation: candleFlicker 1.5s ease-in-out infinite;
+}
+
+.christmas-gift-right {
+  bottom: -20px;
+  right: 0px;
+  width: 35px;
+  height: 45px;
+  animation: giftBounce 2.5s ease-in-out infinite 0.5s;
+}
+
+.christmas-tree-right {
+  bottom: 0px;
+  right: -30px;
+  width: 55px;
+  height: 45px;
+  animation: treeSway 3s ease-in-out infinite;
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(25vh) translateX(10px) rotate(90deg);
+  }
+  50% {
+    transform: translateY(50vh) translateX(-5px) rotate(180deg);
+  }
+  75% {
+    transform: translateY(75vh) translateX(8px) rotate(270deg);
+  }
+  100% {
+    transform: translateY(100vh) translateX(0) rotate(360deg);
+  }
+}
+
+@keyframes snowflakeFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes santaHatBounce {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-15deg) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) rotate(-12deg) translateY(-5px);
+  }
+}
+
+@keyframes giftBounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(3deg);
+  }
+}
+
+@keyframes candleFlicker {
+  0%,
+  100% {
+    transform: scale(1) rotate3d(0, 0, 1, 0deg);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05) rotate3d(0, 0, 1, 10deg);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes treeSway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(3deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+
+/* Accessibility: Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .christmas-snowflake,
+  .christmas-decoration {
+    animation: none !important;
+  }
+
+  .christmas-snowflake {
+    opacity: 0.85;
+  }
+}
+
+/* Define styte for carousel */
+.carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  scroll-snap-type: x mandatory;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel__item {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  width: calc(100% / var(--item, 1));
+  flex: 0 0 auto;
+  padding: 0.25rem;
+}
+
+.carousel-multiple .carousel__item {
+  padding: 0 var(--gap) 0 0;
+}
+
+.carousel-multiple .carousel__item:last-child {
+  padding: 0;
+}
+
+.ot-sticky-preview-card {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 20px;
+}

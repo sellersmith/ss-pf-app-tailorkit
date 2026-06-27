@@ -1,0 +1,262 @@
+/* Special container for popover to force a new stacking context */
+body {
+  --emtlkit-popover-z-index: 999999;
+}
+
+/* Popover styles */
+.emtlkit--popover-container {
+  position: relative !important;
+  display: inline-block;
+  /* These create a new stacking context */
+  isolation: isolate;
+  z-index: 1;
+}
+
+/* Adjust for the popover to properly show the dropdown content */
+.emtlkit--popover-content-wrapper {
+  padding: 16px;
+  width: 400px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+/* Responsive styles for small screens */
+@media screen and (max-width: 768px) {
+  .emtlkit--popover {
+    max-width: calc(100vw - 32px) !important;
+    min-width: 280px;
+  }
+
+  .emtlkit--popover-content-wrapper {
+    max-width: 100%;
+    word-wrap: break-word;
+  }
+}
+
+/* Extra small screens (mobile phones) */
+@media screen and (max-width: 480px) {
+  .emtlkit--popover {
+    max-width: calc(100vw - 32px) !important;
+    min-width: calc(100vw - 32px);
+    left: 16px;
+  }
+
+  .emtlkit--popover-content-wrapper {
+    padding: 12px;
+    width: auto;
+  }
+}
+
+.emtlkit--popover {
+  position: absolute !important;
+  z-index: var(--emtlkit-popover-z-index) !important; /* Use CSS variable for z-index */
+  background-color: var(--emtlkit-bg-primary);
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 1px rgba(63, 63, 68, 0.05),
+    0 1px 3px 0 rgba(63, 63, 68, 0.15);
+  display: none;
+  transform: translate(0, 8px);
+  transition:
+    opacity 0.15s ease-in-out,
+    transform 0.15s ease-in-out,
+    visibility 0.15s;
+  pointer-events: auto;
+
+  /* Use these to enforce position above all other elements */
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* Break out of stacking context */
+body > .emtlkit--popover {
+  position: fixed !important;
+}
+
+.emtlkit--popover.active {
+  display: block;
+  transform: translate(0, 0);
+}
+
+/* CONTENT SECTION */
+.emtlkit--popover-content-wrapper {
+  padding: 8px 12px;
+}
+
+/* TITLE SECTION */
+.emtlkit--popover-title {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+}
+
+/* FOOTER SECTION */
+.emtlkit--popover-footer {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.emtlkit--popover-footer .emtlkit--popover-footer-left {
+  flex: 1;
+  gap: 12px;
+  display: flex;
+  flex-direction: row;
+}
+
+.emtlkit--popover-footer .emtlkit--popover-footer-left .emtlkit--dropdown-wrapper {
+  position: relative;
+}
+
+.emtlkit--popover-footer .emtlkit--popover-footer-right {
+  margin-left: 12px;
+}
+
+@media screen and (max-width: 768px) {
+  .emtlkit--popover-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .emtlkit--popover-footer .emtlkit--popover-footer-right {
+    margin-left: 0;
+  }
+}
+
+/* Scrollable content for tall popovers */
+.emtlkit--popover.emtlkit--popover-scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.emtlkit--popover.emtlkit--popover-scrollable .emtlkit--popover-content-wrapper {
+  overflow-y: visible;
+}
+
+/* Popover positioning */
+/* TOP POSITIONS */
+.emtlkit--popover[data-position='top'],
+.emtlkit--popover[data-position='top-center'] {
+  /* Position is set by JavaScript */
+}
+
+/* BOTTOM POSITIONS */
+.emtlkit--popover[data-position='bottom'],
+.emtlkit--popover[data-position='bottom-center'] {
+  /* Position is set by JavaScript */
+}
+
+/* LEFT POSITIONS */
+.emtlkit--popover[data-position='left'],
+.emtlkit--popover[data-position='left-center'] {
+  /* Position is set by JavaScript */
+}
+
+/* RIGHT POSITIONS */
+.emtlkit--popover[data-position='right'],
+.emtlkit--popover[data-position='right-center'] {
+  /* Position is set by JavaScript */
+}
+
+/* Popover arrow */
+.emtlkit--popover::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: var(--emtlkit-bg-primary);
+  transform: rotate(45deg);
+  box-shadow: -1px -1px 0 0 rgba(63, 63, 68, 0.05);
+  z-index: -1; /* Ensure the arrow stays behind the popover content */
+}
+
+/* Hide arrow when data-arrow="false" */
+.emtlkit--popover[data-arrow='false']::before {
+  display: none;
+}
+
+/* TOP ARROWS */
+.emtlkit--popover[data-position='top']::before,
+.emtlkit--popover[data-position='top-center']::before {
+  bottom: -6px;
+  left: 50%;
+  margin-left: -6px;
+  box-shadow: 1px 1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+.emtlkit--popover[data-position='top-left']::before {
+  bottom: -6px;
+  left: 16px;
+  box-shadow: 1px 1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+.emtlkit--popover[data-position='top-right']::before {
+  bottom: -6px;
+  right: 16px;
+  box-shadow: 1px 1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+/* BOTTOM ARROWS */
+.emtlkit--popover[data-position='bottom']::before,
+.emtlkit--popover[data-position='bottom-center']::before {
+  top: -6px;
+  left: 50%;
+  margin-left: -6px;
+}
+
+.emtlkit--popover[data-position='bottom-left']::before {
+  top: -6px;
+  left: 16px;
+}
+
+.emtlkit--popover[data-position='bottom-right']::before {
+  top: -6px;
+  right: 16px;
+}
+
+/* LEFT ARROWS */
+.emtlkit--popover[data-position='left']::before,
+.emtlkit--popover[data-position='left-center']::before {
+  right: -6px;
+  top: 50%;
+  margin-top: -6px;
+  box-shadow: 1px -1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+.emtlkit--popover[data-position='left-top']::before {
+  right: -6px;
+  top: 16px;
+  box-shadow: 1px -1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+.emtlkit--popover[data-position='left-bottom']::before {
+  right: -6px;
+  bottom: 16px;
+  box-shadow: 1px -1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+/* RIGHT ARROWS */
+.emtlkit--popover[data-position='right']::before,
+.emtlkit--popover[data-position='right-center']::before {
+  left: -6px;
+  top: 50%;
+  margin-top: -6px;
+  box-shadow: -1px 1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+.emtlkit--popover[data-position='right-top']::before {
+  left: -6px;
+  top: 16px;
+  box-shadow: -1px 1px 0 0 rgba(63, 63, 68, 0.05);
+}
+
+.emtlkit--popover[data-position='right-bottom']::before {
+  left: -6px;
+  bottom: 16px;
+  box-shadow: -1px 1px 0 0 rgba(63, 63, 68, 0.05);
+}

@@ -1,0 +1,124 @@
+/* Styles for chat icons */
+#icon-chat-will-show-here {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+#icon-chat-will-show-here--expanded {
+  width: 52px !important;
+  height: 52px !important;
+}
+
+/* Styles for crisp bubble */
+#crisp-chatbox > div > a.crisp-custom-bubble {
+  width: 52px !important;
+  height: 52px !important;
+  border: none !important;
+}
+
+#crisp-chatbox > div > a.crisp-custom-bubble.crisp-custom-bubble--collapsed {
+  width: 20px !important;
+  height: 20px !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  border: none !important;
+}
+
+#crisp-chatbox > div > a span.crisp-custom-span {
+  width: 52px !important;
+  height: 52px !important;
+  background-color: transparent !important;
+  transform: none !important;
+  border: none !important;
+}
+
+#crisp-chatbox > div > a span.crisp-custom-span.crisp-custom-span--collapsed {
+  width: 20px !important;
+  height: 20px !important;
+  border: none !important;
+}
+
+#crisp-chatbox > div > a.crisp-custom-bubble--collapsed span[data-id='new_messages'] {
+  bottom: 60px !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+#crisp-chatbox > div > a.crisp-custom-bubble--collapsed span[data-id='general_entice'] {
+  bottom: 60px !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+#crisp-chatbox > div:has(a.crisp-custom-bubble--collapsed) > div {
+  bottom: 60px !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+#crisp-chatbox
+  > div
+  > a.crisp-custom-bubble:not(.crisp-custom-bubble--collapsed)
+  span.crisp-custom-span[data-has-unread='true']
+  > span
+  span:last-child {
+  top: 32px !important;
+  left: 23px !important;
+}
+
+.crisp-chat-wrapper {
+  transition: all 0.3s ease-in-out;
+}
+
+.crisp-custom-bubble {
+  transition: right 0.3s ease-in-out !important;
+}
+
+.crisp-custom-span {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.crisp-chat-status-icon {
+  width: 6px;
+  height: 6px;
+  margin-top: 7px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.crisp-chat-status-text {
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 550;
+  color: #ffffff;
+}
+
+.crisp-chat-content {
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.3s ease-in-out;
+  transform-origin: left center;
+}
+
+.crisp-chat-content--collapsed {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.crisp-chat-content--expanded {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.crisp-chat-icon {
+  transition: transform 0.3s ease-in-out;
+  color: #ffffff;
+}
+
+.crisp-chat-icon--collapsed {
+  transform: rotate(0deg);
+}
+
+.crisp-chat-icon--expanded {
+  transform: rotate(180deg);
+}

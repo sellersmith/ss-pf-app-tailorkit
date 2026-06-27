@@ -1,0 +1,3 @@
+export const DEFAULT_REQUEST = 500
+export const DEBOUNCE_REQUEST_MINOR = 150
+export const DEBOUNCE_REQUEST_MAJOR = 500

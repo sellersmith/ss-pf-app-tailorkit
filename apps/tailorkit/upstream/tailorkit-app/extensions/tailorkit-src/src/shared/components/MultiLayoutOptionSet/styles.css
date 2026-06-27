@@ -1,0 +1,88 @@
+/* Multi-layout option set custom dropdown styles */
+
+/* Trigger button — matches imageless/text dropdown button pattern */
+.emtlkit--multi-layout-selector-button {
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-border-color);
+  border-radius: var(--emtlkit-border-radius-200);
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  background-color: var(--emtlkit-bg-primary);
+  margin-bottom: var(--emtlkit-space-100);
+  cursor: pointer;
+  min-height: 34px;
+}
+
+/* Listbox container inside popover */
+.emtlkit--multi-layout-options-listbox {
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  max-width: 574px;
+}
+
+.emtlkit--multi-layout-options-listbox input[type='radio'] {
+  display: none;
+}
+
+/* Dropdown option row — full width, auto height (scoped to dropdown listbox) */
+.emtlkit--multi-layout-options-listbox .emtlkit--option-container.emtlkit-multi_layout-option {
+  width: auto;
+  height: auto;
+  aspect-ratio: unset;
+  gap: 8px;
+  padding: var(--emtlkit-space-150) var(--emtlkit-space-200);
+}
+
+/* Thumbnail container */
+.emtlkit--multi-layout-option-thumb {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.emtlkit--multi-layout-option-thumb svg {
+  width: 40px;
+  height: 40px;
+}
+
+.emtlkit--multi-layout-option-thumb img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Layout name label */
+.emtlkit--multi-layout-option-label {
+  flex: 1;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Swatch thumbnail container — constrains SVG/img to 60x60 swatch cell */
+.emtlkit--multi-layout-swatch-thumb {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.emtlkit--multi-layout-swatch-thumb svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Check icon container */
+.emtlkit--multi-layout-option-check {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

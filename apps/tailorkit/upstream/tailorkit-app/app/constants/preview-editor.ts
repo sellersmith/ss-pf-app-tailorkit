@@ -1,0 +1,1 @@
+export const DEFAULT_VIEW_SCALE_VALUE = 0.5

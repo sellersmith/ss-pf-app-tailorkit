@@ -1,0 +1,43 @@
+.progressBarContainer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progressBarContainer.labelPosition_top {
+  flex-direction: column-reverse;
+}
+
+.progressBarContainer.labelPosition_bottom {
+  flex-direction: column;
+}
+
+.progressBarContainer.labelPosition_right {
+  flex-direction: row;
+}
+
+.progressBarContainer.labelPosition_left {
+  flex-direction: row-reverse;
+}
+
+.progressBarContainer.labelAlignment_start {
+  align-items: start;
+}
+
+.progressBarContainer.labelAlignment_center {
+  align-items: center;
+}
+
+.progressBarContainer.labelAlignment_end {
+  align-items: end;
+}
+
+.progressBarContainer.labelAlignment_start .progressLabel {
+  padding-left: 4px;
+}
+
+.progressBarElement {
+  background-color: var(--p-color-bg-fill-tertiary);
+  position: relative;
+  overflow: hidden;
+}

@@ -1,0 +1,39 @@
+{
+  "name": "tailorkit-app-block",
+  "author": "Ecomate",
+  "private": true,
+  "version": "1.11.0",
+  "license": "UNLICENSED",
+  "description": "",
+  "type": "module",
+  "main": "tailorkit.js",
+  "scripts": {
+    "build": "dotenv -e ../../.env -- vite build && npm run build:features",
+    "build:main": "dotenv -e ../../.env -- vite build",
+    "build:features": "dotenv -e ../../.env -- node scripts/build-features.js",
+    "dev": "npm run dev:main & npm run dev:features & wait",
+    "dev:main": "dotenv -e ../../.env -- vite build --watch",
+    "dev:features": "dotenv -e ../../.env -- node scripts/build-features.js --watch"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.1",
+    "@types/dompurify": "^3.2.0",
+    "@types/socket.io": "^3.0.2",
+    "vite": "^7.3.0",
+    "vite-plugin-static-copy": "^1.0.5",
+    "vite-plugin-string": "^1.2.3",
+    "vite-plugin-transform": "^2.0.1"
+  },
+  "keywords": [],
+  "dependencies": {
+    "@svgdotjs/svg.js": "^3.2.5",
+    "@preact/signals": "^1.2.1",
+    "dompurify": "^3.2.6",
+    "konva": "^10.0.12",
+    "liquidjs": "^10.21.1",
+    "marked": "^15.0.12",
+    "preact": "10.27.0",
+    "react-zoom-pan-pinch": "^3.7.0",
+    "socket.io-client": "^4.8.1"
+  }
+}

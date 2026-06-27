@@ -1,0 +1,40 @@
+{% # theme-check-disable %}
+
+{% liquid
+  assign em_tailorkit_global_styling = app.metafields.em_tailorkit.global_styling.value
+%}
+
+{% comment %}
+  Global styling JSON read by the storefront runtime's parseGlobalStyling()
+  (src/storefront-copied/assets/utils/global-styling.ts) via getElementById('tailorkit-global-styling').
+  It MUST be a separate element with this exact id — the runtime does NOT read globalStyling from
+  tailorkit-storefront-config. Rendered once in <head> so styling applies on every storefront page.
+{% endcomment %}
+<script id='tailorkit-global-styling' type='application/json'>
+  {{ em_tailorkit_global_styling | json }}
+</script>
+<script id='tailorkit-storefront-config' type='application/json'>
+  {
+    "storefrontAccessToken": {{ app.metafields.em_storefront.storefront_access_token.value.access_token | json }},
+    "propertyPrefix": "__pf_tailorkit",
+    "appProxyPath": {{ app.metafields.em_storefront.app_proxy_path.value | default: '/apps/pagefly' | json }},
+    "appProxyOrigin": "{{ shop.url }}",
+    "konva": {
+      "mode": "cdn-lazy",
+      "url": "https://cdn.jsdelivr.net/npm/konva@10.0.12/konva.min.js",
+      "fallbackUrls": [
+        "https://unpkg.com/konva@10.0.12/konva.min.js"
+      ]
+    }
+  }
+</script>
+
+{% schema %}
+{
+  "name": "TailorKit",
+  "target": "head",
+  "javascript": "pagefly-tailorkit.js",
+  "stylesheet": "pagefly-tailorkit.css",
+  "settings": []
+}
+{% endschema %}

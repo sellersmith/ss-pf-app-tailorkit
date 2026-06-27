@@ -1,0 +1,129 @@
+.toolSidebar {
+  position: relative;
+  background-color: var(--p-color-bg-fill);
+  width: var(--tool-sidebar-width, 280px);
+  min-width: var(--tool-sidebar-width, 280px);
+  max-width: var(--tool-sidebar-width, 280px);
+  height: 100%;
+  border-right: 1px solid var(--p-color-border);
+  flex-shrink: 0;
+  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Horizontal mode (mdDown): full width block layout */
+.horizontal {
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  border-right: none;
+  border-bottom: 1px solid var(--p-color-border);
+  /* Horizontal mode: slide in from top instead of right */
+  animation: slideInDown 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Applied in horizontal mode only on small mobile to disable sticky headers inside panels */
+.mobileNoSticky {
+  --tool-panel-sticky: static;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Horizontal reveal for mdDown (toolbar on top -> panel drops down) */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--p-color-bg-fill);
+  z-index: 10;
+}
+
+.headerHorizontal {
+  position: sticky;
+  top: 0;
+}
+
+.content {
+  position: absolute;
+  top: 48px; /* Approximate header height */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.contentHorizontal {
+  position: relative;
+  top: 0;
+  /* bottom: auto; */
+  left: 0;
+  right: 0;
+  /* Use 100vh as fallback when --transform-height is not set (tablet/small-desktop views) */
+  max-height: calc(var(--transform-height, 100vh) - 132px); /* reasonable height within bottom sheet */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.contentWithFooter {
+  bottom: 70px; /* Approximate footer height when footer exists */
+}
+
+/* Prevent double scrollbar: disable inner GroupableItemList scroll when parent .content already scrolls */
+.content :global(.groupable--scrollable-list-container) {
+  height: auto;
+  overflow: visible;
+}
+
+.content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--p-color-border-secondary);
+  border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--p-color-border);
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--p-color-bg-fill);
+  z-index: 10;
+}
+
+.footerHorizontal {
+  position: sticky;
+  bottom: 0;
+}

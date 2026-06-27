@@ -1,0 +1,20 @@
+.SortableList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+
+  padding: 0;
+}
+
+.SortableList.is-horizontal {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.SortableList-Input_Field {
+  flex: 1;
+  min-width: 0;
+}

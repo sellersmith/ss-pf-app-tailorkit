@@ -1,0 +1,13 @@
+/* Tinted circle that hosts the leading MagicIcon. Sits at the start of both
+   variants and replaces the previous hero image — keeps a clear focal point
+   without competing with the Playground card directly below. */
+.leadingIcon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--p-color-bg-fill-success-secondary, #d8f3dc);
+}

@@ -1,0 +1,17 @@
+.FlashNewsPulse {
+  width: 8px;
+  height: 8px;
+  margin: 0 6px;
+  border-radius: 50%;
+  background: #29845a;
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0px #29845a99;
+  }
+  100% {
+    box-shadow: 0 0 0 8px #29845a66;
+  }
+}

@@ -1,0 +1,404 @@
+/* ─── Product Picker Layout ─────────────────────────────────────── */
+
+.emtlkit--product-picker-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+@media (min-width: 750px) {
+  .emtlkit--product-picker-layout {
+    flex-direction: row;
+  }
+
+  .emtlkit--product-picker-catalog {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .emtlkit--product-picker-preview {
+    flex: 0 0 40%;
+    position: relative;
+  }
+}
+
+/* ─── Collection Tabs ──────────────────────────────────────────── */
+
+.emtlkit--product-picker-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  margin-bottom: 12px;
+}
+
+.emtlkit--product-picker-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.emtlkit--product-picker-tab {
+  padding: 6px 14px;
+  border: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--emtlkit-text-color, #333);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.emtlkit--product-picker-tab:hover {
+  background-color: var(--emtlkit-bg-hover, #f5f5f5);
+}
+
+.emtlkit--product-picker-tab--active {
+  background-color: var(--emtlkit-primary-color, #333);
+  color: #fff;
+  border-color: var(--emtlkit-primary-color, #333);
+}
+
+/* ─── Search Bar ───────────────────────────────────────────────── */
+
+.emtlkit--product-picker-search {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.emtlkit--product-picker-search input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: var(--emtlkit-bg-color, #fff);
+  color: var(--emtlkit-text-color, #333);
+  box-sizing: border-box;
+}
+
+.emtlkit--product-picker-search input:focus {
+  border-color: var(--emtlkit-primary-color, #333);
+}
+
+.emtlkit--product-picker-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ─── Tag Filter ───────────────────────────────────────────────── */
+
+.emtlkit--product-picker-tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.emtlkit--product-picker-tag {
+  padding: 4px 10px;
+  border: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  border-radius: 14px;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--emtlkit-text-secondary, #666);
+  transition: background-color 0.15s ease;
+}
+
+.emtlkit--product-picker-tag:hover {
+  background-color: var(--emtlkit-bg-hover, #f5f5f5);
+}
+
+.emtlkit--product-picker-tag--active {
+  background-color: var(--emtlkit-primary-color, #333);
+  color: #fff;
+  border-color: var(--emtlkit-primary-color, #333);
+}
+
+/* ─── Product Grid ─────────────────────────────────────────────── */
+
+.emtlkit--product-picker-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(var(--pp-columns, 3), 1fr);
+}
+
+@media (max-width: 749px) {
+  .emtlkit--product-picker-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ─── Product Card ─────────────────────────────────────────────── */
+
+.emtlkit--product-picker-card {
+  border: 2px solid var(--emtlkit-border-color, #e0e0e0);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  background: var(--emtlkit-bg-color, #fff);
+  position: relative;
+}
+
+.emtlkit--product-picker-card:hover {
+  border-color: var(--emtlkit-primary-color, #333);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.emtlkit--product-picker-card--selected {
+  border-color: var(--emtlkit-primary-color, #333);
+  box-shadow: 0 0 0 1px var(--emtlkit-primary-color, #333);
+}
+
+.emtlkit--product-picker-card--out-of-stock {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.emtlkit--product-picker-card__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background-color: var(--emtlkit-bg-hover, #f5f5f5);
+}
+
+.emtlkit--product-picker-card__info {
+  padding: 8px;
+}
+
+.emtlkit--product-picker-card__title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--emtlkit-text-color, #333);
+  margin: 0 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emtlkit--product-picker-card__price {
+  font-size: 13px;
+  color: var(--emtlkit-text-secondary, #666);
+  margin: 0;
+}
+
+.emtlkit--product-picker-card__stock-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.emtlkit--product-picker-card__check {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--emtlkit-primary-color, #333);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ─── Quantity Controls ────────────────────────────────────────── */
+
+.emtlkit--product-picker-qty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 8px;
+}
+
+.emtlkit--product-picker-qty button {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  border-radius: 50%;
+  background: var(--emtlkit-bg-color, #fff);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--emtlkit-text-color, #333);
+  transition: background-color 0.15s ease;
+}
+
+.emtlkit--product-picker-qty button:hover {
+  background-color: var(--emtlkit-bg-hover, #f5f5f5);
+}
+
+.emtlkit--product-picker-qty span {
+  min-width: 20px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ─── Controls (Randomize, Reset, Counter) ─────────────────────── */
+
+.emtlkit--product-picker-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+
+.emtlkit--product-picker-controls__buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.emtlkit--product-picker-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  border-radius: 6px;
+  background: var(--emtlkit-bg-color, #fff);
+  color: var(--emtlkit-text-color, #333);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.emtlkit--product-picker-btn:hover {
+  background-color: var(--emtlkit-bg-hover, #f5f5f5);
+}
+
+.emtlkit--product-picker-counter {
+  font-size: 13px;
+  color: var(--emtlkit-text-secondary, #666);
+}
+
+/* ─── Running Total ────────────────────────────────────────────── */
+
+.emtlkit--product-picker-total {
+  padding: 10px 0;
+  border-top: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  font-size: 14px;
+  color: var(--emtlkit-text-color, #333);
+}
+
+.emtlkit--product-picker-total__label {
+  font-weight: 400;
+  color: var(--emtlkit-text-secondary, #666);
+}
+
+.emtlkit--product-picker-total__amount {
+  font-weight: 600;
+}
+
+/* ─── Load More ────────────────────────────────────────────────── */
+
+.emtlkit--product-picker-load-more {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.emtlkit--product-picker-load-more button {
+  padding: 8px 20px;
+  border: 1px solid var(--emtlkit-border-color, #e0e0e0);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--emtlkit-text-color, #333);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.emtlkit--product-picker-load-more button:hover {
+  background-color: var(--emtlkit-bg-hover, #f5f5f5);
+}
+
+/* ─── Empty State ──────────────────────────────────────────────── */
+
+.emtlkit--product-picker-empty {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--emtlkit-text-secondary, #666);
+  font-size: 14px;
+}
+
+/* ─── Slot Overlay (DOM-based slot indicators over canvas) ─────── */
+
+.emtlkit--product-picker-slot-overlay {
+  position: absolute;
+  border: 2px dashed var(--emtlkit-border-color, #ccc);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+  overflow: hidden;
+}
+
+.emtlkit--product-picker-slot-overlay--filled {
+  border-style: solid;
+  border-color: var(--emtlkit-primary-color, #333);
+}
+
+.emtlkit--product-picker-slot-overlay--drag-over {
+  border-color: var(--emtlkit-primary-color, #333);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.emtlkit--product-picker-slot-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.emtlkit--product-picker-slot-overlay__remove {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.emtlkit--product-picker-slot-overlay:hover .emtlkit--product-picker-slot-overlay__remove {
+  opacity: 1;
+}
+
+.emtlkit--product-picker-slot-label {
+  font-size: 11px;
+  color: var(--emtlkit-text-secondary, #999);
+}

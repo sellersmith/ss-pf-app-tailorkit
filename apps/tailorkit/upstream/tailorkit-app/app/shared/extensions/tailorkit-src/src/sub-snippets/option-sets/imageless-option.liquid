@@ -1,0 +1,93 @@
+{% if option_set and print_area %}
+  {% liquid
+    assign display_style = option_set.displayStyle | default: 'imageless_swatch'
+    assign is_dropdown = false
+    assign is_checkbox = false
+    if display_style == 'imageless_dropdown_list'
+      assign is_dropdown = true
+    elsif display_style == 'imageless_checkbox'
+      assign is_checkbox = true
+    endif
+  %}
+  <fieldset
+    class='emtlkit--option-set'
+    data-print-area-id='{{ print_area.i }}'
+    data-option-type='{{ option_set.t }}'
+    data-layer-id='{{ layer_id }}'
+    data-type='emtlkit--option-set'
+    data-id='{{ option_set.i }}'
+    data-label='{{ option_set.l | escape_once }}'
+    data-layer-index='{{ forloop.parentloop.index0 }}'
+    id='{{ 'option-set-' | append: option_set.i }}'
+    value
+    data-name='{{ option_set.ol.first.l | escape_once }}'
+  >
+    <label class='emtlkit--option-set-label' data-label='{{ option_set.l | escape_once }}'>{{- option_set.l -}}</label>
+
+    {% if is_dropdown or is_checkbox %}
+      <tailorkit-imageless-options-list
+        data-current-print-area-id='{{ print_area.i }}'
+        data-current-option-set-id='{{ option_set.i }}'
+        data-option-set-data='{{ option_set | json | escape_once }}'
+        data-value-from-fieldset=''
+        data-can-default-select='false'
+      ></tailorkit-imageless-options-list>
+    {% else %}
+      <div class='emtlkit--d-flex emtlkit--gap-8 emtlkit--flex-wrap'>
+        {% for option in option_set.ol %}
+          {% liquid
+            assign class = ''
+            assign checked = ''
+            assign name = print_area.i | append: ' / ' | append: option_set.i
+            if option.s == 1
+              assign class = ' active'
+              assign checked = 'checked="checked"'
+            endif
+
+            # Get pricing data for this option
+            assign pricing_data = ''
+            if option.additionalPricing
+              assign pricing_json = option.additionalPricing | json
+              assign pricing_data = pricing_json | escape_once
+            endif
+          %}
+          {% if option != blank %}
+            {% liquid
+              assign type_class = ' emtlkit-image-option'
+
+              if option.t == blank
+                assign type_class = ' emtlkit-imageless-option emtlkit--thumbnail'
+              endif
+            %}
+            <div class='{{ 'emtlkit--option-container' | append: type_class | append: class }}'>
+              {% if option.t != blank %}
+                {% assign option_url = option.t | append: '&width=120' %}
+                <img
+                  width='60'
+                  height='60'
+                  alt='{{ option.l }}'
+                  src='{{ option_url }}'
+                  loading='lazy'
+                >
+              {% else %}
+                {% assign text = option.l %}
+                {% subsnippet 'svg-text-thumb' %}
+              {% endif %}
+              <input
+                type='radio'
+                name='{{ name }}'
+                value='{{ option.l | escape_once }}'
+                data-id='{{ option.i }}'
+                data-name='{{ option.l | escape_once }}'
+                {% if pricing_data != blank %}
+                  data-pricing='{{ pricing_data }}'
+                {% endif %}
+                {{ checked }}
+              >
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </fieldset>
+{% endif %}

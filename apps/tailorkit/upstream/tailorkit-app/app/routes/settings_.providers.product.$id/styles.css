@@ -1,0 +1,21 @@
+.variant-select-button.active .Polaris-Button {
+  border: 1px solid var(--p-color-border-focus);
+}
+
+.variant-select-button.Polaris-Button {
+  border: 1px solid var(--p-color-input-border);
+}
+
+.print-areas-table .Polaris-IndexTable__StickyTableHeadings {
+  display: none;
+}
+
+.provider-selector-option {
+  padding: var(--p-space-400);
+  width: 100%;
+  cursor: pointer;
+}
+
+.provider-selector-option:hover {
+  background-color: var(--p-color-bg-fill-secondary);
+}

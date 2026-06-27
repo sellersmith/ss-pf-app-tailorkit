@@ -1,0 +1,217 @@
+/**
+ * TailorKit Layer Controls — DOM Overlay Styles
+ * Scoped with .emtlkit-lc- prefix to prevent theme style leakage (RISK-3).
+ * All rules use !important-free specificity via class chaining where needed.
+ */
+
+/* ── Base container ───────────────────────────────────────────────── */
+.emtlkit-lc-overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  /* Do not add transform here; position is set via JS */
+}
+
+/* ── Layer action controls (Reset / Delete) ───────────────────────── */
+.emtlkit-lc-actions {
+  position: absolute;
+  display: flex;
+  gap: 4px;
+  pointer-events: auto;
+  /* Transitions for smooth show/hide */
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.emtlkit-lc-actions.emtlkit-lc-actions--visible {
+  opacity: 1;
+}
+
+/* Position above layer by default; JS flips to below when layer is near top */
+.emtlkit-lc-actions--above {
+  /* Anchor: bottom of actions aligns to top of layer bounding box */
+  transform: translateY(-100%);
+  margin-top: 0px;
+}
+
+.emtlkit-lc-actions--below {
+  /* Anchor: top of actions aligns to bottom of layer bounding box */
+  transform: translateY(0);
+  margin-top: 0px;
+}
+
+/* ── Button base ──────────────────────────────────────────────────── */
+.emtlkit-lc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 24px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  border: 1px solid #d0d5dd;
+  background: #ffffff;
+  color: #344054;
+  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+  transition:
+    background-color 0.1s ease,
+    border-color 0.1s ease;
+  /* Reset any theme defaults */
+  text-decoration: none;
+  outline: none;
+}
+
+.emtlkit-lc-btn:hover {
+  background: #f9fafb;
+  border-color: #b0b8c4;
+}
+
+.emtlkit-lc-btn:active {
+  background: #f2f4f7;
+}
+
+.emtlkit-lc-btn:focus-visible {
+  outline: 2px solid #005bd3;
+  outline-offset: 1px;
+}
+
+/* Reset button — neutral variant */
+.emtlkit-lc-btn--reset {
+  width: 24px;
+  min-width: 24px;
+  padding: 0;
+  color: #344054;
+  border-color: #d0d5dd;
+}
+
+@media (pointer: coarse) {
+  .emtlkit-lc-btn--reset {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+  }
+}
+
+.emtlkit-lc-btn--reset:hover {
+  background: #f0f4ff;
+  border-color: #005bd3;
+  color: #005bd3;
+}
+
+/* Delete button — danger variant */
+.emtlkit-lc-btn--delete {
+  width: 24px;
+  min-width: 24px;
+  padding: 0;
+  color: #b42318;
+  border-color: #fda29b;
+}
+
+/* Enlarge touch target on mobile (Apple recommends 44pt minimum) */
+@media (pointer: coarse) {
+  .emtlkit-lc-btn--delete {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+  }
+}
+
+.emtlkit-lc-btn--delete:hover {
+  background: #fef3f2;
+  border-color: #f97066;
+}
+
+/* Icon inside button */
+.emtlkit-lc-btn svg {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Undo / Redo toolbar ─────────────────────────────────────────────── */
+/* In modal: flow element prepended to .emtlkit-modal__scrollable-content */
+/* In inline: absolutely positioned at bottom of canvas container.        */
+/* display toggled via JS inline style (none → flex) for reliability.     */
+.emtlkit-lc-undoredo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+  z-index: 2;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 11px;
+  color: #666;
+  letter-spacing: 0.02em;
+}
+
+/* Thin vertical divider between undo and redo */
+.emtlkit-lc-undoredo__divider {
+  width: 1px;
+  height: 18px;
+  background: #d8d8d8;
+  flex-shrink: 0;
+}
+
+.emtlkit-lc-btn--undo,
+.emtlkit-lc-btn--redo {
+  /* Override base btn circle style */
+  aspect-ratio: auto;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  border: 1px solid #e0e0e0;
+  background: #ffffff;
+  color: #344054;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.emtlkit-lc-btn--undo:hover,
+.emtlkit-lc-btn--redo:hover {
+  background: #f0f0f0;
+  border-color: #d0d0d0;
+}
+
+.emtlkit-lc-btn--undo:active,
+.emtlkit-lc-btn--redo:active {
+  background: #e8e8e8;
+}
+
+.emtlkit-lc-btn--undo svg,
+.emtlkit-lc-btn--redo svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Larger touch targets on mobile (WCAG 2.5.8) */
+@media (pointer: coarse) {
+  .emtlkit-lc-btn--undo,
+  .emtlkit-lc-btn--redo {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .emtlkit-lc-btn--undo svg,
+  .emtlkit-lc-btn--redo svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.emtlkit-lc-btn[disabled],
+.emtlkit-lc-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}

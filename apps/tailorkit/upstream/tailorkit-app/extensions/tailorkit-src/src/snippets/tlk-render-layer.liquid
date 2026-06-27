@@ -1,0 +1,434 @@
+{% comment %}
+  tlk-render-layer.liquid — Flattened snippet combining render-layer + all option-set sub-snippets.
+  Called via: {% render 'tlk-render-layer', layer: layer, layers: layers, print_area: print_area, in_multi_layout: in_multi_layout, layer_index: forloop.index0 %}
+
+  Parameters:
+    - layer: The layer object to render
+    - layers: All layers in the print area (needed for multi-layout recursion)
+    - print_area: The parent print area object
+    - in_multi_layout: Boolean, true when rendering inside a multi-layout container
+    - layer_index: Index of the layer in the parent loop (for data-layer-index attributes)
+{% endcomment %}
+
+{% liquid
+  assign layer_type = layer.t
+  assign layer_id = layer.i
+  assign option_set_list = layer.osl
+  assign text_create_by = layer.s.textCreatedBy
+
+  assign style = ''
+  if in_multi_layout or layer.isControlledBy != blank
+    assign style = 'display: none'
+  endif
+%}
+
+{% if layer_type == 'multi-layout' %}
+  {%- comment -%}--- MULTI-LAYOUT (inlined from multi-layout.liquid) ---{%- endcomment -%}
+  {% if layer and layers and print_area %}
+    {% assign multi_layout_option_set = layer.osl | where: 't', 'multi_layout_option' | first %}
+    {% assign layouts = multi_layout_option_set.ol %}
+    {% if layouts.size > 0 %}
+      {% assign layout_selected = multi_layout_option_set.layoutSelected | default: layouts[0].v %}
+    {% else %}
+      {% assign layout_selected = '' %}
+    {% endif %}
+    {% assign layout_selected_label = '' %}
+    {% for layout in layouts %}
+      {% if layout.v == layout_selected %}
+        {% assign layout_selected_label = layout.l %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+    {% assign is_dropdown = false %}
+    {% if multi_layout_option_set.displayStyle == 'multi_layout_dropdown_list' %}
+      {% assign is_dropdown = true %}
+    {% endif %}
+
+    {% if multi_layout_option_set %}
+      <div class='emtlkit--option-set-wrapper' style='{{ style }}'>
+        <div class='emtlkit--option-set-container'>
+          <fieldset
+            class='emtlkit--option-set'
+            data-print-area-id='{{ print_area.i }}'
+            data-option-type='{{ multi_layout_option_set.t }}'
+            data-layer-id='{{ layer_id }}'
+            data-type='emtlkit--option-set'
+            data-id='{{ multi_layout_option_set.i }}'
+            data-label='{{ multi_layout_option_set.l | escape_once }}'
+            data-layer-index='{{ layer_index }}'
+            id='{{ 'option-set-' | append: multi_layout_option_set.i }}'
+            value='{{ layout_selected }}'
+            data-name='{{ multi_layout_option_set.l | escape_once }}'
+          >
+            <label class='emtlkit--option-set-label'>{{ multi_layout_option_set.l }}: {{ layout_selected_label }}</label>
+            {% if is_dropdown %}
+              <tailorkit-multi-layout-dropdown
+                data-current-print-area-id='{{ print_area.i }}'
+                data-current-option-set-id='{{ multi_layout_option_set.i }}'
+                data-option-set-data='{{ multi_layout_option_set | json | escape_once }}'
+              ></tailorkit-multi-layout-dropdown>
+            {% else %}
+              <div class='emtlkit--d-flex emtlkit--flex-center emtlkit--gap-8 emtlkit--flex-wrap'>
+                {% for layout in layouts %}
+                  {% assign ml_layout_id = layout.v %}
+                  {% assign ml_layout_label = layout.l %}
+                  {% assign class_name = 'emtlkit--option-container emtlkit-multi_layout-option emtlkit--thumbnail' %}
+                  {% assign checked = '' %}
+                  {% if ml_layout_id == layout_selected %}
+                    {% assign checked = 'checked="checked"' %}
+                    {% assign class_name = class_name | append: ' active' %}
+                  {% endif %}
+                  <div class='{{ class_name }}'>
+                    {% assign thumbnail = layout.t %}
+                    <input type='radio' name='layout-{{ multi_layout_option_set.i }}' data-id='{{ ml_layout_id }}' data-name='{{ ml_layout_label }}' value='{{ ml_layout_id }}' {{ checked }}>
+                    {% if thumbnail contains '<svg' %}
+                      {{ thumbnail }}
+                    {% else %}
+                      <img src='{{ thumbnail }}?width=60' width='60' height='60' alt='{{ ml_layout_label }}'>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </fieldset>
+        </div>
+      </div>
+
+      <div class='emtlkit--layout-option'>
+        {% assign in_multi_layout = true %}
+        {% for layout in layouts %}
+          {% assign ml_layer_ids = layout.ls %}
+          {% for ml_layer_id in ml_layer_ids %}
+            {% for ml_layer in layers %}
+              {% if ml_layer.i == ml_layer_id %}
+                {% render 'tlk-render-layer', layer: ml_layer, layers: layers, print_area: print_area, in_multi_layout: in_multi_layout, layer_index: forloop.index0 %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+
+{% else %}
+  {%- comment -%}--- TEXT CUSTOMER INPUT (inlined from text-customers.liquid) ---{%- endcomment -%}
+  {% if layer_type == 'text' and text_create_by == 'customers' %}
+    {% if layer and print_area %}
+      <div class='emtlkit--option-set-wrapper' style='{{ style }}'>
+        <div class='emtlkit--option-set-container'>
+          <fieldset
+            class='emtlkit--option-set'
+            data-print-area-id='{{ print_area.i }}'
+            data-option-type='text_customer'
+            data-type='emtlkit--option-set'
+            data-layer-id='{{ layer_id }}'
+            data-id='{{ layer_id }}'
+            data-layer-index='{{ layer_index }}'
+            data-label='{{ layer.s.storefrontLabel | escape_once }}'
+            value=''
+          >
+            <div class='emtlkit--d-flex emtlkit--flex-center emtlkit--flex-space-between'>
+              <label
+                class='emtlkit--option-set-label {% if layer.s.required %}emtlkit--required-indicator{% endif %}'
+                style='margin-bottom: 0;'
+              >
+                {{- layer.s.storefrontLabel }}
+              </label>
+              {% if layer.s.generateTextWithAI.allow %}
+                {% liquid
+                  assign popoverId = 'emtlkit--popover-layer-' | append: layer_id
+                  assign popoverPosition = 'bottom-right'
+                %}
+                <div
+                  class='emtlkit--generate-text-with-ai emtlkit--popover-container'
+                  data-layer-id='{{ layer_id }}'
+                  data-popover-options='{"popoverId": "{{ popoverId }}", "popoverPosition": "{{ popoverPosition }}"}'
+                  data-character-limit='{{ layer.s.characterLimit }}'
+                >
+                  <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'>
+                    <path d="M5.70166 4.25283C5.93873 3.81937 6.56128 3.81937 6.79835 4.25283L6.99445 4.61138C7.20092 4.9889 7.51133 5.2993 7.88885 5.50578L8.2474 5.70187C8.68086 5.93894 8.68086 6.5615 8.24739 6.79857L7.88885 6.99466C7.51133 7.20114 7.20092 7.51154 6.99445 7.88907L6.79835 8.24761C6.56128 8.68107 5.93873 8.68107 5.70166 8.24761L5.50557 7.88907C5.29909 7.51154 4.98869 7.20114 4.61116 6.99466L4.25262 6.79857C3.81915 6.5615 3.81915 5.93894 4.25262 5.70187L4.61116 5.50578C4.98869 5.2993 5.29909 4.9889 5.50557 4.61138L5.70166 4.25283Z" fill="var(--icon-color)"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12.9482 7.88939C12.7681 6.72309 11.0961 6.7002 10.8841 7.86114L10.8542 8.02466C10.5691 9.58629 9.33284 10.8 7.76623 11.0564C6.61689 11.2445 6.59311 12.8889 7.73654 13.1102L7.84147 13.1305C9.37436 13.4271 10.573 14.6258 10.8696 16.1587L10.9016 16.3239C11.1354 17.5321 12.8646 17.5321 13.0984 16.3239L13.1233 16.1951C13.4236 14.6432 14.6451 13.4345 16.2001 13.1505C17.3843 12.9343 17.3194 11.2219 16.1289 11.0431C14.4983 10.7981 13.1999 9.51896 12.9482 7.88939ZM12.0043 14.7766C12.5124 13.6203 13.4157 12.6825 14.5455 12.1301C13.3974 11.6201 12.4616 10.7148 11.9184 9.5816C11.4033 10.68 10.5219 11.5673 9.43018 12.0903C10.5801 12.6456 11.4968 13.5996 12.0043 14.7766Z" fill="var(--icon-color)"/>
+                  </svg>
+                </div>
+              {% endif %}
+            </div>
+            {% assign allow_multi_line = layer.s.allowMultiLineText %}
+            <tailorkit-text-customer-input
+              data-character-limit='{{ layer.s.characterLimit }}'
+              data-placeholder='{{ layer.s.placeholder | default: "Input your text" }}'
+              data-allow-multiline='{{ allow_multi_line | default: false }}'
+              {% if layer.s.fontFamily.family != blank %}
+                data-font-family='{{ layer.s.fontFamily.family | escape }}'
+                data-font-src='{{ layer.s.fontFamily.src | escape }}'
+              {% endif %}
+              {% if layer.s.emojiPicker.enabled and layer.s.emojiPicker.emojis != blank %}
+                data-emoji-picker='{{ layer.s.emojiPicker.emojis | escape }}'
+                {% if layer.s.emojiPicker.font %}
+                  data-emoji-font-family='{{ layer.s.emojiPicker.font.family | escape }}'
+                  data-emoji-font-src='{{ layer.s.emojiPicker.font.src | escape }}'
+                {% endif %}
+              {% endif %}
+            ></tailorkit-text-customer-input>
+
+            {% if layer.s.notesForCustomers != blank %}
+              <span class="emtlkit--input-note">{{ layer.s.notesForCustomers }}</span>
+            {% endif %}
+          </fieldset>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {%- comment -%}--- OPTION SETS (inlined from option-sets/index.liquid + all option types) ---{%- endcomment -%}
+  {% for option_set in option_set_list %}
+    {% assign option_set_type = option_set.t %}
+    {% assign is_having_image_uploader = false %}
+    {% if option_set_type == 'image_option' %}
+      {% if option_set.allowCustomerUploadImage == true or option_set.allowCustomerGenerateImageWithAI == true %}
+        {% assign is_having_image_uploader = true %}
+      {% endif %}
+    {% endif %}
+
+    {% if option_set.ol != blank or is_having_image_uploader %}
+      {% if option_set_type != 'text_option' or text_create_by != 'customers' %}
+        <div class='emtlkit--option-set-wrapper' style='{{ style }}'>
+          <div class='emtlkit--option-set-container'>
+
+            {% if layer_type == 'image' %}
+              {%- comment -%}--- IMAGE OPTION (inlined from option-sets/image-option.liquid) ---{%- endcomment -%}
+              {% if option_set and print_area %}
+                {% liquid
+                  assign selected_option = option_set.ol.first
+                  for option in option_set.ol
+                    if option.s == 1
+                      assign selected_option = option
+                      break
+                    endif
+                  endfor
+                %}
+                <fieldset
+                  class='emtlkit--option-set'
+                  data-print-area-id='{{ print_area.i }}'
+                  data-option-type='{{ option_set.t }}'
+                  data-layer-id='{{ layer_id }}'
+                  data-type='emtlkit--option-set'
+                  data-id='{{ option_set.i }}'
+                  data-label='{{ option_set.l | escape_once }}'
+                  data-layer-index='{{ layer_index }}'
+                  id='{{ 'option-set-' | append: option_set.i }}'
+                  value='{{ selected_option.v }}'
+                  data-name='{{ selected_option.l | escape_once }}'
+                >
+                  <label
+                    class='emtlkit--option-set-label {% if option_set.required %}emtlkit--required-indicator{% endif %}'
+                    data-label='{{ option_set.l | escape_once }}'
+                  >
+                    {{- option_set.l -}}
+                  </label>
+                  {% assign allow_customer_upload_image = option_set.allowCustomerUploadImage %}
+                  {% assign allow_customer_generate_image_with_ai = option_set.allowCustomerGenerateImageWithAI %}
+                  <div class='emtlkit--d-flex emtlkit--flex-column emtlkit--gap-8'>
+                    <div class='emtlkit--d-flex emtlkit--flex-center emtlkit--flex-column emtlkit--gap-8'>
+                      {% if allow_customer_generate_image_with_ai %}
+                        <tailorkit-ai-image-generator
+                          class='emtlkit--generate-image-with-ai emtlkit--w-100'
+                          data-layer-id='{{ layer_id }}'
+                          data-option-set-id='{{ option_set.i }}'
+                          data-print-area-id='{{ print_area.i }}'
+                        ></tailorkit-ai-image-generator>
+                      {% endif %}
+                      {% if allow_customer_upload_image %}
+                        <button class='emtlkit-button emtlkit-button--primary emtlkit--flex-1 emtlkit-button--upload emtlkit-button--fullWidth'>
+                          <svg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path d="M11.7647 2.49774C11.7647 2.87259 11.4608 3.17647 11.086 3.17647C10.7111 3.17647 10.4072 2.87259 10.4072 2.49774V2.0362C10.4072 1.66135 10.1034 1.35747 9.72851 1.35747L2.0362 1.35747C1.66135 1.35747 1.35747 1.66135 1.35747 2.0362V2.49774C1.35747 2.87259 1.05359 3.17647 0.678733 3.17647C0.303879 3.17647 0 2.87259 0 2.49774V2.0362C0 0.911638 0.911638 0 2.0362 0H9.72851C10.8531 0 11.7647 0.911638 11.7647 2.0362V2.49774Z" fill="currentColor"/>
+                            <path d="M6.56109 11.3213C6.56109 11.6961 6.25721 12 5.88235 12C5.5075 12 5.20362 11.6961 5.20362 11.3213V5.26757L3.64736 6.82383C3.3823 7.08889 2.95255 7.08889 2.68748 6.82383C2.42242 6.55877 2.42242 6.12902 2.68748 5.86395L5.40242 3.14902C5.66748 2.88396 6.09723 2.88396 6.36229 3.14902L9.07722 5.86396C9.34228 6.12902 9.34228 6.55877 9.07722 6.82383C8.81216 7.08889 8.38241 7.08889 8.11735 6.82383L6.56109 5.26757L6.56109 11.3213Z" fill="currentColor"/>
+                          </svg>
+                          {{ 'customizer_block.upload' | t }}
+                        </button>
+                      {% endif %}
+                    </div>
+                    <div class='image-uploaded-generated-option-set-container'></div>
+                    <tailorkit-image-options-list
+                      data-option-set-data='{{ option_set | json | escape_once }}'
+                      data-current-print-area-id='{{ print_area.i }}'
+                      data-current-option-set-id='{{ option_set.i }}'
+                      data-option-set-type='{{ option_set_type }}'
+                      data-value-from-fieldset=''
+                    ></tailorkit-image-options-list>
+                  </div>
+                </fieldset>
+              {% endif %}
+
+            {% elsif layer_type == 'text' %}
+              {% case option_set_type %}
+                {% when 'text_option' %}
+                  {%- comment -%}--- TEXT OPTION (inlined from option-sets/text-option.liquid) ---{%- endcomment -%}
+                  {% if option_set and print_area %}
+                    {% liquid
+                      assign selected_option = option_set.ol.first
+                      for option in option_set.ol
+                        if option.s == 1
+                          assign selected_option = option
+                          break
+                        endif
+                      endfor
+                    %}
+                    <fieldset class='emtlkit--option-set' data-print-area-id='{{ print_area.i }}' data-option-type='{{ option_set.t }}' data-layer-id='{{ layer_id }}' data-type='emtlkit--option-set' data-id='{{ option_set.i }}' data-label='{{ option_set.l | escape_once }}' data-layer-index='{{ layer_index }}' id='{{ 'option-set-' | append: option_set.i }}' value='{{ selected_option.v }}' data-name='{{ selected_option.l | escape_once }}'>
+                      <label class='emtlkit--option-set-label' data-label='{{ option_set.l | escape_once }}'>{{- option_set.l -}}</label>
+                      <tailorkit-text-options-list
+                        data-current-print-area-id='{{ print_area.i }}'
+                        data-current-option-set-id='{{ option_set.i }}'
+                        data-option-set-data='{{ option_set | json | escape_once }}'
+                        data-value-from-fieldset=''
+                      ></tailorkit-text-options-list>
+                    </fieldset>
+                  {% endif %}
+
+                {% when 'font_option' %}
+                  {%- comment -%}--- FONT OPTION (inlined from option-sets/font-option.liquid) ---{%- endcomment -%}
+                  {% if option_set and print_area %}
+                    {% liquid
+                      assign default_font_data = '{"src": "' | append: layer.s.fontFamily.src | append: '", "family": "' | append: layer.s.fontFamily.family | append: '"'
+                      if layer.s.fontFamily.additionalPricing
+                        assign pricing_json = layer.s.fontFamily.additionalPricing | json
+                        assign default_font_data = default_font_data | append: ', "additionalPricing": ' | append: pricing_json
+                      endif
+                      assign default_font_data = default_font_data | append: '}'
+                      assign pricing_data = ''
+                      if layer.s.fontFamily.additionalPricing
+                        assign pricing_data = layer.s.fontFamily.additionalPricing | json | escape_once
+                      endif
+                    %}
+                    <fieldset class='emtlkit--option-set' data-print-area-id='{{ print_area.i }}' data-option-type='{{ option_set.t }}' data-layer-id='{{ layer_id }}' data-type='emtlkit--option-set' data-id='{{ option_set.i }}' data-label='{{ option_set.l | escape_once }}' data-layer-index='{{ layer_index }}' id='{{ 'option-set-' | append: option_set.i }}' value='{{ layer.s.fontFamily.src }}' data-name='{{ layer.s.fontFamily.family }}' data-family='{{ layer.s.fontFamily.family }}' data-default='true'{% if pricing_data != blank %} data-pricing='{{ pricing_data }}'{% endif %}>
+                      <label class='emtlkit--option-set-label' data-label='{{ option_set.l | escape_once }}'>{{- option_set.l -}}</label>
+                      <tailorkit-font-options-list
+                        data-default-font='{{ default_font_data | escape_once }}'
+                        data-option-set-data='{{ option_set | json | escape_once }}'
+                        data-current-print-area-id='{{ print_area.i }}'
+                        data-current-option-set-id='{{ option_set.i }}'
+                        data-value-from-fieldset=''
+                      ></tailorkit-font-options-list>
+                    </fieldset>
+                  {% endif %}
+
+                {% when 'color_option' %}
+                  {%- comment -%}--- COLOR OPTION (inlined from option-sets/color-option.liquid) ---{%- endcomment -%}
+                  {% if option_set and print_area %}
+                    {% liquid
+                      assign selected_option = option_set.ol.first
+                      for option in option_set.ol
+                        if option.s == 1
+                          assign selected_option = option
+                          break
+                        endif
+                      endfor
+                    %}
+                    <fieldset class='emtlkit--option-set' data-print-area-id='{{ print_area.i }}' data-option-type='{{ option_set.t }}' data-layer-id='{{ layer_id }}' data-type='emtlkit--option-set' data-id='{{ option_set.i }}' data-label='{{ option_set.l | escape_once }}' data-layer-index='{{ layer_index }}' id='{{ 'option-set-' | append: option_set.i }}' value='{{ selected_option.v }}' data-name='{{ selected_option.l | escape_once }}'>
+                      <label class='emtlkit--option-set-label' data-label='{{ option_set.l | escape_once }}'>{{- option_set.l -}}</label>
+                      <tailorkit-color-options-list
+                        data-current-print-area-id='{{ print_area.i }}'
+                        data-current-option-set-id='{{ option_set.i }}'
+                        data-option-set-data='{{ option_set | json | escape_once }}'
+                        data-value-from-fieldset=''
+                      ></tailorkit-color-options-list>
+                    </fieldset>
+                  {% endif %}
+              {% endcase %}
+
+            {% elsif layer_type == 'imageless' %}
+              {%- comment -%}--- IMAGELESS OPTION (inlined from option-sets/imageless-option.liquid) ---{%- endcomment -%}
+              {% if option_set and print_area %}
+                {% liquid
+                  assign display_style = option_set.displayStyle | default: 'imageless_swatch'
+                  assign is_dropdown = false
+                  assign is_checkbox = false
+                  if display_style == 'imageless_dropdown_list'
+                    assign is_dropdown = true
+                  elsif display_style == 'imageless_checkbox'
+                    assign is_checkbox = true
+                  endif
+                %}
+                <fieldset
+                  class='emtlkit--option-set'
+                  data-print-area-id='{{ print_area.i }}'
+                  data-option-type='{{ option_set.t }}'
+                  data-layer-id='{{ layer_id }}'
+                  data-type='emtlkit--option-set'
+                  data-id='{{ option_set.i }}'
+                  data-label='{{ option_set.l | escape_once }}'
+                  data-layer-index='{{ layer_index }}'
+                  id='{{ 'option-set-' | append: option_set.i }}'
+                  value
+                  data-name='{{ option_set.ol.first.l | escape_once }}'
+                >
+                  <label class='emtlkit--option-set-label' data-label='{{ option_set.l | escape_once }}'>{{- option_set.l -}}</label>
+
+                  {% if is_dropdown or is_checkbox %}
+                    <tailorkit-imageless-options-list
+                      data-current-print-area-id='{{ print_area.i }}'
+                      data-current-option-set-id='{{ option_set.i }}'
+                      data-option-set-data='{{ option_set | json | escape_once }}'
+                      data-value-from-fieldset=''
+                      data-can-default-select='false'
+                    ></tailorkit-imageless-options-list>
+                  {% else %}
+                    <div class='emtlkit--d-flex emtlkit--gap-8 emtlkit--flex-wrap'>
+                      {% for option in option_set.ol %}
+                        {% liquid
+                          assign class = ''
+                          assign checked = ''
+                          assign name = print_area.i | append: ' / ' | append: option_set.i
+                          if option.s == 1
+                            assign class = ' active'
+                            assign checked = 'checked="checked"'
+                          endif
+                          assign pricing_data = ''
+                          if option.additionalPricing
+                            assign pricing_json = option.additionalPricing | json
+                            assign pricing_data = pricing_json | escape_once
+                          endif
+                        %}
+                        {% if option != blank %}
+                          {% liquid
+                            assign type_class = ' emtlkit-image-option'
+                            if option.t == blank
+                              assign type_class = ' emtlkit-imageless-option emtlkit--thumbnail'
+                            endif
+                          %}
+                          <div class='{{ 'emtlkit--option-container' | append: type_class | append: class }}'>
+                            {% if option.t != blank %}
+                              {% assign option_url = option.t | append: '&width=120' %}
+                              <img width='60' height='60' alt='{{ option.l }}' src='{{ option_url }}' loading='lazy'>
+                            {% else %}
+                              {% assign text = option.l %}
+                              <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 50 50">
+                                <rect width="100%" height="100%" fill="white"></rect>
+                                <text x="50%" y="50%" fill="black" font-size="25" font-weight="bold" text-anchor="middle" dominant-baseline="central" style="white-space:nowrap;">{{ text | truncate: 3, '' }}</text>
+                              </svg>
+                            {% endif %}
+                            <input
+                              type='radio'
+                              name='{{ name }}'
+                              value='{{ option.l | escape_once }}'
+                              data-id='{{ option.i }}'
+                              data-name='{{ option.l | escape_once }}'
+                              {% if pricing_data != blank %}
+                                data-pricing='{{ pricing_data }}'
+                              {% endif %}
+                              {{ checked }}
+                            >
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </fieldset>
+              {% endif %}
+            {% endif %}
+
+          </div>
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}

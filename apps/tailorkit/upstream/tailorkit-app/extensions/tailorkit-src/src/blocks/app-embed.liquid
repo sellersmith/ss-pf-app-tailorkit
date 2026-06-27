@@ -1,0 +1,37 @@
+{% # theme-check-disable %}
+
+{% comment %}
+  {% liquid
+    assign common_scripts = 'tailorkit.js' | split: ','
+    assign common_styles = 'tailorkit.css' | split: ','
+  %}
+{% endcomment %}
+
+{% liquid
+  assign em_tailorkit_global_styling = app.metafields.em_tailorkit.global_styling.value
+  assign translations = 'customizer_block' | t
+%}
+
+<script src='{{ 'tailorkit-helper.js' | asset_url }}' defer
+  data-tailorkit-asset-base='{{ 'tailorkit.css' | asset_url | split: 'tailorkit.css' | first }}'
+></script>
+
+{% comment %} Global data scripts — rendered once in <head> to avoid duplicate IDs when multiple app blocks exist {% endcomment %}
+<script id='tailorkit-global-styling' type='application/json'>
+  {{ em_tailorkit_global_styling | json }}
+</script>
+<script id='tailorkit-storefront-config' type='application/json'>
+  { "storefrontAccessToken": {{ app.metafields.em_storefront.storefront_access_token.value.access_token | json }} }
+</script>
+<script type='application/json' id='tailorkit-translations'>
+  {{ translations | json }}
+</script>
+
+{% schema %}
+{
+  "name": "TailorKit Theme Extension",
+  // Using head instead of body because some themes is not have body tag
+  "target": "head",
+  "settings": []
+}
+{% endschema %}

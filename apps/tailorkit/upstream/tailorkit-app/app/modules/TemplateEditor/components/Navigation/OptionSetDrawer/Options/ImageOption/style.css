@@ -1,0 +1,84 @@
+.image-option_dropzone .Polaris-DropZone--hasOutline:not(.Polaris-DropZone--isDisabled)::after {
+  border-width: 0;
+}
+
+.fit-dropZone .Polaris-DropZone--sizeLarge,
+.fit-dropZone .Polaris-DropZone--sizeMedium,
+.fit-dropZone .Polaris-DropZone--sizeMedium {
+  min-height: fit-content;
+  border: none;
+}
+
+.fit-dropZone .Polaris-DropZone--hasOutline:not(.Polaris-DropZone--isDisabled)::after {
+  border: none;
+}
+
+.fit-dropZone p {
+  white-space: pre-line;
+}
+
+.d-block {
+  display: block;
+}
+
+.image-option-name-view,
+.image-option-name-edit {
+  background-color: var(--p-color-bg-surface);
+  border-radius: var(--p-border-radius-200);
+  width: 100%;
+  cursor: pointer;
+}
+
+.image-option-name-view:hover,
+.image-option-name-edit:hover {
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+.image-option-name-view h3,
+.image-option-name-edit h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--p-text-body-sm-font-size);
+}
+.image-option-name-edit h3 {
+  cursor: text;
+}
+
+.image-option-name-edit h3.editing {
+  overflow: scroll;
+  scrollbar-width: none;
+  white-space: nowrap;
+  text-overflow: clip;
+  padding: 0 12px;
+}
+
+.image-option-name-edit button,
+.image-option-name-view button {
+  display: none;
+}
+
+.image-option-name-edit:hover button {
+  display: block;
+}
+
+.image-option-name-disabled {
+  color: var(--p-color-text-disabled);
+}
+
+.color-option-name-disabled {
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+.option-set-label-image-disabled .Polaris-TextField__Backdrop {
+  background-color: rgb(255, 255, 255);
+}
+
+.option-set-label-image-disabled {
+  border-bottom: 1px solid var(--p-color-border);
+  padding-bottom: var(--p-space-200);
+}
+
+.Polaris-TextField.Polaris-TextField--focus .Polaris-TextField__Backdrop {
+  outline: unset !important;
+}

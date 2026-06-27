@@ -1,0 +1,102 @@
+{% # theme-check-disable %}
+
+{% liquid
+  assign metafields_checkbox_data = app.metafields.onetick_checkbox
+  assign metafields_styling_product_offers_data = app.metafields.onetick_styling_product_offers.styling_product_offers.value
+  assign products_count = shop.products_count
+  assign cart_order = cart
+  assign list_cart_product = cart.items | map: 'product'
+  assign list_cart_product_collections = cart.items | map: 'product' | map: 'collections'
+  assign custom_selector = app.metafields.custom_selector.custom_selector.value
+
+  comment
+    Read checkbox styling from TailorKit's GlobalStyling for unified styling management
+  endcomment
+  assign em_tailorkit_global_styling = app.metafields.em_tailorkit.global_styling.value
+  assign checkbox_styling = em_tailorkit_global_styling.checkbox
+%}
+
+{% comment %} OneTick Checkbox CSS Variables from TailorKit GlobalStyling {% endcomment %}
+{% if checkbox_styling %}
+  {% comment %} Calculate padding based on checkboxItem styling - same logic as OneTick {% endcomment %}
+  {% if checkbox_styling.checkboxItem.defaultBackground == '#FFFFFF00'
+    and checkbox_styling.checkboxItem.defaultBorder == '#FFFFFF00'
+  %}
+    {% assign checkboxPadding = '0px' %}
+  {% elsif checkbox_styling.checkboxItem.defaultBackground == null
+    and checkbox_styling.checkboxItem.defaultBorder == null
+  %}
+    {% assign checkboxPadding = '0px' %}
+  {% else %}
+    {% assign checkboxPadding = '16px' %}
+  {% endif %}
+  <style>
+    onetick-checkbox {
+      --o-ti: {{ checkbox_styling.tickIcon | default: '#FFFFFF' }};
+      --o-dbg: {{ checkbox_styling.defaultBackground | default: '#FFFFFF' }};
+      --o-abg: {{ checkbox_styling.activeBackground | default: '#005EC2' }};
+      --o-db: {{ checkbox_styling.defaultBorder | default: '#8A8A8A' }};
+      --o-ab: {{ checkbox_styling.activeBorder | default: '#FFFFFF' }};
+      --o-ct: {{ checkbox_styling.checkboxType | default: '0px' }};
+      --o-cdbg: {{ checkbox_styling.checkboxItem.defaultBackground | default: '#FFFFFF00' }};
+      --o-cdb: {{ checkbox_styling.checkboxItem.defaultBorder | default: '#FFFFFF00' }};
+      --o-is: {{ checkbox_styling.imageSize | default: 40 }}px;
+      --o-padding: {{ checkboxPadding }};
+      {% if checkbox_styling.personalizeButton %}
+        {% if checkbox_styling.personalizeButton.backgroundColor != blank %}
+          --o-pb-bg: {{ checkbox_styling.personalizeButton.backgroundColor }};
+        {% endif %}
+        {% if checkbox_styling.personalizeButton.textColor != blank %}
+          --o-pb-tc: {{ checkbox_styling.personalizeButton.textColor }};
+        {% endif %}
+        {% if checkbox_styling.personalizeButton.borderColor != blank %}
+          --o-pb-bc: {{ checkbox_styling.personalizeButton.borderColor }};
+        {% endif %}
+        --o-pb-br: {{ checkbox_styling.personalizeButton.borderRadius | default: 4 }}px;
+        {% if checkbox_styling.personalizeButton.doneBackgroundColor != blank %}
+          --o-pb-done-bg: {{ checkbox_styling.personalizeButton.doneBackgroundColor }};
+        {% endif %}
+        {% if checkbox_styling.personalizeButton.doneTextColor != blank %}
+          --o-pb-done-tc: {{ checkbox_styling.personalizeButton.doneTextColor }};
+        {% endif %}
+        {% if checkbox_styling.personalizeButton.doneBorderColor != blank %}
+          --o-pb-done-bc: {{ checkbox_styling.personalizeButton.doneBorderColor }};
+        {% endif %}
+        --o-pb-done-br: {{ checkbox_styling.personalizeButton.doneBorderRadius | default: 4 }}px;
+        --o-pb-py: {{ checkbox_styling.personalizeButton.paddingBlock | default: 4 }}px;
+        --o-pb-px: {{ checkbox_styling.personalizeButton.paddingInline | default: 8 }}px;
+        --o-pb-done-py: {{ checkbox_styling.personalizeButton.donePaddingBlock | default: 4 }}px;
+        --o-pb-done-px: {{ checkbox_styling.personalizeButton.donePaddingInline | default: 8 }}px;
+      {% endif %}
+    }
+  </style>
+{% endif %}
+
+<script id='onetick-config' type='application/json'>
+  {
+    "metafieldsCheckboxData": {{ metafields_checkbox_data | json }},
+    "metafieldsStylingProductOffers": {{ metafields_styling_product_offers_data | json }},
+    "storefrontAccessToken": {{ app.metafields.em_storefront.storefront_access_token.value.access_token | json }},
+    "productOffers": {{ app.metafields.onetick_product_offers | json }},
+    "conditions": {{ app.metafields.onetick_condition | json }},
+    "productsCount": {{ products_count }},
+    "moneyFormat": {{ shop.money_format | json }},
+    "isCartPage": {% if template == 'cart' %}true{% else %}false{% endif %},
+    "cart": {{ cart_order | json }},
+    "listCartProduct": {{ list_cart_product | json }},
+    "listCartProductCollections": {{ list_cart_product_collections | json }},
+    "customSelector": {{ custom_selector | json }},
+    "product": {{ product | json }},
+    "tailorkitGlobalStyling": {{ em_tailorkit_global_styling | json }},
+    "checkboxStyling": {{ checkbox_styling | json }}
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Upsell Cross-sell Helper",
+  "target": "body",
+  "stylesheet": "onetick.css",
+  "javascript": "onetick.js"
+}
+{% endschema %}

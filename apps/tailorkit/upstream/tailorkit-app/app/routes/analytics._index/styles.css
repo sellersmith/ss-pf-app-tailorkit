@@ -1,0 +1,11 @@
+.analytics-TrendIndicator.upward svg,
+.analytics-TrendIndicator.upward text,
+.analytics-TrendIndicator.upward g {
+  color: var(--p-color-text-success);
+}
+
+.analytics-TrendIndicator.downward svg,
+.analytics-TrendIndicator.downward text,
+.analytics-TrendIndicator.downward g {
+  color: var(--p-color-text-critical);
+}

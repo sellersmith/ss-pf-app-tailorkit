@@ -1,0 +1,24 @@
+.emtlkit--text-selector-button {
+  border: var(--emtlkit-border-width-050) solid var(--emtlkit-border-color);
+  border-radius: var(--emtlkit-border-radius-200);
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  background-color: var(--emtlkit-bg-primary);
+  margin-bottom: var(--emtlkit-space-100);
+  cursor: pointer;
+  min-height: 34px;
+}
+
+.emtlkit--text-options-listbox {
+  padding: var(--emtlkit-space-200) var(--emtlkit-space-300);
+  max-width: 574px;
+}
+
+.emtlkit--text-options-listbox input[type='radio'] {
+  display: none;
+}
+
+.emtlkit--option-container.emtlkit-text-option {
+  width: auto;
+  height: auto;
+  aspect-ratio: unset;
+}

@@ -1,0 +1,111 @@
+.MagicTextField {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  padding-right: var(--p-space-050);
+  border-radius: var(--p-border-radius-300);
+  border: 0.66px solid var(--p-color-input-border-hover);
+  background: var(--p-color-input-bg-surface-hover);
+  z-index: 2;
+  padding-bottom: var(--p-space-200);
+}
+
+.MagicBorder::before {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: var(--p-border-radius-300);
+  filter: blur(0.13rem);
+  background: rgba(41, 132, 90, 0.7);
+  will-change: background-position, filter, opacity;
+  animation:
+    flow var(--p-motion-duration-7000, 7s) linear infinite,
+    glowPulse var(--p-motion-duration-4000, 4s) ease-in-out infinite;
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.2s var(--p-motion-ease);
+}
+
+@keyframes flow {
+  0% {
+    background-position:
+      0% 50%,
+      -20% 50%;
+  }
+  100% {
+    background-position:
+      100% 50%,
+      120% 50%;
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    opacity: 0.85;
+    filter: blur(0.38rem);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(0.48rem);
+  }
+  100% {
+    opacity: 0.85;
+    filter: blur(0.38rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .MagicBorder::before {
+    animation: none;
+  }
+}
+
+.MagicTextField::after {
+  top: 0.0625rem;
+  right: 0.0625rem;
+  bottom: 0.0625rem;
+  left: 0.0625rem;
+  border-radius: calc(var(--p-border-radius-300) - var(--p-space-025));
+  background-color: var(--p-color-bg-surface);
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  /* transition: opacity var(--p-motion-duration-200) var(--p-motion-ease); */
+}
+
+.MagicTextField__InputContainer {
+  outline: none;
+  position: relative;
+  width: 100%;
+  background-color: transparent;
+  resize: none;
+  padding: calc(var(--p-space-100) + var(--p-space-050)) var(--p-space-300);
+  font-family: var(--p-font-family-sans);
+  font-style: normal;
+  font-weight: var(--p-font-weight-regular);
+  font-size: var(--p-font-size-325);
+  line-height: var(--p-font-line-height-500);
+  border: none;
+  max-height: 120px;
+  min-height: 90px;
+}
+
+.MagicTextField__Header {
+  padding: var(--p-space-200) var(--p-space-300) 0 var(--p-space-300);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--p-space-200);
+}
+
+.MagicTextField__Footer {
+  padding-right: var(--p-space-200);
+}
+
+.MagicTextField__Footer > div > span {
+  display: flex;
+}

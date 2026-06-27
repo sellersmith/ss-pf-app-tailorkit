@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reassurance {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--p-color-text-secondary);
+  white-space: nowrap;
+}

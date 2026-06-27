@@ -1,0 +1,33 @@
+{% for option_set in option_set_list %}
+  {% assign option_set_type = option_set.t %}
+  {% # Check if the option set is having image uploader %}
+  {% assign is_having_image_uploader = false %}
+  {% if option_set_type == 'image_option' %}
+    {% if option_set.allowCustomerUploadImage == true or option_set.allowCustomerGenerateImageWithAI == true %}
+      {% assign is_having_image_uploader = true %}
+    {% endif %}
+  {% endif %}
+
+  {% if option_set.ol != blank or is_having_image_uploader %}
+    {% if option_set_type != 'text_option' or text_create_by != 'customers' %}
+      <div class='emtlkit--option-set-wrapper' style='{{ style }}'>
+        <div class='emtlkit--option-set-container'>
+          {% if layer_type == 'image' %}
+            {% subsnippet 'option-sets.image-option' %}
+          {% elsif layer_type == 'text' %}
+            {% case option_set_type %}
+              {% when 'text_option' %}
+                {% subsnippet 'option-sets.text-option' %}
+              {% when 'font_option' %}
+                {% subsnippet 'option-sets.font-option' %}
+              {% when 'color_option' %}
+                {% subsnippet 'option-sets.color-option' %}
+            {% endcase %}
+          {% elsif layer_type == 'imageless' %}
+            {% subsnippet 'option-sets.imageless-option' %}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+{% endfor %}

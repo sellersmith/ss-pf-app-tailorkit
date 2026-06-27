@@ -1,0 +1,1 @@
+export { KeyboardShortcutsTable } from './KeyboardShortcutsTable'

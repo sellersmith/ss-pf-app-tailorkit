@@ -1,0 +1,55 @@
+.emtlkit--image-selector-button {
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  padding: 4px 12px;
+  background-color: #fff;
+  cursor: pointer;
+  margin-bottom: 4px;
+  min-height: 34px;
+}
+
+.emtlkit--image-options-listbox {
+  padding: 6px 8px;
+  max-height: 252px;
+  overflow-y: auto;
+}
+
+/* Toggle button that expands/collapses large icon/emoji grids. */
+.emtlkit-view-all-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 10px auto 0;
+  padding: 4px 8px;
+  background: none;
+  border: none;
+  color: var(--emtlkit-text-color, #303030);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.emtlkit-view-all-toggle:hover,
+.emtlkit-view-all-toggle:focus {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.emtlkit-view-all-toggle:focus-visible {
+  outline: 2px solid var(--emtlkit-focus-color, #005bd3);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Center the toggle within its container (both grid and emoji-row parents) */
+.emtlkit-emoji-picker-row + .emtlkit-view-all-toggle {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}

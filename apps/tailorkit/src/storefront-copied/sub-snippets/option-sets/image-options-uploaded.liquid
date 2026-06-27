@@ -1,0 +1,82 @@
+{% for option in option_set_ol %}
+  {% liquid
+    assign class = ''
+    assign radio_name = current_print_area_id | append: ' / ' | append: current_option_set_id
+    assign is_vector = false
+    assign option_url_lower = option.v | downcase
+    assign option_url_without_query = option_url_lower | split: '?' | first
+    if option_url_without_query contains '.svg' or option_url_lower contains 'data:image/svg+xml'
+      assign is_vector = true
+    endif
+    assign is_ai_generated = false
+    if option.type == 'image_generated_by_ai'
+      assign is_ai_generated = true
+    endif
+  %}
+  {% if option != blank %}
+    <div
+      class='{{ 'emtlkit--option-container emtlkit-image-option emtlkit--d-flex emtlkit--flex-column emtlkit--gap-4' | append: class }}'
+      style='position: relative;'
+    >
+      {% liquid
+        assign is_shopify_cdn = false
+        if option.v contains 'cdn.shopify.com' or option.v contains 'cdn/shop/files'
+          assign is_shopify_cdn = true
+        endif
+        assign option_url = option.v
+        if is_shopify_cdn
+          unless is_vector
+            assign option_url = option.v | append: '&width=120'
+          endunless
+        endif
+      %}
+      <div style='position: relative; display: inline-block;'>
+        <img width='60' height='60' alt='{{ option.l }}' src='{{ option_url }}' loading='lazy'>
+        {% if is_ai_generated %}
+          <div style='position: absolute; bottom: -10px; right: -8px;'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'>
+              <path d="M5.70163 4.25283C5.9387 3.81937 6.56125 3.81937 6.79832 4.25283L6.99442 4.61138C7.20089 4.9889 7.5113 5.2993 7.88882 5.50578L8.24736 5.70187C8.68083 5.93894 8.68083 6.5615 8.24736 6.79857L7.88882 6.99466C7.5113 7.20114 7.20089 7.51154 6.99442 7.88907L6.79832 8.24761C6.56125 8.68107 5.9387 8.68107 5.70163 8.24761L5.50554 7.88907C5.29906 7.51154 4.98866 7.20114 4.61113 6.99466L4.25259 6.79857C3.81912 6.5615 3.81912 5.93894 4.25259 5.70187L4.61113 5.50578C4.98866 5.2993 5.29906 4.9889 5.50554 4.61138L5.70163 4.25283Z" fill="#29845A"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12.9482 7.88939C12.768 6.72309 11.096 6.7002 10.884 7.86114L10.8542 8.02466C10.569 9.58629 9.33281 10.8 7.7662 11.0564C6.61686 11.2445 6.59308 12.8889 7.73651 13.1102L7.84144 13.1305C9.37433 13.4271 10.573 14.6258 10.8696 16.1587L10.9016 16.3239C11.1354 17.5321 12.8645 17.5321 13.0984 16.3239L13.1233 16.1951C13.4236 14.6432 14.6451 13.4345 16.2001 13.1505C17.3843 12.9343 17.3193 11.2219 16.1289 11.0431C14.4983 10.7981 13.1999 9.51896 12.9482 7.88939ZM12.0042 14.7766C12.5124 13.6203 13.4157 12.6825 14.5455 12.1301C13.3974 11.6201 12.4615 10.7148 11.9183 9.5816C11.4033 10.68 10.5219 11.5673 9.43015 12.0903C10.5801 12.6456 11.4968 13.5996 12.0042 14.7766Z" fill="#29845A"/>
+            </svg>
+          </div>
+        {% endif %}
+        <button
+          type='button'
+          class='emtlkit-button emtlkit-button-plain emtlkit-image-option-delete-btn'
+          data-option-id='{{ option.i }}'
+          data-option-type='{{ option.type }}'
+          aria-label='Delete {{ option.l }}'
+          title='Delete'
+        >
+          <svg width='10' height='10' viewBox='0 0 10 10' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <path d='M1 1L9 9M9 1L1 9' stroke='white' stroke-width='1.5' stroke-linecap='round'/>
+          </svg>
+        </button>
+      </div>
+      <input
+        type='radio'
+        name='{{ radio_name }}'
+        value='{{ option.v }}'
+        data-id='{{ option.i }}'
+        data-name='{{ option.l }}'
+      >
+      {% unless is_vector %}
+        <button
+          type='button'
+          class='emtlkit-button emtlkit-button-plain emtlkit--image-option-edit-btn'
+          style='gap: 6px; width: 100%;'
+          data-option-id='{{ option.i }}'
+          data-option-type='{{ option.type }}'
+          aria-label='Edit {{ option.l }}'
+        >
+          <div>
+            <svg width='11' height='12' viewBox='0 0 11 12' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0241 1.47537C9.18223 0.633528 7.81734 0.633537 6.97552 1.47539L6.49672 1.9542L6.48972 1.9472L5.64119 2.79572L5.64821 2.80274L0.944146 7.50695C0.531581 7.91952 0.299805 8.47909 0.299805 9.06256V10.5998C0.299805 10.759 0.363019 10.9116 0.475541 11.0241C0.588063 11.1366 0.740675 11.1998 0.899805 11.1998L2.43705 11.1998C3.02054 11.1998 3.58013 10.968 3.99271 10.5554L10.0241 4.52386C10.8659 3.68203 10.8659 2.31719 10.0241 1.47537ZM6.49674 3.65127L1.79269 8.35546C1.60516 8.543 1.49981 8.79735 1.49981 9.06256L1.49981 9.99983H2.43705C2.70227 9.99983 2.95663 9.89447 3.14417 9.70692L7.8482 5.00274L6.49674 3.65127ZM8.69672 4.15419L9.17555 3.67535C9.54873 3.30215 9.54873 2.69709 9.17554 2.32389C8.80234 1.95069 8.19726 1.95069 7.82406 2.3239L7.34525 2.80273L8.69672 4.15419Z" fill="#005BD3"/>
+            </svg>
+          </div>
+          Edit
+        </button>
+      {% endunless %}
+    </div>
+  {% endif %}
+{% endfor %}

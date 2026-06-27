@@ -1,0 +1,129 @@
+{% liquid
+  # Get print area data from app metafield
+  assign product_id = product.id | append: ''
+  assign product_name = product.title | append: ''
+  assign variant_id = product.selected_or_first_available_variant.id | append: ''
+  assign em_tailorkit_variants = app.metafields.em_tailorkit[variant_id].value
+  assign metafield_key = 'variant'
+
+  if em_tailorkit_variants == blank
+    assign em_tailorkit_variants = app.metafields.em_tailorkit[product_id].value
+    assign metafield_key = 'product'
+  endif
+
+  assign em_tailorkit_app_settings = app.metafields.em_tailorkit.app_settings.value
+  assign em_tailorkit_global_styling = app.metafields.em_tailorkit.global_styling.value
+%}
+
+{% liquid
+  if request.design_mode and em_tailorkit_variants == blank
+    render 'placeholder'
+  endif
+%}
+
+{% comment %} Assign components to variables {% endcomment %}
+{% liquid
+  capture magic_ai_icon
+    render 'icons', icon_type: 'magic-ai'
+  endcapture
+
+  capture accordion_icon
+    render 'icons', icon_type: 'accordion'
+  endcapture
+
+  capture upload_icon
+    render 'icons', icon_type: 'upload'
+  endcapture
+
+  capture ai_generate_icon
+    render 'icons', icon_type: 'ai-generate'
+  endcapture
+%}
+
+{% if em_tailorkit_variants != blank %}
+  <script src='{{ 'tailorkit-konva.js' | asset_url }}' defer></script>
+
+  {% if em_tailorkit_app_settings.previewZoom.enabled != false %}
+    <script src='{{ 'tailorkit-pinch-zoom.js' | asset_url }}' defer></script>
+  {% endif %}
+
+{% endif %}
+
+<tailorkit-product-personalizer-customizer
+  data-product-id='{{ product_id }}'
+  data-product-name='{{ product_name | escape }}'
+  data-variant-id='{{ variant_id }}'
+  data-metafield-key='{{ metafield_key }}'
+  data-app-settings='{{ em_tailorkit_app_settings | json | escape }}'
+  data-tlk-instance-id='{{ product_id }}::page'
+>
+  {% liquid
+    # Override personalized_design_title if global styling is set
+    if em_tailorkit_global_styling.heading.text != blank
+      assign personalized_design_title = em_tailorkit_global_styling.heading.text
+    else
+      assign personalized_design_title = block.settings.personalized_design_title
+    endif
+  %}
+
+  {% liquid
+    render 'print-areas', em_tailorkit_app_settings: em_tailorkit_app_settings, em_tailorkit_variants: em_tailorkit_variants, settings: block.settings, personalized_design_title: personalized_design_title, product: product, magic_ai_icon: magic_ai_icon, accordion_icon: accordion_icon, upload_icon: upload_icon, ai_generate_icon: ai_generate_icon
+  %}
+</tailorkit-product-personalizer-customizer>
+
+{% schema %}
+{
+  "name": "TailorKit",
+  "target": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "stylesheet": "tailorkit.css",
+  "javascript": "tailorkit.js",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:header.general"
+    },
+    {
+      "id": "personalized_design_title",
+      "type": "text",
+      "label": "t:general.personalized_design_title.label",
+      "info": "t:general.personalized_design_title.info",
+      "default": "PERSONALIZED DESIGN"
+    },
+    {
+      "type": "header",
+      "content": "t:header.advanced"
+    },
+    {
+      "id": "featured_image_container_selector",
+      "label": "t:advanced.featured_image_container_selector.label",
+      "info": "t:advanced.featured_image_container_selector.info",
+      "type": "text",
+      "default": ".product__media-item.is-active .product__media"
+    },
+    {
+      "id": "featured_image_position",
+      "label": "t:advanced.featured_image_position.label",
+      "info": "t:advanced.featured_image_position.info",
+      "type": "number",
+      "default": 1
+    },
+    {
+      "id": "auto_navigate_on_focus",
+      "label": "t:advanced.auto_navigate_on_focus.label",
+      "info": "t:advanced.auto_navigate_on_focus.info",
+      "type": "checkbox",
+      "default": false
+    },
+    {
+      "id": "always_render_live_preview",
+      "label": "t:advanced.always_render_live_preview.label",
+      "info": "t:advanced.always_render_live_preview.info",
+      "type": "checkbox",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

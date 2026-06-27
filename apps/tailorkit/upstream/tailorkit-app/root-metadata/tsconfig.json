@@ -1,0 +1,27 @@
+{
+  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "removeComments": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"],
+      "extensions/tailorkit-src/src/*": ["./app/shared/extensions/tailorkit-src/src/*"],
+      "extensions/onetick-src/src/*": ["./app/shared/extensions/onetick-src/src/*"],
+      "@testing-library/polaris": ["./tests/test-utilities/testing-library-polaris.d.ts"]
+    },
+    "types": ["node"]
+  }
+}

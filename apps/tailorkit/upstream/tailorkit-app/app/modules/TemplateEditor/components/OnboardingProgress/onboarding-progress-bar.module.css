@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--p-color-bg-fill-success) 8%, transparent),
+    var(--p-color-bg-surface)
+  );
+  border-bottom: 1px solid var(--p-color-border);
+}
+
+.bar {
+  flex: 1;
+  height: 8px;
+  background: var(--p-color-bg-surface-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--p-color-bg-fill-success), var(--p-color-bg-fill-success-active));
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.label {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--p-color-text);
+  white-space: nowrap;
+}
+
+.hint {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--p-color-text-secondary);
+  white-space: nowrap;
+  cursor: help;
+}
+
+.complete {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--p-color-text-success);
+  white-space: nowrap;
+  cursor: help;
+}

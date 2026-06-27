@@ -1,0 +1,11 @@
+.OptionGroupList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--p-space-200);
+}
+
+.OptionGroupItem {
+  padding: var(--p-space-150) var(--p-space-200);
+  border-radius: var(--p-border-radius-100);
+  background: var(--p-color-bg-surface-secondary);
+}

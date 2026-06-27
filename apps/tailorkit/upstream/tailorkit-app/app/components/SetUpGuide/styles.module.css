@@ -1,0 +1,81 @@
+/*
+  Follow the guide here: https://shopify.dev/docs/apps/build/ui-libraries/components/timeline
+*/
+
+.setupItem {
+  padding: 8px;
+  border-radius: 0.5rem;
+}
+
+.setupItem:hover {
+  background-color: #f7f7f7;
+}
+
+.setupItemExpanded:hover {
+  background-color: inherit;
+}
+
+.setupItemTitle span,
+.setupItemTitle p,
+.setupItemTitle h1,
+.setupItemTitle h2,
+.setupItemTitle h3,
+.setupItemTitle h4,
+.setupItemTitle h5,
+.setupItemTitle h6 {
+  font-weight: var(--p-text-body-sm-font-weight);
+}
+
+.setupItemTitleExpanded span,
+.setupItemTitleExpanded p,
+.setupItemTitleExpanded h1,
+.setupItemTitleExpanded h2,
+.setupItemTitleExpanded h3,
+.setupItemTitleExpanded h4,
+.setupItemTitleExpanded h5,
+.setupItemTitleExpanded h6 {
+  font-weight: var(--p-text-heading-md-font-weight);
+}
+
+/* Reserve layout space so inline icons/spinners don't collapse in flow */
+.loadingProcessIcon,
+.loadingProcessIcon.loading {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.loadingProcessIcon.loading svg {
+  animation: spin-icon 1.5s linear infinite;
+  transform-origin: center;
+}
+
+.itemContent {
+  width: 100%;
+  display: flex;
+  gap: 8rem;
+  justify-content: space-between;
+}
+
+/* These styles take into account the Shopify sidebar visibility & hides image based on window width */
+@media (min-width: 48em) and (max-width: 61.871875em) {
+  .itemImage {
+    display: none;
+  }
+}
+
+@media (max-width: 45.625em) {
+  .itemImage {
+    display: none;
+  }
+}
+
+@keyframes spin-icon {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

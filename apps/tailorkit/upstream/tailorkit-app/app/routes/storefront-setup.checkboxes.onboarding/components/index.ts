@@ -1,0 +1,5 @@
+export { default as ShareKnowledgeStep } from './ShareKnowledgeStep'
+export { default as BasicSetupStep } from './BasicSetupStep'
+export { default as EnableThemeHelperStep } from './EnableThemeHelperStep'
+export { default as OnboardingFooter } from './OnboardingFooter'
+export { default as OnboardingPage } from './OnboardingPage'

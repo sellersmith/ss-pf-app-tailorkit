@@ -1,0 +1,62 @@
+.ImageContainer {
+  position: relative;
+  /* 122px is the height of the image, can adjust it if needed */
+  min-height: 122px;
+  cursor: pointer;
+}
+
+.Image__Tools {
+  position: absolute;
+  top: var(--p-space-200);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  visibility: hidden;
+}
+
+.ImageContainer:hover .Image__Tools {
+  visibility: visible;
+}
+
+.Image__HelperText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ImageError__HelperText {
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.Image__Tools button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  padding: var(--p-space-150);
+  -webkit-backdrop-filter: blur(var(--p-space-200));
+  backdrop-filter: blur(var(--p-space-200));
+  border-radius: var(--p-border-radius-200);
+  background-color: var(--p-color-bg-surface);
+  cursor: pointer;
+  color: var(--p-color-icon-secondary);
+  transition-property: background-color, opacity, color;
+  transition-duration: var(--p-motion-duration-200);
+  transition-timing-function: var(--p-motion-ease);
+  opacity: 0.85;
+}
+
+.Image__Tools button:hover {
+  color: var(--p-color-icon-secondary-hover) !important;
+  background-color: var(--p-color-bg) !important;
+  opacity: 1;
+}
+
+.Image__Tools svg {
+  fill: #4a4a4a !important;
+}

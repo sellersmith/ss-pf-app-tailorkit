@@ -1,0 +1,54 @@
+/* Font Family Inspector Panel Styles */
+
+.panelRoot {
+  display: block;
+  min-height: 0;
+}
+
+.scrollContainer {
+  max-height: min(600px, calc(100vh - 200px));
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.filtersSection {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--p-color-bg-surface);
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.fontOption {
+  padding: 10px 12px;
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  outline: none;
+}
+
+.fontOption:hover:not(.selected) {
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+.fontOption.selected {
+  background-color: var(--p-color-bg-surface-selected);
+}
+
+.fontOption:focus-visible {
+  box-shadow: 0 0 0 2px var(--p-color-border-focus);
+}
+
+.fontOptionContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fontListbox {
+  display: flex;
+  flex-direction: column;
+}

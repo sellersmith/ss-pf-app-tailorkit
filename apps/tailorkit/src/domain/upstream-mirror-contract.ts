@@ -1,0 +1,62 @@
+export const TAILORKIT_REFERENCE_REPO_ROOT = '/Users/phanconglong/Documents/Projects/emtailorkit' as const
+
+export const tailorkitAppLevelUpstreamMirror = {
+  root: 'apps/tailorkit/upstream/tailorkit-app',
+  sourceRoots: ['app', 'extensions/tailorkit-src', 'extensions/tailorkit-helper'] as const,
+  productPersonalizerPrimaryRoots: [
+    'app/routes/personalized-products._index',
+    'app/routes/personalized-products.$id',
+    'app/routes/personalized-products.loading',
+    'app/routes/api.personalized-products',
+    'app/routes/api.templates',
+    'app/routes/api.templates.$id',
+    'app/routes/api.templates.$id.option-sets',
+    'app/routes/api.templates_designs',
+    'app/modules/ProductEditor',
+    'app/modules/ProductSelector',
+    'app/modules/TemplateEditor',
+    'extensions/tailorkit-src',
+    'extensions/tailorkit-helper',
+  ] as const,
+  removedSecondaryMirrorRoots: [
+    {
+      root: 'apps/tailorkit/src/admin/product-editor-island/upstream',
+      status: 'removed',
+      replacementRoot: 'apps/tailorkit/upstream/tailorkit-app',
+      facadeRoot: 'apps/tailorkit/src/admin/product-editor-island/facades',
+      reason:
+        'ProductEditor island mirror was duplicate migration debt; app-level mirror owns copied TailorKit source and facade root owns PageFly adapters.',
+    },
+  ] as const,
+  allowedExtensionEntries: ['package.json', 'package-lock.json', 'tailorkit-src', 'tailorkit-helper'] as const,
+  rootMetadataFiles: ['README.md', 'package.json', 'tsconfig.json', 'vite.config.ts', 'vitest.config.ts'] as const,
+  extensionMetadataFiles: ['extensions/package.json', 'extensions/package-lock.json'] as const,
+  excludedSupportIntegrationPaths: [
+    'app/routes/api.public.crisp.webhook',
+    'app/services/crisp',
+    'app/utils/crisp-client.server.js',
+    'app/utils/crisp-webhook-verifier.server.js',
+  ] as const,
+  excludedPathSegments: [
+    '/node_modules/',
+    '/.shopify/',
+    '/cache/',
+    '/caches/',
+    '/logs/',
+    '/marketing/',
+    '/extensions/onetick-src/',
+    '/app/routes/api.public.crisp.webhook/',
+    '/app/services/crisp/',
+    '/routes/api.public.crisp.webhook/',
+    '/services/crisp/',
+  ] as const,
+  excludedFileNames: [
+    '.env',
+    '.env.example',
+    '.env.master',
+    '.env.rc',
+    '.env.wip',
+    'crisp-client.server.js',
+    'crisp-webhook-verifier.server.js',
+  ] as const,
+} as const

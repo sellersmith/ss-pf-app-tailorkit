@@ -1,0 +1,27 @@
+.emtlkit--carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  scroll-snap-type: x mandatory;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.emtlkit--carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.emtlkit--carousel__item {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  width: calc(100% / var(--item, 1));
+  flex: 0 0 auto;
+}
+
+.emtlkit--carousel-multiple .emtlkit--carousel__item {
+  margin: 0 var(--gap) 0 0;
+}
+
+.emtlkit--carousel-multiple .emtlkit--carousel__item:last-child {
+  padding: 0;
+}

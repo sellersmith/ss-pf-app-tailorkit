@@ -1,0 +1,32 @@
+{% # theme-check-disable %}
+
+{% liquid
+  assign is_design_mode = request.design_mode
+%}
+
+{% render 'master-product' %}
+
+{% if is_design_mode %}
+  <div class='onetick-checkboxes-warning-banner' style='display: none;'>
+    {% render 'checkbox-group-banner' %}
+  </div>
+{% endif %}
+
+<onetick-group-checkboxes></onetick-group-checkboxes>
+
+{% schema %}
+{
+  "name": "Upsell Cross-sell Block",
+  "target": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:general.header.content",
+      "info": "t:general.header.info"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["footer", "header"]
+  }
+}
+{% endschema %}

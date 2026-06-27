@@ -1,0 +1,33 @@
+.PlanCard {
+  /* card container — uses Polaris Card wrapper */
+}
+
+.PlanStepItem {
+  padding: var(--p-space-200);
+  border-left: 3px solid var(--p-color-border);
+  margin-bottom: var(--p-space-100);
+  border-radius: var(--p-border-radius-100);
+  background: var(--p-color-bg-surface-secondary);
+}
+
+.PlanStepConditional {
+  margin-left: var(--p-space-400);
+  border-left-color: var(--p-color-border-caution);
+}
+
+.PlanStepValues {
+  color: var(--p-color-text-secondary);
+  font-size: 13px;
+}
+
+.PlanStepEditForm {
+  background: var(--p-color-bg-surface-secondary);
+  padding: var(--p-space-200);
+  border-radius: var(--p-border-radius-200);
+}
+
+.ValueRow {
+  display: flex;
+  align-items: center;
+  gap: var(--p-space-100);
+}

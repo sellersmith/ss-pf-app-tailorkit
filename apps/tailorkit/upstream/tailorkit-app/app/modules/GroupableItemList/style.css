@@ -1,0 +1,236 @@
+.groupable--container {
+  flex: 1 1 auto;
+  height: 100%;
+  /* overflow-y: auto; */
+  /* Reserve a consistent gutter for right-side actions */
+  --groupable-actions-gutter: 120px;
+}
+
+.groupable--container > div,
+.groupable--container > div > div {
+  /* height: 100%; */
+}
+
+.groupable--list-container {
+  position: relative;
+}
+
+.groupable--item-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.groupable--item,
+.groupable--group {
+  line-height: 2em;
+  width: 100%;
+  position: relative;
+}
+
+/* Position the header row as the containing block for right-side actions
+   so group actions don't overlap the group's children list */
+.groupable--item > .Polaris-Box,
+.groupable--group > div {
+  position: relative;
+}
+
+.groupable--group > div:hover,
+.groupable--item:not(.groupable--group):hover {
+  border-radius: var(--p-border-radius-200);
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+.groupable--highlight-caution:not(.groupable--invisible) {
+  border-radius: var(--p-border-radius-200);
+  background-color: var(--p-color-bg-surface-info) !important;
+}
+
+.groupable--highlight:not(.groupable--invisible) {
+  border-radius: var(--p-border-radius-200);
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+.groupable--item span[draggable],
+.groupable--group span[draggable] {
+  cursor: move;
+  visibility: hidden;
+}
+
+.groupable--item span.non-draggable,
+.groupable--group span.non-draggable {
+  opacity: 0;
+  cursor: default;
+  visibility: hidden;
+}
+
+.groupable--group-toggler {
+  cursor: pointer;
+}
+
+.groupable--item-label,
+.groupable--group-label {
+  flex: auto;
+}
+
+/* Truncate long labels so actions can stay fixed on the right */
+.groupable--item-label,
+.groupable--group-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-inline-end: calc(var(--groupable-actions-gutter) + var(--p-space-200));
+}
+
+.groupable--action {
+  display: flex;
+  align-items: center;
+}
+
+/* Keep the actions (including checkbox) fixed at the panel's right edge */
+.groupable-actions {
+  margin-left: auto;
+  position: absolute;
+  top: 50%;
+  right: var(--p-space-200);
+  transform: translateY(-50%);
+  min-width: var(--groupable-actions-gutter);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1;
+}
+
+/* Show a white surface behind actions only when the row is hovered */
+.groupable--group > div:hover .groupable-actions > .Polaris-InlineStack,
+.groupable--item:not(.groupable--group):hover .groupable-actions > .Polaris-InlineStack {
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+/* Keep actions' background in sync with row states (checked/highlighted, caution-highlight) */
+.groupable--group.groupable--highlight > div .groupable-actions > .Polaris-InlineStack,
+.groupable--item.groupable--highlight:not(.groupable--group) .groupable-actions > .Polaris-InlineStack {
+  background-color: var(--p-color-bg-surface-hover);
+}
+
+.groupable--group.groupable--highlight-caution > div .groupable-actions > .Polaris-InlineStack,
+.groupable--item.groupable--highlight-caution:not(.groupable--group) .groupable-actions > .Polaris-InlineStack {
+  background-color: var(--p-color-bg-surface-info);
+}
+
+/* Invisible rows: always use neutral surface background for actions */
+.groupable--item.groupable--item-invisible .groupable-actions > .Polaris-InlineStack,
+.groupable--item.groupable--item-invisible:hover .groupable-actions > .Polaris-InlineStack,
+.groupable--group.groupable--invisible > div .groupable-actions > .Polaris-InlineStack,
+.groupable--group.groupable--invisible > div:hover .groupable-actions > .Polaris-InlineStack {
+  background-color: var(--p-color-bg-surface-hover) !important;
+}
+
+.groupable--invisible {
+  opacity: 0.5;
+}
+
+.groupable--group-items-container {
+  list-style: none;
+  padding-left: 23px;
+}
+
+/* Shake animation for error indication */
+@keyframes groupable-shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.groupable--shake {
+  animation: groupable-shake 0.5s ease both;
+}
+
+.groupable--bulk-action {
+  display: flex;
+  align-items: center;
+}
+
+/* Let icon be centered */
+.groupable--bulk-action span {
+  display: flex;
+}
+
+.groupable-placeholder {
+  left: 0;
+  height: var(--p-border-width-050);
+  display: none;
+  position: absolute;
+  background-color: var(--p-color-border-inverse);
+}
+
+.groupable--scrollable-list-container {
+  height: calc(100vh - 188px - 34px);
+  overflow: auto;
+}
+
+.groupable--action:not(:has(.Polaris-Checkbox)) {
+  visibility: hidden;
+}
+
+.groupable--group > div:hover *,
+.groupable--item:not(.groupable--group):hover *,
+.groupable--item:has(.groupable-actions.checked) *,
+.groupable--item.groupable--item-locked .groupable--action,
+.groupable--item.groupable--item-invisible .groupable--action {
+  visibility: visible;
+}
+
+.groupable--item.selecting {
+  background-color: var(--p-color-bg-surface-hover);
+  border-radius: var(--p-border-radius-200);
+}
+
+/* Ensure the left content column can grow and not be capped by a fixed width */
+.groupable--item > .Polaris-Box > .Polaris-InlineStack > .Polaris-InlineStack,
+.groupable--group > div > .Polaris-Box > .Polaris-InlineStack > .Polaris-InlineStack {
+  max-width: 100%;
+}
+
+.groupable-group-item-label h3 {
+  cursor: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.groupable-group-item-label h3.editing {
+  overflow: scroll;
+  text-overflow: clip;
+  scrollbar-width: none;
+}
+
+.groupable--group-label .groupable-group-item-label h3 {
+  max-width: 100%;
+}
+
+.groupable--drag-image {
+  list-style: none;
+  line-height: 2em;
+  position: absolute;
+  border-radius: var(--p-border-radius-200);
+  background: var(--p-color-bg-surface-hover);
+}
+
+.groupable-drop-target {
+  background: rgb(68, 170, 255, 0.2);
+}

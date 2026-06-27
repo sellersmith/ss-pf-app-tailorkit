@@ -1,0 +1,60 @@
+{% if layer and print_area %}
+  <div class='emtlkit--option-set-wrapper' style='{{ style }}'>
+    <div class='emtlkit--option-set-container'>
+      <fieldset
+        class='emtlkit--option-set'
+        data-print-area-id='{{ print_area.i }}'
+        data-option-type='text_customer'
+        data-type='emtlkit--option-set'
+        data-layer-id='{{ layer_id }}'
+        data-id='{{ layer_id }}'
+        data-layer-index='{{ forloop.index0 }}'
+        data-label='{{ layer.s.storefrontLabel | escape_once }}'
+        value=''
+      >
+        <div class='emtlkit--d-flex emtlkit--flex-center emtlkit--flex-space-between'>
+          <label
+            class='emtlkit--option-set-label {% if layer.s.required %}emtlkit--required-indicator{% endif %}'
+            style='margin-bottom: 0;'
+          >
+            {{- layer.s.storefrontLabel }}
+          </label>
+          {% if layer.s.generateTextWithAI.allow %}
+            {% liquid
+              assign popoverId = 'emtlkit--popover-layer-' | append: layer_id
+              assign popoverPosition = 'bottom-right'
+            %}
+            <div
+              class='emtlkit--generate-text-with-ai emtlkit--popover-container'
+              data-layer-id='{{ layer_id }}'
+              data-popover-options='{"popoverId": "{{ popoverId }}", "popoverPosition": "{{ popoverPosition }}"}'
+              data-character-limit='{{ layer.s.characterLimit }}'
+            >
+              {% subsnippet 'icons.magic-icon' %}
+            </div>
+          {% endif %}
+        </div>
+        {% assign allow_multi_line = layer.s.allowMultiLineText %}
+        <tailorkit-text-customer-input
+          data-character-limit='{{ layer.s.characterLimit }}'
+          data-placeholder='{{ layer.s.placeholder | default: "Input your text" }}'
+          data-allow-multiline='{{ allow_multi_line | default: false }}'
+          {% if layer.s.emojiPicker.enabled and layer.s.emojiPicker.emojis != blank %}
+            data-emoji-picker='{{ layer.s.emojiPicker.emojis | escape }}'
+            {% if layer.s.emojiPicker.font %}
+              data-emoji-font-family='{{ layer.s.emojiPicker.font.family | escape }}'
+              data-emoji-font-src='{{ layer.s.emojiPicker.font.src | escape }}'
+            {% endif %}
+          {% endif %}
+        ></tailorkit-text-customer-input>
+
+        {% if layer.s.notesForCustomers != blank %}
+          {% capture span %}
+            <span class="emtlkit--input-note">{{ layer.s.notesForCustomers }}</span>
+          {% endcapture -%}
+          {{- span }}
+        {% endif %}
+      </fieldset>
+    </div>
+  </div>
+{% endif %}
