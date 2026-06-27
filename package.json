@@ -5,6 +5,15 @@
   "description": "TailorKit admin artifact producer for PageFly app-platform",
   "license": "UNLICENSED",
   "type": "module",
+  "main": "apps/tailorkit/src/index.ts",
+  "exports": {
+    ".": "./apps/tailorkit/src/index.ts",
+    "./manifest": "./apps/tailorkit/manifest.ts",
+    "./admin": "./apps/tailorkit/src/admin/index.tsx",
+    "./product-editor-route-contract": "./apps/tailorkit/src/admin/product-editor-island/route-contract.ts",
+    "./domain/order-record": "./apps/tailorkit/domain/order-record.ts",
+    "./domain/order-property-matchers": "./apps/tailorkit/domain/order-property-matchers.ts"
+  },
   "packageManager": "npm@11.6.2",
   "engines": {
     "node": ">=24.0.0",
