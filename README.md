@@ -31,13 +31,14 @@ PageFly CI
 ## Branch Flow
 
 ```txt
-wip -> rc -> main
+wip -> beta -> rc -> main
 ```
 
 Channel mapping:
 
 ```txt
 wip  -> tailorkit-wip
+beta -> tailorkit-beta
 rc   -> tailorkit-rc
 main -> tailorkit-live
 ```
@@ -61,7 +62,7 @@ Deploy artifact:
 ```bash
 npm run deploy:admin-artifact -- \
   --artifact artifacts/tailorkit-admin-static \
-  --target-app-root /var/www/pf-beta/public/app-platform/apps/tailorkit
+  --target-app-root "$TARGET_APP_ROOT"
 ```
 
 Dry-run deploy:
@@ -69,7 +70,7 @@ Dry-run deploy:
 ```bash
 npm run deploy:admin-artifact:dry-run -- \
   --artifact artifacts/tailorkit-admin-static \
-  --target-app-root /var/www/pf-beta/public/app-platform/apps/tailorkit
+  --target-app-root "$TARGET_APP_ROOT"
 ```
 
 ## Artifact Layout
@@ -85,7 +86,7 @@ artifacts/tailorkit-admin-static/
 ## Deploy Layout
 
 ```txt
-/var/www/pf-beta/public/app-platform/apps/tailorkit/
+$TARGET_APP_ROOT/
   releases/<artifact-id>/
   current/
   releases/ledger.jsonl

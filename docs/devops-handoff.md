@@ -16,6 +16,7 @@ Trigger branches:
 
 ```txt
 wip
+beta
 rc
 main
 ```
@@ -28,10 +29,18 @@ npm run ci:contract
 npm run build:admin-artifact
 npm run deploy:admin-artifact:dry-run -- \
   --artifact artifacts/tailorkit-admin-static \
-  --target-app-root /var/www/pf-beta/public/app-platform/apps/tailorkit
+  --target-app-root "$TARGET_APP_ROOT"
 npm run deploy:admin-artifact -- \
   --artifact artifacts/tailorkit-admin-static \
-  --target-app-root /var/www/pf-beta/public/app-platform/apps/tailorkit
+  --target-app-root "$TARGET_APP_ROOT"
+```
+
+`TARGET_APP_ROOT` is environment-specific and must be configured in Jenkins, not hardcoded in this repo.
+
+Example value:
+
+```txt
+<pagefly-public-root>/app-platform/apps/tailorkit
 ```
 
 ## Deploy Permission
@@ -39,7 +48,7 @@ npm run deploy:admin-artifact -- \
 CI/CD deploy identity must have write permission to:
 
 ```txt
-/var/www/pf-beta/public/app-platform/apps/tailorkit
+$TARGET_APP_ROOT
 ```
 
 Do not use a personal SSH user for deployment.
@@ -60,5 +69,5 @@ Rollback is pointer/copy promotion to a previous release, not rebuild.
 
 - Jenkins job wired to this repo's `Jenkinsfile`.
 - GitHub credential that can read this private repo.
-- CI/CD deploy identity with write permission to `/var/www/pf-beta/public/app-platform/apps/tailorkit`.
+- CI/CD deploy identity with write permission to the env-specific `TARGET_APP_ROOT`.
 - Decision whether Jenkins runs on beta host or deploys via mounted path/SSH wrapper.
