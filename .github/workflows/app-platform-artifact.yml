@@ -36,7 +36,19 @@ jobs:
       - name: Validate CI contract
         run: npm run ci:contract
 
+      - name: Determine artifact version
+        id: artifact-version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/tailorkit-v* ]]; then
+            echo "version=${GITHUB_REF_NAME#tailorkit-v}" >> "$GITHUB_OUTPUT"
+          else
+            ARTIFACT_VERSION=$(node -p "require('./apps/tailorkit/package.json').version")
+            echo "version=$ARTIFACT_VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build app-platform artifact
+        env:
+          APP_PLATFORM_ARTIFACT_VERSION: ${{ steps.artifact-version.outputs.version }}
         run: npm run build:artifact
 
       - name: Upload workflow artifact
