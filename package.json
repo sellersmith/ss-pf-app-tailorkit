@@ -22,6 +22,8 @@
   },
   "scripts": {
     "ci:contract": "node scripts/verify-ci-contract.mjs",
+    "build:artifact": "npm --workspace @pagefly/app-tailorkit run build:artifact",
+    "package:artifact": "npm --workspace @pagefly/app-tailorkit run package:artifact",
     "build:admin-artifact": "npm --workspace @pagefly/app-tailorkit run build:admin-artifact",
     "package:admin-artifact": "npm --workspace @pagefly/app-tailorkit run package:admin-artifact",
     "deploy:admin-artifact": "node scripts/deploy-app-platform-admin-artifact.mjs",
