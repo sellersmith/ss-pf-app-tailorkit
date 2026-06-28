@@ -198,7 +198,7 @@ function writeReleaseMetadata(tarballPath, artifact, sha256) {
 
 function packageArtifact(argv) {
   const args = parseArgs(argv)
-  const version = args.version ?? appPackageJson.version ?? rootPackageJson.version
+  const version = args.version ?? process.env.APP_PLATFORM_ARTIFACT_VERSION ?? appPackageJson.version ?? rootPackageJson.version
   const createdAt = args['created-at'] ?? new Date().toISOString()
   const gitSha = args['git-sha'] ?? getGitSha()
   const outDir = path.resolve(repoRoot, args.out ?? `dist/artifacts/${appName}-${version}`)
