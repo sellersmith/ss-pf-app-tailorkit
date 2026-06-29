@@ -22,6 +22,7 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json
 const tailorkitPackageJson = JSON.parse(fs.readFileSync(path.join(repoRoot, 'apps/tailorkit/package.json'), 'utf8'))
 const workflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/app-platform-artifact.yml'), 'utf8')
 const packageArtifactScript = fs.readFileSync(path.join(repoRoot, 'scripts/package-app-platform-artifact.mjs'), 'utf8')
+const adminRuntimeEntry = fs.readFileSync(path.join(repoRoot, 'apps/tailorkit/src/admin/runtime-entry.tsx'), 'utf8')
 const requiredScripts = [
   'build:artifact',
   'package:artifact',
@@ -73,6 +74,14 @@ if (!packageArtifactScript.includes('writeReleaseMetadata')) {
 
 if (!packageArtifactScript.includes('process.env.APP_PLATFORM_ARTIFACT_VERSION')) {
   throw new Error('TailorKit artifact package script must accept APP_PLATFORM_ARTIFACT_VERSION')
+}
+
+if (
+  !adminRuntimeEntry.includes('AppProvider as PolarisAppProvider') ||
+  !adminRuntimeEntry.includes('@shopify/polaris/locales/en.json') ||
+  !adminRuntimeEntry.includes('<PolarisAppProvider i18n={polarisTranslations}>')
+) {
+  throw new Error('TailorKit admin runtime must wrap its remote React root with Polaris AppProvider i18n')
 }
 
 const requiredRootExports = {

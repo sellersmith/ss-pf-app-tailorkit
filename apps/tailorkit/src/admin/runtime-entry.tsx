@@ -1,4 +1,6 @@
 import React from 'react'
+import { AppProvider as PolarisAppProvider } from '@shopify/polaris'
+import polarisTranslations from '@shopify/polaris/locales/en.json'
 import { createRoot, type Root } from 'react-dom/client'
 import type { AdminAppHost } from '../../../../web/core/src/app-platform/admin'
 import { TailorKitAdmin } from './index'
@@ -28,7 +30,11 @@ export function mount(container: Element, host: AdminAppHost): void {
   unmount(container)
 
   const root = createRoot(container)
-  root.render(<TailorKitAdmin host={host} />)
+  root.render(
+    <PolarisAppProvider i18n={polarisTranslations}>
+      <TailorKitAdmin host={host} />
+    </PolarisAppProvider>
+  )
   roots.set(container, root)
 }
 
