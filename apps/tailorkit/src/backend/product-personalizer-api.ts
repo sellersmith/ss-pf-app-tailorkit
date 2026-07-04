@@ -40,6 +40,7 @@ import {
   checkPersonalizedProductTaste,
   TAILORKIT_PERSONALIZED_PRODUCTS_METER,
 } from '../domain/personalized-product-taste-guard'
+import { compressData } from '../../upstream/tailorkit-app/app/utils/file-types/zip'
 
 function routeId(request: AppApiRequest): string {
   const parts = String(request.params.path || '')
@@ -128,6 +129,7 @@ const TAILORKIT_PRODUCT_MUTATION_ACTIONS = {
 
 const TAILORKIT_DEFAULT_PRODUCT_STATUSES = ['ACTIVE', 'DRAFT', 'UNLISTED'] as const
 const TAILORKIT_DUPLICATE_PRODUCT_STATUSES = new Set<string>(TAILORKIT_DEFAULT_PRODUCT_STATUSES)
+const TAILORKIT_ALL_PRODUCT_VARIANTS_PAGE_SIZE = 15
 const TAILORKIT_USER_JOURNEY_COLLECTION = 'user-journeys'
 
 interface TailorKitUserJourneyRecord {
@@ -305,6 +307,35 @@ function toTailorKitProduct(product: ShopifyResourceOption, integratedVariantIds
   }
 }
 
+// The copied ProductNVariantSelector (Charm builder + variant selector) reads TailorKit's raw
+// `IProduct` shape: `variants: { nodes: [...] }` with a `displayName` per variant, not the flat
+// `toTailorKitProduct` shape used by the plain existing-product selector. Mirrors upstream
+// `api.getProducts()` GraphQL projection closely enough for the client's filter/search logic.
+function toTailorKitProductVariantsListProduct(product: ShopifyResourceOption) {
+  return {
+    id: product.id,
+    title: product.title,
+    handle: product.handle,
+    status: product.status,
+    vendor: product.vendor,
+    productType: product.productType,
+    hasOnlyDefaultVariant: product.hasOnlyDefaultVariant,
+    featuredImage: product.featuredImage || (product.imageUrl ? { url: product.imageUrl } : undefined),
+    variants: {
+      nodes: (product.variants || []).map(variant => ({
+        id: variant.id,
+        title: variant.title,
+        price: variant.price,
+        compareAtPrice: variant.compareAtPrice,
+        displayName:
+          product.hasOnlyDefaultVariant || variant.title === 'Default Title'
+            ? product.title
+            : `${product.title} - ${variant.title}`,
+      })),
+    },
+  }
+}
+
 function productGidFromQuery(value: unknown): string {
   const id = queryText(value)
   if (!id) return ''
@@ -443,6 +474,49 @@ async function listIntegrationProducts(app: AppBackendRegisterContext, request: 
   })
 
   return { body: { success: true, products: products.map(product => toTailorKitProduct(product)) } }
+}
+
+/**
+ * Backs FETCH_ALL_PRODUCT_VARIANTS for the copied ProductNVariantSelector (Charm builder +
+ * variant selector). Upstream posts multipart FormData (not JSON) with pageInfo/isFetchNextPage/
+ * search filters and returns a pako-compressed, base64-encoded productsList; the client
+ * (fetchProductVariants.ts) decompresses it and expects each product's variants nested under
+ * `variants.nodes` with a `displayName`, matching TailorKit's raw `IProduct` shape.
+ */
+async function listAllProductVariants(app: AppBackendRegisterContext, request: AppApiRequest) {
+  const body = bodyObject<{
+    pageInfo?: { hasNextPage?: boolean; endCursor?: string | null }
+    isFetchNextPage?: unknown
+    withArchived?: unknown
+  }>(request.body)
+
+  const productName = bodyText(request.body, 'productName')
+  const variantName = bodyText(request.body, 'variantName')
+  const queryString = bodyText(request.body, 'queryString')
+  const productId = bodyText(request.body, 'productId')
+  const withArchived = body.withArchived === true || body.withArchived === 'true'
+  const isFetchNextPage = body.isFetchNextPage === true || body.isFetchNextPage === 'true'
+  const after = isFetchNextPage && body.pageInfo?.hasNextPage ? body.pageInfo.endCursor || undefined : undefined
+
+  const result = await app.ports.shopifyResources.products(request.context, {
+    query: productName || queryString || variantName || undefined,
+    productId: productId || undefined,
+    status: withArchived ? ['ACTIVE', 'DRAFT', 'UNLISTED', 'ARCHIVED'] : [...TAILORKIT_DEFAULT_PRODUCT_STATUSES],
+    after,
+    first: TAILORKIT_ALL_PRODUCT_VARIANTS_PAGE_SIZE,
+  })
+
+  const productsList = result.products.map(product => toTailorKitProductVariantsListProduct(product))
+  const compressedProductsList = Buffer.from(compressData(productsList)).toString('base64')
+
+  return {
+    body: {
+      success: true,
+      compressedProductsList,
+      pageInfo: result.pageInfo,
+      isCompressed: true,
+    },
+  }
 }
 
 async function listProductsByTemplate(app: AppBackendRegisterContext, request: AppApiRequest) {
@@ -1551,6 +1625,15 @@ export function registerTailorKitProductPersonalizerApi(app: AppBackendRegisterC
     capability: TAILORKIT_CAPABILITIES.readPersonalizedProducts,
     async handler(request) {
       return listIntegrationProductVariants(app, request)
+    },
+  })
+
+  app.api.route({
+    method: 'POST',
+    path: '/integration-all-product-variants',
+    capability: TAILORKIT_CAPABILITIES.readProductOptions,
+    async handler(request) {
+      return listAllProductVariants(app, request)
     },
   })
 

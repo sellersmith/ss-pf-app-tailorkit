@@ -108,6 +108,18 @@ export const tailorkitAuthenticatedFetchBridgeDecisions = [
       'Copied ProductEditor variant initialization reads existing app-scoped variant integration snapshots instead of falling through to TailorKit Mongo models.',
   },
   {
+    id: 'integration-all-product-variants-read',
+    coreFlow: 'detail',
+    adminRouteIds: ['personalized-products.$id'],
+    upstreamSource: 'app/routes/api.integrations/route.ts',
+    upstreamEvidence: 'FETCH_ALL_PRODUCT_VARIANTS',
+    upstreamEndpoint: 'POST /api/integrations?action=fetchAllProductVariants',
+    pageflyEndpoint: 'POST /integration-all-product-variants',
+    status: 'mapped-form-action',
+    notes:
+      'Copied ProductNVariantSelector (Charm builder + variant selector) lists all Shopify products/variants through ctx.ports.shopifyResources.products. Unlike the sibling fetchProductVariantsByVariantIds action, the upstream handler reads request.formData() instead of request.json(), so this is a form-action bridge.',
+  },
+  {
     id: 'integration-products-by-ids-read',
     coreFlow: 'detail',
     adminRouteIds: ['personalized-products.$id'],
@@ -891,6 +903,14 @@ export const tailorkitPageFlyApiRouteBridgeDecisions = [
     sourceDecisionIds: ['integration-product-variants-by-ids-read'],
     status: 'source-mapped-adapter',
     notes: 'Backs copied ProductEditor variant initialization by reading scoped variant integration snapshots.',
+  },
+  {
+    method: 'POST',
+    path: '/integration-all-product-variants',
+    sourceDecisionIds: ['integration-all-product-variants-read'],
+    status: 'source-mapped-adapter',
+    notes:
+      'Backs copied ProductNVariantSelector (Charm builder + variant selector) product/variant listing through the Shopify resource port, compressed the same way the upstream FETCH_ALL_PRODUCT_VARIANTS action does.',
   },
   {
     method: 'POST',
