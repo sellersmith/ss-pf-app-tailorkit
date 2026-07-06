@@ -1,6 +1,6 @@
 import type { AppBackendPorts, AppContext } from '../../../../web/server/src/app-platform/contracts'
 import { getValidPropertyNamePrefix, isOneTickProperty, TAILORKIT_PROPERTY_PREFIX } from '../domain/order-property-matchers'
-import type { TailorKitOrderRecord } from '../domain/order-record'
+import type { TailorKitOrderCustomerSnapshot, TailorKitOrderRecord } from '../domain/order-record'
 import { createTailorKitOrderRepository } from './order-repository'
 import { createGraftedGeneratePrintImage, createImportOrderAndCustomer } from './order-capture-graft'
 
@@ -79,8 +79,27 @@ function convertUSDToShopCurrency(
   }
 }
 
-function createOrderModel(ports: AppBackendPorts, ctx: AppContext) {
+/**
+ * The graft (`order-capture-graft.ts`, byte-identical to upstream) always resolves the order's
+ * `customer` field to a bare Mongo id string (`c`) before calling `Order.updateOne`/`findOneAndUpdate`,
+ * discarding the customer object it just passed to `Customer.updateOne` a few lines earlier. Since the
+ * graft body must stay untouched, this shim substitutes that id string back out for the full customer
+ * snapshot `createCustomerModel` captured for the same capture run, so the stored order record — and the
+ * copied CustomerCard reading `order.customer.{first_name,last_name,email,phone,default_address}` — sees
+ * real customer data instead of `undefined`/an opaque id.
+ */
+function createOrderModel(
+  ports: AppBackendPorts,
+  ctx: AppContext,
+  getCustomerSnapshot: () => TailorKitOrderCustomerSnapshot | null
+) {
   const repository = createTailorKitOrderRepository(ports, ctx)
+
+  function withCustomerSnapshot(update: Record<string, unknown>): Record<string, unknown> {
+    if (!('customer' in update)) return update
+    const snapshot = getCustomerSnapshot()
+    return snapshot ? { ...update, customer: snapshot } : update
+  }
 
   return {
     async findOne(query: OrderQuery) {
@@ -91,7 +110,10 @@ function createOrderModel(ports: AppBackendPorts, ctx: AppContext) {
       const id = String(query.id ?? '')
       const existing = await repository.getById(id)
       if (!existing && !options?.upsert) return { matchedCount: 0 }
-      const next = toStoredOrder(ctx.shopDomain, id, { ...(existing || {}), ...mergeOrderUpdate(update) })
+      const next = toStoredOrder(ctx.shopDomain, id, {
+        ...(existing || {}),
+        ...withCustomerSnapshot(mergeOrderUpdate(update)),
+      })
       await repository.upsert(next)
       return { matchedCount: existing ? 1 : 0, upsertedId: existing ? undefined : id }
     },
@@ -99,7 +121,10 @@ function createOrderModel(ports: AppBackendPorts, ctx: AppContext) {
       const id = String(query.id ?? '')
       const existing = await repository.getById(id)
       if (!existing && !options?.upsert) return null
-      const next = toStoredOrder(ctx.shopDomain, id, { ...(existing || {}), ...mergeOrderUpdate(update) })
+      const next = toStoredOrder(ctx.shopDomain, id, {
+        ...(existing || {}),
+        ...withCustomerSnapshot(mergeOrderUpdate(update)),
+      })
       await repository.upsert(next)
       return toOrderDocument(next)
     },
@@ -112,15 +137,38 @@ function createOrderModel(ports: AppBackendPorts, ctx: AppContext) {
   }
 }
 
+function asAddress(value: unknown): TailorKitOrderCustomerSnapshot['default_address'] {
+  return value && typeof value === 'object' ? (value as TailorKitOrderCustomerSnapshot['default_address']) : undefined
+}
+
+/**
+ * Mirrors the graft's `Customer.updateOne({ shopDomain, id: customerId }, customerData, { upsert: true })`
+ * call. The graft only uses the resolved Mongo id (`c`) afterwards, so this captures the customer object
+ * passed in `customerData` as `lastSnapshot` for `createOrderModel` to re-attach to the order record.
+ */
 function createCustomerModel() {
+  let lastSnapshot: TailorKitOrderCustomerSnapshot | null = null
+
   return {
-    async updateOne(query: { id?: string | number }, _update: unknown, options?: { upsert?: boolean }) {
-      return { upsertedId: options?.upsert ? String(query.id ?? 'customer') : undefined }
+    model: {
+      async updateOne(query: { id?: string | number }, update: unknown, options?: { upsert?: boolean }) {
+        const data = update && typeof update === 'object' ? (update as Record<string, unknown>) : {}
+        lastSnapshot = {
+          id: typeof query.id === 'number' ? query.id : Number(query.id) || undefined,
+          email: typeof data.email === 'string' ? data.email : undefined,
+          first_name: typeof data.first_name === 'string' ? data.first_name : undefined,
+          last_name: typeof data.last_name === 'string' ? data.last_name : undefined,
+          phone: typeof data.phone === 'string' ? data.phone : undefined,
+          default_address: asAddress(data.default_address),
+        }
+        return { upsertedId: options?.upsert ? String(query.id ?? 'customer') : undefined }
+      },
+      async findOne(query: { id?: string | number }) {
+        const id = String(query.id ?? 'customer')
+        return { _id: id, id }
+      },
     },
-    async findOne(query: { id?: string | number }) {
-      const id = String(query.id ?? 'customer')
-      return { _id: id, id }
-    },
+    getLastSnapshot: () => lastSnapshot,
   }
 }
 
@@ -147,9 +195,11 @@ export function createOrderCaptureRunner(
     PRINT_IMAGE_FAILURE_SLACK_CHANNEL: 'U03TPREDM1S',
   })
 
+  const customerModel = createCustomerModel()
+
   const importOrderAndCustomer = createImportOrderAndCustomer({
-    Order: createOrderModel(ports, ctx),
-    Customer: createCustomerModel(),
+    Order: createOrderModel(ports, ctx, customerModel.getLastSnapshot),
+    Customer: customerModel.model,
     Shop: { updateOne: async () => throwOutOfScope('not-wired-yet') },
     PrintArea: { findOne: async () => throwOutOfScope('print-image-out-of-scope') },
     ShopifySession: { findOne: async () => throwOutOfScope('print-image-out-of-scope') },

@@ -50,6 +50,8 @@ const TAILORKIT_SHOPIFY_ACTIONS = {
   getProducts: 'getProducts',
   getProductImages: 'getProductImages',
   deleteProduct: 'deleteProduct',
+  checkUserHasProduct: 'checkUserHasProduct',
+  getAppHandle: 'getAppHandle',
 } as const
 
 const TAILORKIT_PRODUCT_MUTATION_ACTIONS = {
@@ -391,6 +393,14 @@ export function resolveTailorKitCopiedRouteRequestBridge(
 
     if (action === TAILORKIT_SHOPIFY_ACTIONS.deleteProduct) {
       return blocked('provider-imported-product-rollback-delete', method, `${pathname}${search}`)
+    }
+
+    if (action === TAILORKIT_SHOPIFY_ACTIONS.checkUserHasProduct) {
+      return mapped('shopify-has-product-read', method, `${pathname}${search}`, 'GET', '/shopify-has-product')
+    }
+
+    if (action === TAILORKIT_SHOPIFY_ACTIONS.getAppHandle) {
+      return mapped('shopify-app-handle-read', method, `${pathname}${search}`, 'GET', '/shopify-app-handle')
     }
 
     return unsupported(

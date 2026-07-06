@@ -61,12 +61,26 @@ export interface TailorKitOrderLineItem {
   integration?: unknown
 }
 
+/** Verbatim Shopify address shape (billing/shipping/customer default_address) — no separate schema needed. */
+export interface TailorKitOrderAddress {
+  [key: string]: unknown
+  first_name?: string
+  last_name?: string
+  address1?: string
+  address2?: string
+  city?: string
+  zip?: string
+  country?: string
+}
+
 /** Embedded customer snapshot (no separate Customer collection in app-platform). */
 export interface TailorKitOrderCustomerSnapshot {
   id?: number
   email?: string
   first_name?: string
   last_name?: string
+  phone?: string
+  default_address?: TailorKitOrderAddress
 }
 
 /** Captured TailorKit order record stored in the `orders` app-data collection. */
@@ -84,6 +98,8 @@ export interface TailorKitOrderRecord {
   total_price?: string
   shopDomain: string
   customer?: TailorKitOrderCustomerSnapshot
+  billing_address?: TailorKitOrderAddress
+  shipping_address?: TailorKitOrderAddress
   line_items: TailorKitOrderLineItem[]
   /** True when ≥1 line item carries a TailorKit (or OneTick) property — set by capture, not the mapper. */
   isTailorKitOrder?: boolean
@@ -163,11 +179,14 @@ function mapLineItem(value: unknown, currencyCode: string | undefined): TailorKi
 function mapCustomer(value: unknown): TailorKitOrderCustomerSnapshot | undefined {
   if (!value || typeof value !== 'object') return undefined
   const entry = value as Record<string, unknown>
+  const defaultAddress = asRecord(entry.default_address)
   return {
     id: asNumber(entry.id),
     email: asString(entry.email),
     first_name: asString(entry.first_name),
     last_name: asString(entry.last_name),
+    phone: asString(entry.phone),
+    default_address: Object.keys(defaultAddress).length ? (defaultAddress as TailorKitOrderAddress) : undefined,
   }
 }
 

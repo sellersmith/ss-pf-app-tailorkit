@@ -1179,6 +1179,39 @@ export function registerTailorKitProductPersonalizerApi(app: AppBackendRegisterC
     },
   })
 
+  /**
+   * Backs the copied checkUserHasProduct client (GET /api/shopify?action=checkUserHasProduct), which
+   * only needs to know whether the store has at least one product. Reuses the same shopifyResources.products
+   * capability as the existing /shopify-products route, but caps the query at a single product.
+   */
+  app.api.route({
+    method: 'GET',
+    path: '/shopify-has-product',
+    capability: TAILORKIT_CAPABILITIES.readProductOptions,
+    async handler(request) {
+      const result = await app.ports.shopifyResources.products(request.context, {
+        first: 1,
+        status: [...TAILORKIT_DEFAULT_PRODUCT_STATUSES],
+      })
+
+      return { body: { success: true, data: result.products.length > 0 } }
+    },
+  })
+
+  /**
+   * Backs the copied useAppHandle hook (GET /api/shopify?action=getAppHandle). Upstream's loader
+   * returns the app handle as a bare JSON string (no {success,data} envelope) and the client assigns
+   * the response directly, so this mirrors that shape instead of the generic success/data wrapper.
+   */
+  app.api.route({
+    method: 'GET',
+    path: '/shopify-app-handle',
+    capability: TAILORKIT_CAPABILITIES.readProductOptions,
+    handler() {
+      return { body: process.env.APP_HANDLE || '' }
+    },
+  })
+
   app.api.route({
     method: 'GET',
     path: '/products',

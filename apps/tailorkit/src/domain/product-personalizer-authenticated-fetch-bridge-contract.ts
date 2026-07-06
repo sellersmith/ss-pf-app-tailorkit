@@ -649,6 +649,30 @@ export const tailorkitAuthenticatedFetchBridgeDecisions = [
       'Copied simplified-onboarding product-image lookup is derived from ctx.ports.shopifyResources.productsByIds snapshots.',
   },
   {
+    id: 'shopify-has-product-read',
+    coreFlow: 'support',
+    adminRouteIds: ['personalized-products._index', 'personalized-products.loading'],
+    upstreamSource: 'app/routes/api.shopify/route.ts',
+    upstreamEvidence: 'SHOPIFY_API_ACTIONS.CHECK_USER_HAS_PRODUCT',
+    upstreamEndpoint: 'GET /api/shopify?action=checkUserHasProduct',
+    pageflyEndpoint: 'GET /shopify-has-product',
+    status: 'mapped-get',
+    notes:
+      'Copied checkUserHasProduct client (app/shopify/graphql/products/fns.client.ts) checks whether the store has at least one product. Backed by the same ctx.ports.shopifyResources.products capability as shopify-products-by-ids-read.',
+  },
+  {
+    id: 'shopify-app-handle-read',
+    coreFlow: 'support',
+    adminRouteIds: ['personalized-products._index', 'personalized-products.loading'],
+    upstreamSource: 'app/routes/api.shopify/route.ts',
+    upstreamEvidence: 'SHOPIFY_API_ACTIONS.GET_APP_HANDLE',
+    upstreamEndpoint: 'GET /api/shopify?action=getAppHandle',
+    pageflyEndpoint: 'GET /shopify-app-handle',
+    status: 'mapped-get',
+    notes:
+      'Copied useAppHandle hook assigns the raw authenticatedFetch response directly (no {success,data} envelope), so the PageFly route returns the app handle string as the bare body, sourced from process.env.APP_HANDLE like the copied root loader already does.',
+  },
+  {
     id: 'product-options-read',
     coreFlow: 'support',
     adminRouteIds: ['personalized-products.loading'],
@@ -818,6 +842,20 @@ export const tailorkitPageFlyApiRouteBridgeDecisions = [
     sourceDecisionIds: ['shopify-product-images-read'],
     status: 'source-mapped-adapter',
     notes: 'Backs copied getProductImages lookups from normalized Shopify product snapshots.',
+  },
+  {
+    method: 'GET',
+    path: '/shopify-has-product',
+    sourceDecisionIds: ['shopify-has-product-read'],
+    status: 'source-mapped-adapter',
+    notes: 'Backs copied checkUserHasProduct lookups through the Shopify resource port (first: 1 products query).',
+  },
+  {
+    method: 'GET',
+    path: '/shopify-app-handle',
+    sourceDecisionIds: ['shopify-app-handle-read'],
+    status: 'source-mapped-adapter',
+    notes: 'Backs copied useAppHandle lookups from process.env.APP_HANDLE, matching the copied root loader.',
   },
   {
     method: 'GET',
