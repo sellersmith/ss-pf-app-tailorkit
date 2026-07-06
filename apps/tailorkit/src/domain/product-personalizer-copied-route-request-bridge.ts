@@ -44,6 +44,8 @@ const TAILORKIT_INTEGRATIONS_BULK_ACTIONS = {
   checkSharedTemplatesWithPublished: 'checkSharedTemplatesWithPublished',
   fetchIntegrationsByVariantIds: 'fetchIntegrationsByVariantIds',
   fetchIntegrationsByTemplate: 'fetchIntegrationsByTemplate',
+  fetchCollections: 'fetchCollections',
+  fetchCollectionProducts: 'fetchCollectionProducts',
 } as const
 
 const TAILORKIT_SHOPIFY_ACTIONS = {
@@ -635,6 +637,20 @@ export function resolveTailorKitCopiedRouteRequestBridge(
         `${pathname}${search}`,
         'POST',
         `/integrations-bulk${search}`
+      )
+    }
+
+    if (action === TAILORKIT_INTEGRATIONS_BULK_ACTIONS.fetchCollections) {
+      return mapped('integration-collections-read', method, `${pathname}${search}`, 'POST', '/integration-collections')
+    }
+
+    if (action === TAILORKIT_INTEGRATIONS_BULK_ACTIONS.fetchCollectionProducts) {
+      return mapped(
+        'integration-collection-products-read',
+        method,
+        `${pathname}${search}`,
+        'POST',
+        '/integration-collection-products'
       )
     }
 
