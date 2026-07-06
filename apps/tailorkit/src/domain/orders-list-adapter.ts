@@ -83,6 +83,8 @@ export interface TailorKitOrderListRow {
   appGeneratedRevenue?: number
   appGeneratedRevenueInShopCurrency?: number
   appGeneratedRevenueInOrderCurrency?: number
+  billing_address?: TailorKitOrderRecord['billing_address']
+  shipping_address?: TailorKitOrderRecord['shipping_address']
 }
 
 export function createTailorKitOrderListRow(record: TailorKitOrderRecord): TailorKitOrderListRow {
@@ -99,5 +101,7 @@ export function createTailorKitOrderListRow(record: TailorKitOrderRecord): Tailo
     appGeneratedRevenue: record.appGeneratedRevenue,
     appGeneratedRevenueInShopCurrency: record.appGeneratedRevenueInShopCurrency,
     appGeneratedRevenueInOrderCurrency: record.appGeneratedRevenueInOrderCurrency,
+    billing_address: record.billing_address,
+    shipping_address: record.shipping_address,
   }
 }
