@@ -132,6 +132,30 @@ export const tailorkitAuthenticatedFetchBridgeDecisions = [
       'Copied ProductEditor variant fallback reads Shopify products through ctx.ports.shopifyResources.productsByIds.',
   },
   {
+    id: 'integration-collections-read',
+    coreFlow: 'detail',
+    adminRouteIds: ['personalized-products.$id'],
+    upstreamSource: 'app/routes/api.integrations/route.ts',
+    upstreamEvidence: 'FETCH_COLLECTIONS',
+    upstreamEndpoint: 'POST /api/integrations?action=fetchCollections',
+    pageflyEndpoint: 'POST /integration-collections',
+    status: 'mapped-form-action',
+    notes:
+      'Copied CollectionProductSelector (Charm builder "Collections" catalog) lists Shopify collections through ctx.ports.shopifyResources.collections. Upstream handler reads request.formData() instead of request.json(), so this is a form-action bridge.',
+  },
+  {
+    id: 'integration-collection-products-read',
+    coreFlow: 'detail',
+    adminRouteIds: ['personalized-products.$id'],
+    upstreamSource: 'app/routes/api.integrations/route.ts',
+    upstreamEvidence: 'FETCH_COLLECTION_PRODUCTS',
+    upstreamEndpoint: 'POST /api/integrations?action=fetchCollectionProducts',
+    pageflyEndpoint: 'POST /integration-collection-products',
+    status: 'mapped-form-action',
+    notes:
+      'Copied CollectionProductSelector expand-row product listing through ctx.ports.shopifyResources.collectionProducts, compressed the same way the upstream FETCH_COLLECTION_PRODUCTS action does.',
+  },
+  {
     id: 'overlay-lookup-read',
     coreFlow: 'detail',
     adminRouteIds: ['personalized-products.$id'],
@@ -956,6 +980,21 @@ export const tailorkitPageFlyApiRouteBridgeDecisions = [
     sourceDecisionIds: ['integration-products-by-ids-read'],
     status: 'source-mapped-adapter',
     notes: 'Backs copied ProductEditor product fallback through the Shopify resource port.',
+  },
+  {
+    method: 'POST',
+    path: '/integration-collections',
+    sourceDecisionIds: ['integration-collections-read'],
+    status: 'source-mapped-adapter',
+    notes: 'Backs copied CollectionProductSelector collection listing through the Shopify resource port.',
+  },
+  {
+    method: 'POST',
+    path: '/integration-collection-products',
+    sourceDecisionIds: ['integration-collection-products-read'],
+    status: 'source-mapped-adapter',
+    notes:
+      'Backs copied CollectionProductSelector expand-row product listing through the Shopify resource port, compressed the same way the upstream FETCH_COLLECTION_PRODUCTS action does.',
   },
   {
     method: 'GET',

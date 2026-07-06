@@ -130,6 +130,8 @@ const TAILORKIT_PRODUCT_MUTATION_ACTIONS = {
 const TAILORKIT_DEFAULT_PRODUCT_STATUSES = ['ACTIVE', 'DRAFT', 'UNLISTED'] as const
 const TAILORKIT_DUPLICATE_PRODUCT_STATUSES = new Set<string>(TAILORKIT_DEFAULT_PRODUCT_STATUSES)
 const TAILORKIT_ALL_PRODUCT_VARIANTS_PAGE_SIZE = 15
+const TAILORKIT_COLLECTION_LIST_PAGE_SIZE = 50
+const TAILORKIT_COLLECTION_PRODUCTS_PAGE_SIZE = 50
 const TAILORKIT_USER_JOURNEY_COLLECTION = 'user-journeys'
 
 interface TailorKitUserJourneyRecord {
@@ -336,6 +338,49 @@ function toTailorKitProductVariantsListProduct(product: ShopifyResourceOption) {
   }
 }
 
+// The copied CollectionProductSelector reads TailorKit's raw `ShopifyCollection` shape:
+// `{ id, title, handle, image?: { url, altText } }`. Mirrors the upstream `queryForCollections`
+// projection closely enough for the client's list/search/thumbnail rendering.
+function toTailorKitCollectionOption(collection: ShopifyResourceOption) {
+  return {
+    id: collection.id,
+    title: collection.title,
+    handle: collection.handle,
+    image: collection.featuredImage
+      ? { url: collection.featuredImage.url, altText: collection.featuredImage.altText || undefined }
+      : collection.imageUrl
+        ? { url: collection.imageUrl }
+        : undefined,
+  }
+}
+
+// The copied CollectionProductSelector expand row reads TailorKit's raw `IProduct` shape:
+// `variants: { nodes: [...] }` with a `displayName` per variant, same as the sibling
+// ProductNVariantSelector projection (toTailorKitProductVariantsListProduct in the charm/variant
+// selector fix). `priceRangeV2` is a client-side pricing fallback only used when a variant has no
+// price of its own; every variant returned here always carries its own Shopify price, so it is
+// intentionally omitted rather than fabricating a currency code we cannot source reliably.
+function toTailorKitCollectionProduct(product: ShopifyResourceOption) {
+  return {
+    id: product.id,
+    title: product.title,
+    handle: product.handle,
+    featuredImage: product.featuredImage || (product.imageUrl ? { url: product.imageUrl } : undefined),
+    variants: {
+      nodes: (product.variants || []).map(variant => ({
+        id: variant.id,
+        title: variant.title,
+        price: variant.price,
+        displayName:
+          product.hasOnlyDefaultVariant || variant.title === 'Default Title'
+            ? product.title
+            : `${product.title} - ${variant.title}`,
+        image: variant.imageUrl ? { url: variant.imageUrl } : undefined,
+      })),
+    },
+  }
+}
+
 function productGidFromQuery(value: unknown): string {
   const id = queryText(value)
   if (!id) return ''
@@ -507,6 +552,69 @@ async function listAllProductVariants(app: AppBackendRegisterContext, request: A
   })
 
   const productsList = result.products.map(product => toTailorKitProductVariantsListProduct(product))
+  const compressedProductsList = Buffer.from(compressData(productsList)).toString('base64')
+
+  return {
+    body: {
+      success: true,
+      compressedProductsList,
+      pageInfo: result.pageInfo,
+      isCompressed: true,
+    },
+  }
+}
+
+function paginationAfter(body: unknown): string | undefined {
+  const { pageInfo, isFetchNextPage } = bodyObject<{
+    pageInfo?: { hasNextPage?: boolean; endCursor?: string | null }
+    isFetchNextPage?: unknown
+  }>(body)
+  const shouldFetchNextPage = isFetchNextPage === true || isFetchNextPage === 'true'
+  return shouldFetchNextPage && pageInfo?.hasNextPage ? pageInfo.endCursor || undefined : undefined
+}
+
+/**
+ * Backs FETCH_COLLECTIONS for the copied CollectionProductSelector (Charm builder "Collections"
+ * catalog). Upstream posts multipart FormData (not JSON) with pageInfo/query and returns the raw
+ * collections list — unlike the products/variants actions, this response is not compressed.
+ */
+async function listIntegrationCollections(app: AppBackendRegisterContext, request: AppApiRequest) {
+  const query = bodyText(request.body, 'query')
+
+  const result = await app.ports.shopifyResources.collections(request.context, {
+    query: query || undefined,
+    after: paginationAfter(request.body),
+    first: TAILORKIT_COLLECTION_LIST_PAGE_SIZE,
+  })
+
+  return {
+    body: {
+      success: true,
+      collections: result.collections.map(toTailorKitCollectionOption),
+      pageInfo: result.pageInfo,
+    },
+  }
+}
+
+/**
+ * Backs FETCH_COLLECTION_PRODUCTS for the copied CollectionProductSelector expand row. Upstream
+ * posts multipart FormData with collectionId/pageInfo and returns a pako-compressed, base64-encoded
+ * productsList; the client decompresses it and expects each product's variants nested under
+ * `variants.nodes` with a `displayName`, matching TailorKit's raw `IProduct` shape.
+ */
+async function listIntegrationCollectionProducts(app: AppBackendRegisterContext, request: AppApiRequest) {
+  const collectionId = bodyText(request.body, 'collectionId')
+  if (!collectionId) {
+    return { status: 400, body: { success: false, message: 'Invalid or missing collectionId' } }
+  }
+
+  const result = await app.ports.shopifyResources.collectionProducts(request.context, {
+    collectionId,
+    after: paginationAfter(request.body),
+    first: TAILORKIT_COLLECTION_PRODUCTS_PAGE_SIZE,
+  })
+
+  const productsList = result.products.map(product => toTailorKitCollectionProduct(product))
   const compressedProductsList = Buffer.from(compressData(productsList)).toString('base64')
 
   return {
@@ -1676,6 +1784,24 @@ export function registerTailorKitProductPersonalizerApi(app: AppBackendRegisterC
     capability: TAILORKIT_CAPABILITIES.readProductOptions,
     async handler(request) {
       return listIntegrationProducts(app, request)
+    },
+  })
+
+  app.api.route({
+    method: 'POST',
+    path: '/integration-collections',
+    capability: TAILORKIT_CAPABILITIES.readProductOptions,
+    async handler(request) {
+      return listIntegrationCollections(app, request)
+    },
+  })
+
+  app.api.route({
+    method: 'POST',
+    path: '/integration-collection-products',
+    capability: TAILORKIT_CAPABILITIES.readProductOptions,
+    async handler(request) {
+      return listIntegrationCollectionProducts(app, request)
     },
   })
 
