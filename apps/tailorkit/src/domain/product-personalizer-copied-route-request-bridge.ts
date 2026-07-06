@@ -39,6 +39,7 @@ const TAILORKIT_INTEGRATIONS_BULK_ACTIONS = {
   unpublishPersonalizedProducts: 'unpublishPersonalizedProducts',
   fetchProductVariantMetafields: 'fetchProductVariantMetafields',
   fetchProductVariantsByVariantIds: 'fetchProductVariantsByVariantIds',
+  fetchAllProductVariants: 'fetchAllProductVariants',
   fetchProductByProductId: 'fetchProductByProductId',
   checkSharedTemplatesWithPublished: 'checkSharedTemplatesWithPublished',
   fetchIntegrationsByVariantIds: 'fetchIntegrationsByVariantIds',
@@ -557,6 +558,16 @@ export function resolveTailorKitCopiedRouteRequestBridge(
         `${pathname}${search}`,
         'POST',
         '/integration-product-variants'
+      )
+    }
+
+    if (action === TAILORKIT_INTEGRATIONS_BULK_ACTIONS.fetchAllProductVariants) {
+      return mapped(
+        'integration-all-product-variants-read',
+        method,
+        `${pathname}${search}`,
+        'POST',
+        '/integration-all-product-variants'
       )
     }
 
