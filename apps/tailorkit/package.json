@@ -3,18 +3,30 @@
   "version": "0.1.0",
   "private": true,
   "description": "PageFly internal TailorKit app-platform marketplace shell",
-  "main": "src/backend/plugin.ts",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./manifest": "./manifest.ts",
+    "./admin": "./src/admin/index.tsx",
+    "./backend/plugin": "./src/backend/plugin.ts",
+    "./product-editor-route-contract": "./src/admin/product-editor-island/route-contract.ts",
+    "./domain/order-record": "./domain/order-record.ts",
+    "./domain/order-property-matchers": "./domain/order-property-matchers.ts"
+  },
   "scripts": {
     "build": "npm run build:server && npm run build:admin",
     "build:with-theme": "npm run build && npm run build:theme",
     "build:server": "npm --workspace pagefly-server run build:apps -- --app tailorkit",
     "build:theme": "npm --workspace pagefly-app-platform-src run build -- --app tailorkit",
     "build:admin": "npm run build:copied-routes-runtime && node scripts/materialize-admin-assets.mjs",
+    "build:artifact": "npm run build:admin-runtime && npm run build:copied-routes-runtime && npm run package:artifact",
+    "package:artifact": "node ../../scripts/package-app-platform-artifact.mjs",
     "build:admin-artifact": "npm run build:copied-routes-runtime && npm run package:admin-artifact",
     "package:admin-artifact": "node ../../scripts/package-app-platform-admin-artifact.mjs --app tailorkit",
     "build:product-editor-probe": "TAILORKIT_PRODUCT_EDITOR_BUILD_MODE=probe vite build --config vite.product-editor-island.config.mts",
     "build:product-editor-runtime": "TAILORKIT_PRODUCT_EDITOR_BUILD_MODE=runtime vite build --config vite.product-editor-island.config.mts",
-    "build:copied-routes-runtime": "vite build --config vite.copied-routes.config.mts"
+    "build:copied-routes-runtime": "vite build --config vite.copied-routes.config.mts",
+    "build:admin-runtime": "vite build --config vite.admin-runtime.config.mts"
   },
   "peerDependencies": {
     "@shopify/app-bridge-react": "^4.2.3",

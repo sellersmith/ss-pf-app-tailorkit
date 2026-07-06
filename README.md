@@ -1,23 +1,17 @@
 # ss-pf-app-tailorkit
 
-TailorKit admin artifact producer for PageFly app-platform.
+TailorKit artifact producer for the PageFly App Platform.
 
-This repo exists to split TailorKit admin build/deploy from the PageFly Core Jenkins build.
+This repo builds TailorKit into an immutable app-platform artifact that PageFly consumes by `url + version + sha256`. PageFly CI must not checkout or build this repo as source.
 
-## Status
-
-Build-ready TailorKit admin artifact repo.
-
-TailorKit admin source is present under `apps/tailorkit`. CI can build and package the admin static artifact without PageFly Core.
-
-## Target Flow
+## Flow
 
 ```txt
-ss-pf-app-tailorkit CI
-  -> build TailorKit admin static artifact
-  -> package artifacts/tailorkit-admin-static
-  -> deploy to beta/prod static path
-  -> promote current
+ss-pf-app-tailorkit
+  -> npm run ci:contract
+  -> npm run build:artifact
+  -> publish GitHub Release assets
+  -> PageFly downloads artifact from config
 ```
 
 Avoid:
@@ -25,71 +19,84 @@ Avoid:
 ```txt
 PageFly CI
   -> checkout TailorKit source
-  -> build TailorKit inside PageFly Core build
+  -> build TailorKit inside PageFly Core/Server build
 ```
 
-## Branch Flow
+## Branch And Tag Flow
 
 ```txt
-wip -> beta -> rc -> main
+wip -> rc -> main/master
+feature/* -> wip
+hotfix/* -> main/master, then back-merge to rc and wip
 ```
 
-Channel mapping:
+Release tags:
 
 ```txt
-wip  -> tailorkit-wip
-beta -> tailorkit-beta
-rc   -> tailorkit-rc
-main -> tailorkit-live
+tailorkit-v0.1.0-beta.12
+tailorkit-v0.1.0-rc.3
+tailorkit-v0.1.0
 ```
 
 ## Commands
 
-Verify repo contract:
-
 ```bash
+npm ci
 npm run ci:contract
+npm run build:artifact
 ```
 
-Build admin artifact:
+Output:
 
-```bash
-npm run build:admin-artifact
-```
-
-Deploy artifact:
-
-```bash
-npm run deploy:admin-artifact -- \
-  --artifact artifacts/tailorkit-admin-static \
-  --target-app-root "$TARGET_APP_ROOT"
-```
-
-Dry-run deploy:
-
-```bash
-npm run deploy:admin-artifact:dry-run -- \
-  --artifact artifacts/tailorkit-admin-static \
-  --target-app-root "$TARGET_APP_ROOT"
+```txt
+dist/artifacts/ss-pf-app-tailorkit-<version>.tgz
+dist/artifacts/ss-pf-app-tailorkit-<version>.tgz.sha256
+dist/artifacts/ss-pf-app-tailorkit-<version>.tgz.release.json
 ```
 
 ## Artifact Layout
 
 ```txt
-artifacts/tailorkit-admin-static/
-  artifact-manifest.json
-  admin/copied-routes/manifest.json
-  admin/copied-routes/*
-  fonts/*
+artifact.json
+admin/runtime/manifest.json
+admin/copied-routes/manifest.json
+server/plugin.js
+server/src/**
+theme-extension/theme-surfaces.js
+fonts/*
+checksums.sha256
 ```
 
-## Deploy Layout
+## CI
+
+GitHub Actions workflow:
 
 ```txt
-$TARGET_APP_ROOT/
-  releases/<artifact-id>/
-  current/
-  releases/ledger.jsonl
+.github/workflows/app-platform-artifact.yml
 ```
 
-Default promote strategy is copy. Symlink can be enabled with `--strategy symlink` if static hosting supports it.
+It builds artifacts on PR and `wip`/`rc`/`main`/`master`, uploads workflow artifacts, and publishes GitHub Release assets when a `tailorkit-v*` tag is pushed.
+
+## PageFly Config
+
+Use the generated `.tgz.release.json` to create PageFly config:
+
+```bash
+npm run app-platform:create-config -- \
+  --metadata ./ss-pf-app-tailorkit-0.1.0.tgz.release.json \
+  --out ./config/app-platform-artifacts.beta.json
+```
+
+PageFly consumes:
+
+```json
+{
+  "apps": {
+    "tailorkit": {
+      "version": "0.1.0",
+      "url": "https://github.com/sellersmith/ss-pf-app-tailorkit/releases/download/tailorkit-v0.1.0/ss-pf-app-tailorkit-0.1.0.tgz",
+      "sha256": "<sha256>"
+    }
+  }
+}
+```

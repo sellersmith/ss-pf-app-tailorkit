@@ -4,70 +4,79 @@
 
 `sellersmith/ss-pf-app-tailorkit`
 
-Private GitHub repo for TailorKit app-platform admin artifact build/deploy.
-
 ## Goal
 
-Create CI/CD for TailorKit admin static artifact independent from PageFly Core build.
+Publish TailorKit app-platform artifacts independently from PageFly Core/Server builds.
 
-## Required Jenkins Job
-
-Trigger branches:
+PageFly should consume immutable GitHub Release assets by:
 
 ```txt
-wip
-beta
-rc
-main
+version + url + sha256
 ```
 
-Suggested stages:
+## Required CI
+
+Current GitHub Actions workflow:
+
+```txt
+.github/workflows/app-platform-artifact.yml
+```
+
+Stages:
 
 ```bash
-npm install
+npm ci
 npm run ci:contract
-npm run build:admin-artifact
-npm run deploy:admin-artifact:dry-run -- \
-  --artifact artifacts/tailorkit-admin-static \
-  --target-app-root "$TARGET_APP_ROOT"
-npm run deploy:admin-artifact -- \
-  --artifact artifacts/tailorkit-admin-static \
-  --target-app-root "$TARGET_APP_ROOT"
+npm run build:artifact
+upload dist/artifacts/*.tgz
+upload dist/artifacts/*.tgz.sha256
+upload dist/artifacts/*.tgz.release.json
+publish GitHub Release assets on tailorkit-v* tags
 ```
 
-`TARGET_APP_ROOT` is environment-specific and must be configured in Jenkins, not hardcoded in this repo.
-
-Example value:
+## Release Tags
 
 ```txt
-<pagefly-public-root>/app-platform/apps/tailorkit
+tailorkit-v0.1.0-beta.12
+tailorkit-v0.1.0-rc.3
+tailorkit-v0.1.0
 ```
 
-## Deploy Permission
+Production must consume stable immutable tags only.
 
-CI/CD deploy identity must have write permission to:
+## PageFly Integration
+
+After release, PageFly config should contain:
+
+```json
+{
+  "tailorkit": {
+    "version": "0.1.0-beta.12",
+    "url": "https://github.com/sellersmith/ss-pf-app-tailorkit/releases/download/tailorkit-v0.1.0-beta.12/ss-pf-app-tailorkit-0.1.0-beta.12.tgz",
+    "sha256": "<sha256>"
+  }
+}
+```
+
+PageFly Jenkins must set:
 
 ```txt
-$TARGET_APP_ROOT
+APP_PLATFORM_ARTIFACTS_CONFIG=<env-specific config path>
 ```
 
-Do not use a personal SSH user for deployment.
+## Rollback
 
-## Promotion
+Rollback is config-only:
 
-The deploy script writes:
+1. Restore previous `version/url/sha256`.
+2. Rerun PageFly artifact install/deploy.
+3. Restart PageFly server through existing PageFly flow.
 
-```txt
-releases/<artifact-id>/
-current/
-releases/ledger.jsonl
-```
-
-Rollback is pointer/copy promotion to a previous release, not rebuild.
+No TailorKit rebuild is required.
 
 ## What DevOps Needs To Provide
 
-- Jenkins job wired to this repo's `Jenkinsfile`.
-- GitHub credential that can read this private repo.
-- CI/CD deploy identity with write permission to the env-specific `TARGET_APP_ROOT`.
-- Decision whether Jenkins runs on beta host or deploys via mounted path/SSH wrapper.
+- Ensure GitHub Actions has `contents: write` permission for release creation, or provide equivalent Jenkins release job.
+- Ensure PageFly Jenkins can download GitHub Release assets for private repos.
+- Provide env-specific `APP_PLATFORM_ARTIFACTS_CONFIG` file path/value for beta/rc/prod.
+- Decide notification route for failed artifact workflow, if GitHub native notifications are not enough.
