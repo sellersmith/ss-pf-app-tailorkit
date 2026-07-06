@@ -117,41 +117,48 @@ export function PreactImageEditorModal(props: ImageEditorModalWebComponentProps 
   useEffect(() => {
     let isMounted = true
     ;(async () => {
-      // Wait for the Konva module to load (from the separate konva bundle)
-      const konvaModule = await loadFeature<KonvaFeatureModule>('konva')
-      const { initKonvaEditor } = konvaModule
+      try {
+        // Wait for the Konva module to load (from the separate konva bundle)
+        const konvaModule = await loadFeature<KonvaFeatureModule>('konva')
+        const { initKonvaEditor } = konvaModule
 
-      const cfg = {
-        width: layerDimensions.width,
-        height: layerDimensions.height,
-        rotation: layerDimensions.rotation,
-        initialZoom: initialState.zoom || 1,
-        initialRotation: initialState.rotation || 0,
-        initialX: initialState.x,
-        initialY: initialState.y,
-        initialWidth: initialState.width,
-        initialHeight: initialState.height,
-        maskConfig,
-      }
-      const editor = (await initKonvaEditor(
-        containerId,
-        imageElRef.current,
-        cfg,
-        transformerConfig
-      )) as unknown as KonvaEditor
+        const cfg = {
+          width: layerDimensions.width,
+          height: layerDimensions.height,
+          rotation: layerDimensions.rotation,
+          initialZoom: initialState.zoom || 1,
+          initialRotation: initialState.rotation || 0,
+          initialX: initialState.x,
+          initialY: initialState.y,
+          initialWidth: initialState.width,
+          initialHeight: initialState.height,
+          maskConfig,
+        }
+        const editor = (await initKonvaEditor(
+          containerId,
+          imageElRef.current,
+          cfg,
+          transformerConfig
+        )) as unknown as KonvaEditor
 
-      if (!isMounted) return
-      editorRef.current = editor
+        if (!isMounted) return
+        editorRef.current = editor
 
-      if (shouldRestoreState(initialState)) {
-        setTimeout(() => editor.applyFullState(initialState), 150)
-        setCurrentZoom(initialState.zoom || 100)
-        setCurrentRotation(initialState.rotation || 0)
-      } else {
-        editor.autoFitImageToBoundary(true)
-        const stateAfter = editor.getEditorState()
-        setCurrentZoom(stateAfter.zoom)
-        setCurrentRotation(stateAfter.rotation)
+        if (shouldRestoreState(initialState)) {
+          setTimeout(() => editor.applyFullState(initialState), 150)
+          setCurrentZoom(initialState.zoom || 100)
+          setCurrentRotation(initialState.rotation || 0)
+        } else {
+          editor.autoFitImageToBoundary(true)
+          const stateAfter = editor.getEditorState()
+          setCurrentZoom(stateAfter.zoom)
+          setCurrentRotation(stateAfter.rotation)
+        }
+      } catch (error) {
+        // Keep the editor init failure from surfacing as an unhandled promise rejection.
+        // The canvas stays empty in this case; editorRef.current is left untouched so
+        // callers relying on `editorRef.current?.x()` optional chaining keep no-op'ing safely.
+        console.error('Failed to initialize Konva image editor:', error)
       }
     })()
 

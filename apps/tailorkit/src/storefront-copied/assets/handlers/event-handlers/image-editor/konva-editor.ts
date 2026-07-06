@@ -328,6 +328,7 @@ export async function initKonvaEditor(
   // ---------------------------------------------------------------------
 
   function createStateFromImage(): MinimalTransformState | null {
+    if (!imageLayer) return null
     const imageNode = imageLayer.getImageNode()
     if (!imageNode) return null
 
@@ -385,7 +386,7 @@ export async function initKonvaEditor(
     // Undo last operation
     undo: () => {
       const result = historyManager.undo()
-      if (result.success && result.state) {
+      if (result.success && result.state && imageLayer) {
         // Apply the state and force a redraw
         imageLayer.applyState(result.state)
 
@@ -406,7 +407,7 @@ export async function initKonvaEditor(
     // Redo previously undone operation
     redo: () => {
       const result = historyManager.redo()
-      if (result.success && result.state) {
+      if (result.success && result.state && imageLayer) {
         // Apply the state and force a redraw
         imageLayer.applyState(result.state)
 
@@ -467,7 +468,7 @@ export async function initKonvaEditor(
 
     // Apply full state including position and dimensions
     applyFullState: (state: Partial<KonvaEditorState>) => {
-      if (!state) return
+      if (!state || !imageLayer) return
 
       // Get current state to fill in missing values
       const currentState = imageLayer.getState()
