@@ -1,4 +1,4 @@
-import { decompressData } from '../../upstream/tailorkit-app/app/utils/file-types/zip'
+import { decompressData } from './compression'
 import { resolveTailorKitCopiedRouteRequestBridge } from './product-personalizer-copied-route-request-bridge'
 
 const TAILORKIT_TEMPLATE_ACTIONS = {
