@@ -40,7 +40,7 @@ import {
   checkPersonalizedProductTaste,
   TAILORKIT_PERSONALIZED_PRODUCTS_METER,
 } from '../domain/personalized-product-taste-guard'
-import { compressData } from '../../upstream/tailorkit-app/app/utils/file-types/zip'
+import { compressData } from '../domain/compression'
 
 function routeId(request: AppApiRequest): string {
   const parts = String(request.params.path || '')
