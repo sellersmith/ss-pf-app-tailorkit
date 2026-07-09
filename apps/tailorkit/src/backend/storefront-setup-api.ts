@@ -10,6 +10,15 @@ const MAX_AVERAGE_PRICE = 1_000_000
 const MAX_EMOJIS_LENGTH = 2000
 const MAX_FONT_FIELD_LENGTH = 2048
 
+// Hidden Shopify product that carries the personalization fee. The handle MUST match what the storefront
+// reads at `/products/<handle>.js` (storefront hidden-pricing-cache) — APP_HANDLE is 'tailorkit'.
+const OPTION_PRICING_PRODUCT_HANDLE = 'tailorkit-item-personalization'
+const OPTION_PRICING_PRODUCT_TITLE = 'Personalization Price'
+const OPTION_PRICING_PRODUCT_TYPE = 'TLK_HIDDEN_PRODUCT'
+const OPTION_PRICING_PRODUCT_TAGS = ['tailorkit', 'internal', 'hidden', 'option-pricing']
+const OPTION_PRICING_PRODUCT_DESCRIPTION_HTML =
+  '<p>Hidden product used by <strong>TailorKit Product Personalizer</strong> to charge personalization fees. Not for sale — do not delete, unpublish, or change its price/handle/availability.</p>'
+
 function bodyObject(body: unknown): Record<string, unknown> {
   return body && typeof body === 'object' && !Array.isArray(body) ? (body as Record<string, unknown>) : {}
 }
@@ -64,18 +73,16 @@ export function registerTailorKitStorefrontSetupApi(ctx: AppBackendRegisterConte
    * Sales Tools Storefront-tab InstallAppEmbedActivator ENSURE_PRICING_PRODUCT (the Upsell tab that also
    * called this was dropped — OneTick; the Storefront tab's app-embed activator still fires it on mount).
    *
-   * Validates the body ({ action, averagePrice? }) and acknowledges with { success, productId, message }.
-   * TODO(host-port): the upstream route creates a hidden Shopify product (productCreate +
-   * productVariantsBulkCreate + publishablePublish across all publications, currency-aware unit price).
-   * ShopifyResourcePort exposes only read/duplicate/upload — no create/publish — and apps may not issue raw
-   * Shopify GraphQL. Real creation needs a host ShopifyResourcePort.createHiddenProduct capability. Until
-   * then we acknowledge (productId:null) so the screen is usable and never errors.
+   * Validates the body ({ action, averagePrice? }) then ensures the hidden pricing product exists via the
+   * host ShopifyResourcePort.ensureHiddenPricingProduct capability (create-if-missing + publish-to-all,
+   * currency-aware unit price). Idempotent — re-publishes an existing product. Without this, the storefront
+   * add-to-cart middleware finds no available variant and silently drops the personalization fee.
    */
   ctx.api.route({
     method: 'POST',
     path: '/option-pricing',
     capability: TAILORKIT_CAPABILITIES.writePersonalizedProducts,
-    handler(request: AppApiRequest) {
+    async handler(request: AppApiRequest) {
       const body = bodyObject(request.body)
 
       if (body.action !== OPTION_PRICING_ENSURE_ACTION) {
@@ -85,7 +92,34 @@ export function registerTailorKitStorefrontSetupApi(ctx: AppBackendRegisterConte
         return { status: 400, body: { success: false, message: 'Invalid average price' } }
       }
 
-      return { body: { success: true, productId: null, message: 'Option pricing acknowledged' } }
+      try {
+        const result = await ctx.ports.shopifyResources.ensureHiddenPricingProduct(request.context, {
+          handle: OPTION_PRICING_PRODUCT_HANDLE,
+          title: OPTION_PRICING_PRODUCT_TITLE,
+          productType: OPTION_PRICING_PRODUCT_TYPE,
+          vendor: 'TailorKit',
+          tags: OPTION_PRICING_PRODUCT_TAGS,
+          descriptionHtml: OPTION_PRICING_PRODUCT_DESCRIPTION_HTML,
+          averagePrice: isValidAveragePrice(body.averagePrice) ? body.averagePrice : undefined,
+        })
+
+        return {
+          body: {
+            success: true,
+            productId: result.productId,
+            message: result.created ? 'Hidden pricing product created' : 'Hidden pricing product ensured',
+          },
+        }
+      } catch (error) {
+        return {
+          status: 500,
+          body: {
+            success: false,
+            productId: null,
+            message: error instanceof Error ? error.message : 'Failed to ensure option pricing product',
+          },
+        }
+      }
     },
   })
 }
