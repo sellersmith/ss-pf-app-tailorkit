@@ -5,7 +5,35 @@ import type {
   ThemeSurfaceContribution,
 } from '../../../../web/server/src/app-platform/contracts'
 import { TAILORKIT_CAPABILITIES } from '../domain/capabilities'
+import { TAILORKIT_HIDDEN_PRICING_PRODUCT } from '../domain/hidden-pricing-product-config'
 import { readTailorKitAppSettings } from './app-settings-repository'
+
+// The upstream client trigger that fired /api/option-pricing (storefront-setup "Sales" tab →
+// UpsellPricingPersonalization → InstallAppEmbedActivator.onThemeExtensionEnabled) is NOT ported into the
+// PageFly admin shell (only the storefront + ai-tools tabs are), so the hidden pricing product was never
+// provisioned. Provision it server-side instead: once the merchant has enabled the app embed, ensure the
+// product exists via the idempotent host capability. Fire-and-forget + once-per-process-per-shop so we
+// never block the theme-config response nor re-publish on every admin load.
+const ensuredHiddenPricingShops = new Set<string>()
+
+function ensureHiddenPricingProductWhenEmbedEnabled(
+  app: AppBackendRegisterContext,
+  ctx: AppContext,
+  enabledAppEmbed: boolean
+): void {
+  const shopKey = ctx.shopDomain
+  if (!enabledAppEmbed || !shopKey || ensuredHiddenPricingShops.has(shopKey)) return
+
+  ensuredHiddenPricingShops.add(shopKey)
+  void app.ports.shopifyResources
+    .ensureHiddenPricingProduct(ctx, { ...TAILORKIT_HIDDEN_PRICING_PRODUCT })
+    .catch((error: unknown) => {
+      // Retry on the next admin load if provisioning failed (e.g. transient Shopify error / server not
+      // yet carrying the host capability).
+      ensuredHiddenPricingShops.delete(shopKey)
+      console.warn('[TailorKit] ensureHiddenPricingProduct failed:', error)
+    })
+}
 
 export interface TailorKitThemeConfig {
   isOS2Theme: boolean
@@ -168,6 +196,8 @@ export function registerTailorKitThemeConfigApi(app: AppBackendRegisterContext):
     capability: TAILORKIT_CAPABILITIES.readThemeConfig,
     async handler(request) {
       const appConfig = await getTailorKitThemeConfig(request.context, app, app.app.manifest.themeSurfaces)
+      // Server-side provisioning of the hidden pricing product (the ported admin has no client trigger).
+      ensureHiddenPricingProductWhenEmbedEnabled(app, request.context, appConfig.enabledAppEmbed)
       return { body: { success: true, appConfig } satisfies TailorKitThemeConfigResponse }
     },
   })

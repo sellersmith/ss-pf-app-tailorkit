@@ -4,20 +4,12 @@
 // contract-shaped success the UI consumes; the DEEP Shopify side-effects are deferred (see TODO(host-port)).
 import type { AppApiRequest, AppBackendRegisterContext } from '../../../../web/server/src/app-platform/contracts'
 import { TAILORKIT_CAPABILITIES } from '../domain/capabilities'
+import { TAILORKIT_HIDDEN_PRICING_PRODUCT } from '../domain/hidden-pricing-product-config'
 
 const OPTION_PRICING_ENSURE_ACTION = 'ENSURE_PRICING_PRODUCT'
 const MAX_AVERAGE_PRICE = 1_000_000
 const MAX_EMOJIS_LENGTH = 2000
 const MAX_FONT_FIELD_LENGTH = 2048
-
-// Hidden Shopify product that carries the personalization fee. The handle MUST match what the storefront
-// reads at `/products/<handle>.js` (storefront hidden-pricing-cache) — APP_HANDLE is 'tailorkit'.
-const OPTION_PRICING_PRODUCT_HANDLE = 'tailorkit-item-personalization'
-const OPTION_PRICING_PRODUCT_TITLE = 'Personalization Price'
-const OPTION_PRICING_PRODUCT_TYPE = 'TLK_HIDDEN_PRODUCT'
-const OPTION_PRICING_PRODUCT_TAGS = ['tailorkit', 'internal', 'hidden', 'option-pricing']
-const OPTION_PRICING_PRODUCT_DESCRIPTION_HTML =
-  '<p>Hidden product used by <strong>TailorKit Product Personalizer</strong> to charge personalization fees. Not for sale — do not delete, unpublish, or change its price/handle/availability.</p>'
 
 function bodyObject(body: unknown): Record<string, unknown> {
   return body && typeof body === 'object' && !Array.isArray(body) ? (body as Record<string, unknown>) : {}
@@ -94,12 +86,7 @@ export function registerTailorKitStorefrontSetupApi(ctx: AppBackendRegisterConte
 
       try {
         const result = await ctx.ports.shopifyResources.ensureHiddenPricingProduct(request.context, {
-          handle: OPTION_PRICING_PRODUCT_HANDLE,
-          title: OPTION_PRICING_PRODUCT_TITLE,
-          productType: OPTION_PRICING_PRODUCT_TYPE,
-          vendor: 'TailorKit',
-          tags: OPTION_PRICING_PRODUCT_TAGS,
-          descriptionHtml: OPTION_PRICING_PRODUCT_DESCRIPTION_HTML,
+          ...TAILORKIT_HIDDEN_PRICING_PRODUCT,
           averagePrice: isValidAveragePrice(body.averagePrice) ? body.averagePrice : undefined,
         })
 
