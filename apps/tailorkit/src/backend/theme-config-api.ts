@@ -56,6 +56,51 @@ function productTemplateKeys(assetKeys: string[]): string[] {
   return assetKeys.filter(key => /^templates\/product(?:\.[^/]+)?\.json$/.test(key))
 }
 
+/**
+ * Detects whether a TailorKit app-embed block is enabled in the merchant's current theme, by reading
+ * `config/settings_data.json` and scanning `settings.current.blocks` (OS2 themes store their enabled
+ * app embeds there — top-level `current.blocks` entries ARE the app-embed blocks).
+ *
+ * A block is considered "ours" when its `type` string (e.g. `shopify://apps/<app>/blocks/<handle>/<uuid>`)
+ * includes one of the known TailorKit identifiers (raw embed generatedName, its sanitized handle, or the
+ * deep-link app id). If none of those identifiers resolved, fall back to a generic app-embed shape check
+ * (`/app-embed` or `/blocks/app-embed` in the type) so detection never hard-fails — this is a looser match
+ * and may pick up other apps' embeds, but only triggers when we have no better signal.
+ *
+ * Never throws: any failure (missing asset, malformed JSON, unexpected shape) resolves to `false`.
+ */
+async function detectTailorKitAppEmbedEnabled(
+  app: AppBackendRegisterContext,
+  ctx: AppContext,
+  identifiers: { generatedName?: string; embedHandle?: string; deepLinkAppId?: string }
+): Promise<boolean> {
+  try {
+    const asset = await app.ports.shopifyTheme.getAsset(ctx, 'config/settings_data.json')
+    if (!asset?.value) return false
+
+    const settings = JSON.parse(asset.value)
+    const blocks = settings?.current?.blocks
+    if (!blocks || typeof blocks !== 'object') return false
+
+    const identifierMatchers = [identifiers.generatedName, identifiers.embedHandle, identifiers.deepLinkAppId].filter(
+      (value): value is string => Boolean(value)
+    )
+
+    const isTailorKitEmbedBlockType = (type: string): boolean =>
+      identifierMatchers.length > 0
+        ? identifierMatchers.some(matcher => type.includes(matcher))
+        : type.includes('/app-embed') || type.includes('/blocks/app-embed')
+
+    return Object.values(blocks as Record<string, unknown>).some(block => {
+      if (!block || typeof block !== 'object') return false
+      const { type, disabled } = block as { type?: unknown; disabled?: unknown }
+      return typeof type === 'string' && isTailorKitEmbedBlockType(type) && !disabled
+    })
+  } catch {
+    return false
+  }
+}
+
 export async function getTailorKitThemeConfig(
   ctx: AppContext,
   app: AppBackendRegisterContext,
@@ -87,14 +132,23 @@ export async function getTailorKitThemeConfig(
   const canDeepLinkAppEmbed = Boolean(isOS2Theme && deepLinkAppId && embedHandle)
   const canDeepLinkCustomizer = Boolean(isOS2Theme && deepLinkAppId && customizerHandle)
 
-  // App-embed / app-block install detection removed: PageFly hosts the personalization surface and the
-  // merchant-facing "set up your storefront" modal that consumed enabledAppEmbed is gone. Skipping the
-  // settings_data.json fetch + block scan collapses this probe from 3 Shopify calls to 1 (asset keys for
-  // OS2 detection). The deep-link fields are kept (cheap string builds) for any non-blocking link surface.
+  // App-block install detection stays removed: PageFly hosts the personalization surface directly and the
+  // merchant-facing "set up your storefront" modal that consumed enabledAppBlock is gone, so dredging every
+  // product template + section for a block is unnecessary cost.
+  // App-embed detection IS required: the admin `InstallAppEmbedActivator` / `UpsellPricingPersonalization`
+  // gate hidden-pricing-product provisioning (`/api/option-pricing` ENSURE_PRICING_PRODUCT) on
+  // appConfig.enabledAppEmbed, so it must reflect real theme state. This adds one Shopify call
+  // (settings_data.json) on top of the existing asset-keys call.
+  const enabledAppEmbed = await detectTailorKitAppEmbedEnabled(app, ctx, {
+    generatedName: themeSurfaces?.appEmbeds?.[0]?.generatedName,
+    embedHandle,
+    deepLinkAppId,
+  })
+
   return {
     isOS2Theme,
     productThemeLink,
-    enabledAppEmbed: false,
+    enabledAppEmbed,
     enabledAppBlock: false,
     themeEditCodeLink,
     appEmbedLink: canDeepLinkAppEmbed
