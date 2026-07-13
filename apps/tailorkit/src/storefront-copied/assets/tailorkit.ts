@@ -28,6 +28,14 @@ import { registerCrossProductModalListener } from './components/cross-product-mo
 // Import global styling utility
 import { applyGlobalStylingVariables } from './utils/global-styling'
 
+// PageFly hidden-pricing interceptor. The upstream customizer pricing path relies on a
+// `<tailorkit-product-personalizer>` element that PageFly's modal rendering never mounts, so it no-ops
+// and the personalization fee is silently dropped. Install PageFly's own /cart/add interceptor, which
+// reads the `_Total_Additional_Cost` property this build already writes and adds the hidden pricing
+// product line. Idempotent + uses an `X-TailorKit-Internal` marker so it never re-processes its own add.
+import { installTailorKitHiddenPricingFetchInterceptor } from '../../storefront/hidden-pricing-fetch-interceptor'
+import { installTailorKitHiddenPricingNativeSubmit } from '../../storefront/hidden-pricing-native-submit'
+
 // Initialize TailorKit interceptor system
 console.log('[TailorKit] Initializing interceptor system...')
 
@@ -45,6 +53,11 @@ applyProxyForFetchApi()
 
 // Initialize hidden pricing product cache
 initializeHiddenPricingProductCache()
+
+// Install PageFly's hidden-pricing cart-add interceptor (native submit + AJAX/fetch) so the
+// personalization fee is actually added to the cart in the PageFly-embedded storefront.
+installTailorKitHiddenPricingNativeSubmit()
+installTailorKitHiddenPricingFetchInterceptor()
 
 // Initialize Buy It Now handler
 initializeBuyItNowHandler({
