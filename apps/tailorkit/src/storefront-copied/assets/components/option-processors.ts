@@ -445,14 +445,18 @@ export class OptionProcessor {
       },
     })
 
-    // addDisplayData({
-    //   displayData,
-    //   printAreaId,
-    //   layerId,
-    //   label,
-    //   type: optionType,
-    //   value: `${name || '--'}${isDefault ? ' (Default)' : ''}`,
-    // })
+    // Surface the selected font as a clean, human-readable line-item property (e.g. "Font: Bodoni"),
+    // mirroring how processColorOption surfaces the colour. Uses `name` (merchant-editable option label)
+    // first so the merchant controls what shows on the order page / confirmation email, falling back to
+    // the raw font `family`. Ported from emtailorkit master 4a0b11388. Additive: metadata/print unchanged.
+    addDisplayData({
+      displayData,
+      printAreaId,
+      layerId,
+      label,
+      type: optionType,
+      value: name || family || '--',
+    })
   }
 
   /**
