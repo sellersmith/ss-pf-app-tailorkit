@@ -1,12 +1,22 @@
 /**
- * Cart form sync & pricing product injection for native-POST themes.
+ * Cart form sync & pricing product injection for themes whose ATC submission
+ * is NOT caught by the fetch interceptor — native POST forms, and AJAX carts
+ * built on XMLHttpRequest instead of fetch().
  *
- * CAPTURE phase: copy missing TK inputs + ensure pricing input.
- * BUBBLE phase: if theme did NOT prevent default (native POST),
- *   fire the pricing product fetch with keepalive before page navigates.
+ * CAPTURE phase: copy missing TK inputs from a sibling form if this one has
+ *   none.
+ * BUBBLE phase: claim the pricing-fire right for this form; if won, fire the
+ *   pricing product fetch with keepalive before page navigates. If the fetch
+ *   interceptor already claimed it, this becomes a no-op — see
+ *   pricing-claim.ts for why the claim is TTL-based rather than reset in a
+ *   capture-phase listener (some themes delegate their own ATC handling
+ *   through a capture-phase `document` listener too, and listener order
+ *   between two capture-phase listeners on the same target isn't ours to
+ *   control).
  */
 
 import { CLASS_TAILORKIT_INPUT, CLASS_TAILORKIT_TRACKING } from './dom-constants'
+import { claimPricingFire } from './pricing-claim'
 
 const TLK_INPUT_SELECTOR = `.${CLASS_TAILORKIT_INPUT}, .${CLASS_TAILORKIT_TRACKING}`
 
@@ -43,15 +53,14 @@ function handlePricingProduct(e: Event): void {
   const form = e.target as HTMLFormElement
   if (!form?.action?.includes('/cart/add')) return
 
-  // If theme prevented default → it uses fetch → TK interceptor handles pricing
-  if (e.defaultPrevented) return
-  if (form.dataset.tlkPricingFired) return
-
   const costInput = form.querySelector('input[name*="Total_Additional_Cost"]') as HTMLInputElement | null
   const additionalCost = parseFloat(costInput?.value || '0')
   if (additionalCost <= 0) return
 
-  form.dataset.tlkPricingFired = 'true'
+  // Claim the form before doing any work. If the fetch interceptor already
+  // claimed it (it may run before or after this listener, in either order —
+  // see pricing-claim.ts), this bails out here instead of double-adding.
+  if (!claimPricingFire(form)) return
 
   // Read context from form inputs
   const refId = (form.querySelector('input[name*="_ref_id"]') as HTMLInputElement)?.value || ''
