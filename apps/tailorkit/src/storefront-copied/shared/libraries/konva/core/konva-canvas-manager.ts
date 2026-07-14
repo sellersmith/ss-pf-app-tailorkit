@@ -1,5 +1,4 @@
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../runtime-konva'
+import Konva from 'konva'
 import type { StageConfig } from 'konva/lib/Stage'
 import { addTextLayer as addTextLayerFn, type TextLayerProps } from '../text'
 import { addImageLayer as addImageLayerFn, type ImageLayerProps } from '../image'
@@ -94,20 +93,20 @@ export class KonvaCanvasManager {
 
   private initStage() {
     // Set pixelRatio if provided otherwise use device pixel ratio
-    // Save original to restore in dispose() since KonvaRuntime.pixelRatio is global
+    // Save original to restore in dispose() since Konva.pixelRatio is global
     if (this.config.pixelRatio) {
-      this.originalKonvaPixelRatio = KonvaRuntime.pixelRatio
-      KonvaRuntime.pixelRatio = this.config.pixelRatio
+      this.originalKonvaPixelRatio = Konva.pixelRatio
+      Konva.pixelRatio = this.config.pixelRatio
     }
 
     // Create stage with actual display dimensions
-    this.stage = new KonvaRuntime.Stage({
+    this.stage = new Konva.Stage({
       container: this.config.containerId,
       width: this.config.width,
       height: this.config.height,
     })
 
-    this.mainLayer = new KonvaRuntime.Layer()
+    this.mainLayer = new Konva.Layer()
     this.stage.add(this.mainLayer)
 
     const container = this.stage.container()
@@ -454,7 +453,7 @@ export class KonvaCanvasManager {
   ) {
     if (mask) {
       // Cast the group to our custom interface
-      this.currentGroup = new KonvaRuntime.Group({
+      this.currentGroup = new Konva.Group({
         name: 'GROUP_LAYER_NAME',
         clipFunc: ctx => {
           ctx.save()
@@ -468,7 +467,7 @@ export class KonvaCanvasManager {
       this.mainLayer.add(this.currentGroup)
 
       // Create a content group inside the clipping group to handle template position and rotation
-      const contentGroup = new KonvaRuntime.Group({
+      const contentGroup = new Konva.Group({
         x: template.l,
         y: template.t,
         rotation: template.r,
@@ -485,7 +484,7 @@ export class KonvaCanvasManager {
       }
 
       // Create invisible rectangle that represents the mask
-      const maskRect = new KonvaRuntime.Rect({
+      const maskRect = new Konva.Rect({
         name: 'LAYER_MASK_NAME',
         x: mask.l,
         y: mask.t,
@@ -499,7 +498,7 @@ export class KonvaCanvasManager {
       this.currentGroup.add(maskRect)
     } else {
       // If there's no mask, we still need to create a group for the template!
-      this.currentGroup = new KonvaRuntime.Group({
+      this.currentGroup = new Konva.Group({
         name: 'GROUP_LAYER_NAME',
         x: template.l,
         y: template.t,
@@ -572,9 +571,9 @@ export class KonvaCanvasManager {
     // Remove window event listener
     window.removeEventListener('resize', this.handleWindowResize)
 
-    // Restore original KonvaRuntime.pixelRatio if we modified it
+    // Restore original Konva.pixelRatio if we modified it
     if (this.originalKonvaPixelRatio !== undefined) {
-      KonvaRuntime.pixelRatio = this.originalKonvaPixelRatio
+      Konva.pixelRatio = this.originalKonvaPixelRatio
     }
 
     // Clear image cache

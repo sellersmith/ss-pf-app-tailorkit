@@ -5,8 +5,7 @@
  * and center-point bounds checking to keep layers within the canvas.
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 import type { LayerTransform, LayerInteractionFlags } from '../../stores/storefront-layer-state'
 import { StorefrontLayerState } from '../../stores/storefront-layer-state'
 import { StorefrontUndoStack } from '../../stores/storefront-undo-stack'
@@ -40,8 +39,8 @@ import { MOVEMENT_ZONE_CLIP_ATTR } from './movement-zone-clip'
  */
 function findCanvasSpaceRef(node: Konva.Node): Konva.Node | null {
   let parent = node.getParent()
-  while (parent && !(parent instanceof KonvaRuntime.Layer)) {
-    if (parent instanceof KonvaRuntime.Group) {
+  while (parent && !(parent instanceof Konva.Layer)) {
+    if (parent instanceof Konva.Group) {
       if (parent.getAttr(MOVEMENT_ZONE_CLIP_ATTR)) {
         parent = parent.getParent()
         continue

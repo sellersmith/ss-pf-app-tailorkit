@@ -5,8 +5,7 @@
  * getClientRect() on SVG-image groups to return logical bounds.
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 import type { TextLayerProps } from '../../../shared/libraries/konva/text'
 
 /**
@@ -35,11 +34,11 @@ export function shrinkTextNodeToContent(node: Konva.Node, props: TextLayerProps)
     ;(textNode as any).setAttr('height', 'auto')
   }
 
-  if (node instanceof KonvaRuntime.Text) {
+  if (node instanceof Konva.Text) {
     applyToTextNode(node)
-  } else if (node instanceof KonvaRuntime.Group) {
+  } else if (node instanceof Konva.Group) {
     // Legacy effects path: group wraps Konva.Text children (main + shadow copies)
-    const textChildren = node.find<Konva.Text>((n: Konva.Node) => n instanceof KonvaRuntime.Text)
+    const textChildren = node.find<Konva.Text>((n: Konva.Node) => n instanceof Konva.Text)
     const firstText = textChildren[0]
     if (firstText && firstText.getTextWidth() > 0 && firstText.getTextWidth() < containerW) {
       for (const child of textChildren) applyToTextNode(child)

@@ -5,8 +5,7 @@
  * handling CONTENT, DELETE, MOVE, RESIZE, ROTATE, and RESET delta types.
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 import { StorefrontLayerState } from '../../stores/storefront-layer-state'
 import type { UndoDelta } from '../../stores/storefront-undo-stack'
 import type { ManagerContext } from './constants'
@@ -48,10 +47,10 @@ export function applyDeltaInReverse(delta: UndoDelta, ctx: ManagerContext): void
     if (before.rotation !== undefined) node.rotation(before.rotation)
     node.scaleX(1)
     node.scaleY(1)
-    if (node instanceof KonvaRuntime.Image) {
+    if (node instanceof Konva.Image) {
       if (before.width !== undefined) node.width(before.width)
       if (before.height !== undefined) node.height(before.height)
-    } else if (node instanceof KonvaRuntime.Group) {
+    } else if (node instanceof Konva.Group) {
       // Groups resize via scaleX/Y, not explicit width/height — recompute scale from stored width vs default.
       const defaultTransform = StorefrontLayerState.getDefault(layerId)
       if (defaultTransform && before.width !== undefined && before.height !== undefined) {
@@ -69,8 +68,8 @@ export function applyDeltaInReverse(delta: UndoDelta, ctx: ManagerContext): void
     // For MOVE deltas, before/after only carry x/y — width is undefined. Fall back to
     // current state to avoid zeroing out stored dimensions.
     const currentTransform = StorefrontLayerState.getCurrent(layerId)
-    const stateWidth = before.width ?? (node instanceof KonvaRuntime.Image ? node.width() : (currentTransform?.width ?? 0))
-    const stateHeight = before.height ?? (node instanceof KonvaRuntime.Image ? node.height() : (currentTransform?.height ?? 0))
+    const stateWidth = before.width ?? (node instanceof Konva.Image ? node.width() : (currentTransform?.width ?? 0))
+    const stateHeight = before.height ?? (node instanceof Konva.Image ? node.height() : (currentTransform?.height ?? 0))
     StorefrontLayerState.updateTransform(layerId, {
       x: before.x ?? node.x(),
       y: before.y ?? node.y(),
@@ -124,10 +123,10 @@ export function applyDeltaForward(delta: UndoDelta, ctx: ManagerContext): void {
     if (after.rotation !== undefined) node.rotation(after.rotation)
     node.scaleX(1)
     node.scaleY(1)
-    if (node instanceof KonvaRuntime.Image) {
+    if (node instanceof Konva.Image) {
       if (after.width !== undefined) node.width(after.width)
       if (after.height !== undefined) node.height(after.height)
-    } else if (node instanceof KonvaRuntime.Group) {
+    } else if (node instanceof Konva.Group) {
       // Groups resize via scaleX/Y, not explicit width/height — recompute scale from stored width vs default.
       const defaultTransform = StorefrontLayerState.getDefault(layerId)
       if (defaultTransform && after.width !== undefined && after.height !== undefined) {
@@ -145,8 +144,8 @@ export function applyDeltaForward(delta: UndoDelta, ctx: ManagerContext): void {
     // For MOVE deltas, before/after only carry x/y — width is undefined. Fall back to
     // current state to avoid zeroing out stored dimensions.
     const currentTransform = StorefrontLayerState.getCurrent(layerId)
-    const stateWidth = after.width ?? (node instanceof KonvaRuntime.Image ? node.width() : (currentTransform?.width ?? 0))
-    const stateHeight = after.height ?? (node instanceof KonvaRuntime.Image ? node.height() : (currentTransform?.height ?? 0))
+    const stateWidth = after.width ?? (node instanceof Konva.Image ? node.width() : (currentTransform?.width ?? 0))
+    const stateHeight = after.height ?? (node instanceof Konva.Image ? node.height() : (currentTransform?.height ?? 0))
     StorefrontLayerState.updateTransform(layerId, {
       x: after.x ?? node.x(),
       y: after.y ?? node.y(),

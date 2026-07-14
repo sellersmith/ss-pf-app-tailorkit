@@ -1,6 +1,5 @@
 import type { TransformerConfig } from 'konva/lib/shapes/Transformer'
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 import { ImageLayer } from './components/image-layer'
 import { StageManager } from './components/stage-manager'
 import { TransformerManager } from './components/transformer'
@@ -59,13 +58,13 @@ export async function initKonvaEditor(
     let width = stage.width()
     let height = stage.height()
 
-    initLoadingOverlay = new KonvaRuntime.Group({
+    initLoadingOverlay = new Konva.Group({
       listening: false,
       name: 'tlk-init-loading-overlay',
     })
 
     // Full canvas background (same pattern as showLoadingOverlay)
-    const bgRect = new KonvaRuntime.Rect({
+    const bgRect = new Konva.Rect({
       x: 0,
       y: 0,
       width,
@@ -79,7 +78,7 @@ export async function initKonvaEditor(
     const centerY = height / 2
     const radius = 14
 
-    const ring = new KonvaRuntime.Circle({
+    const ring = new Konva.Circle({
       x: centerX,
       y: centerY,
       radius,
@@ -89,7 +88,7 @@ export async function initKonvaEditor(
       listening: false,
     })
 
-    const arc = new KonvaRuntime.Arc({
+    const arc = new Konva.Arc({
       x: centerX,
       y: centerY,
       innerRadius: radius - 3,
@@ -109,7 +108,7 @@ export async function initKonvaEditor(
     initLoadingOverlay.moveToTop()
     stage.batchDraw()
 
-    initLoadingAnimation = new KonvaRuntime.Animation(frame => {
+    initLoadingAnimation = new Konva.Animation(frame => {
       if (!frame || !arc) return
       const deltaDeg = (frame.timeDiff / 1000) * 300
       arc.rotation((arc.rotation() + deltaDeg) % 360)
@@ -170,12 +169,12 @@ export async function initKonvaEditor(
     const width = stage.width()
     const height = stage.height()
 
-    loadingOverlay = new KonvaRuntime.Group({
+    loadingOverlay = new Konva.Group({
       listening: false,
       name: 'emtlkit--loading-overlay',
     })
 
-    const bgRect = new KonvaRuntime.Rect({
+    const bgRect = new Konva.Rect({
       x: 0,
       y: 0,
       width,
@@ -195,7 +194,7 @@ export async function initKonvaEditor(
       cornerRadius: 8,
     })
 
-    const shimmerRect = new KonvaRuntime.Rect({
+    const shimmerRect = new Konva.Rect({
       x: 0,
       y: 0,
       width,
@@ -222,7 +221,7 @@ export async function initKonvaEditor(
     loadingOverlay.moveToTop()
     stage.batchDraw()
 
-    loadingAnimation = new KonvaRuntime.Animation(frame => {
+    loadingAnimation = new Konva.Animation(frame => {
       if (!frame) return
       const progress = (frame.time % 1500) / 1500
       const offset = (progress * 2 - 1) * width
@@ -328,7 +327,6 @@ export async function initKonvaEditor(
   // ---------------------------------------------------------------------
 
   function createStateFromImage(): MinimalTransformState | null {
-    if (!imageLayer) return null
     const imageNode = imageLayer.getImageNode()
     if (!imageNode) return null
 
@@ -386,7 +384,7 @@ export async function initKonvaEditor(
     // Undo last operation
     undo: () => {
       const result = historyManager.undo()
-      if (result.success && result.state && imageLayer) {
+      if (result.success && result.state) {
         // Apply the state and force a redraw
         imageLayer.applyState(result.state)
 
@@ -407,7 +405,7 @@ export async function initKonvaEditor(
     // Redo previously undone operation
     redo: () => {
       const result = historyManager.redo()
-      if (result.success && result.state && imageLayer) {
+      if (result.success && result.state) {
         // Apply the state and force a redraw
         imageLayer.applyState(result.state)
 
@@ -468,7 +466,7 @@ export async function initKonvaEditor(
 
     // Apply full state including position and dimensions
     applyFullState: (state: Partial<KonvaEditorState>) => {
-      if (!state || !imageLayer) return
+      if (!state) return
 
       // Get current state to fill in missing values
       const currentState = imageLayer.getState()

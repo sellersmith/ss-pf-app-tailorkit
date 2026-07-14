@@ -5,8 +5,7 @@
  * Zone indicator is added to the layer OUTSIDE the clip group so it's always visible.
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 import type { MovementBounds } from '../../stores/storefront-layer-state'
 
 const CLIP_GROUP_NAME_PREFIX = 'movement-zone-clip-'
@@ -60,7 +59,7 @@ export function wrapNodeInMovementZoneClip(
 
   node.remove()
 
-  const clipGroup = new KonvaRuntime.Group({
+  const clipGroup = new Konva.Group({
     name: `${CLIP_GROUP_NAME_PREFIX}${layerId}`,
     x: bounds.x,
     y: bounds.y,

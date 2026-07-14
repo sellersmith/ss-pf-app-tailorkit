@@ -10,8 +10,7 @@
  *   path     → Konva.Path  (pathData is pre-scaled to canvas-px by preparation-fns.server.ts)
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 import type { MovementBounds } from '../../stores/storefront-layer-state'
 import { ZONE_DASH, ZONE_FILL, ZONE_STROKE_COLOR, ZONE_STROKE_WIDTH } from '../../../shared/constants/movement-zone'
 
@@ -38,7 +37,7 @@ export function createZoneIndicator(layerId: string, bounds: MovementBounds): Ko
   }
 
   if (bounds.type === 'ellipse') {
-    return new KonvaRuntime.Ellipse({
+    return new Konva.Ellipse({
       ...baseProps,
       // Konva.Ellipse x/y is the center point
       x: bounds.x + bounds.width / 2,
@@ -52,7 +51,7 @@ export function createZoneIndicator(layerId: string, bounds: MovementBounds): Ko
     // pathData is already in canvas-px zone-local coordinates (pre-scaled by preparation-fns.server.ts).
     // Konva.Path renders data at the node's position (bounds.x, bounds.y) using scaleX/scaleY.
     // No additional scaling — scaleX/scaleY = 1 since path coordinates are already correct.
-    return new KonvaRuntime.Path({
+    return new Konva.Path({
       ...baseProps,
       data: bounds.pathData,
       scaleX: 1,
@@ -61,7 +60,7 @@ export function createZoneIndicator(layerId: string, bounds: MovementBounds): Ko
   }
 
   // Default: rectangle
-  return new KonvaRuntime.Rect({
+  return new Konva.Rect({
     ...baseProps,
     width: bounds.width,
     height: bounds.height,

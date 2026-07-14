@@ -3,8 +3,7 @@
  * Move (drag), Resize, Rotate — with per-layer capability flags.
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 
 import { KonvaCanvasManager } from '../../../shared/libraries/konva/core'
 import { applyLayerRotation, type ImageLayerProps } from '../../../shared/libraries/konva/image'
@@ -66,7 +65,7 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
     const stage = this.getStage()
     const mainLayer = this.getMainLayer()
 
-    this.transformer = new KonvaRuntime.Transformer({
+    this.transformer = new Konva.Transformer({
       anchorSize: isMobile ? ANCHOR_SIZE_MOBILE : ANCHOR_SIZE_DEFAULT,
       anchorCornerRadius: 2,
       anchorStroke: TRANSFORMER_STROKE,
@@ -114,7 +113,7 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
       let newWidth = baseWidth * scaleX
       let newHeight = baseHeight * scaleY
 
-      if (node instanceof KonvaRuntime.Image) {
+      if (node instanceof Konva.Image) {
         node.width(newWidth)
         node.height(newHeight)
         node.scaleX(1)
@@ -238,7 +237,7 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
     // Add transformer to a SEPARATE layer above mainLayer.
     // This ensures super.clear() (which calls mainLayer.destroyChildren()) does NOT
     // destroy the transformer when the canvas re-renders.
-    this.transformerLayer = new KonvaRuntime.Layer()
+    this.transformerLayer = new Konva.Layer()
     stage.add(this.transformerLayer)
     this.transformerLayer.add(this.transformer)
 
@@ -401,8 +400,8 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
     // movementBounds without this adjustment, causing text to leak outside the zone.
     const hasMovementZone = this.pendingReg?.flags?.movementBounds
     if (!hasMovementZone) {
-      if (node instanceof KonvaRuntime.Group) {
-        const textChildren = node.find<Konva.Text>((n: Konva.Node) => n instanceof KonvaRuntime.Text)
+      if (node instanceof Konva.Group) {
+        const textChildren = node.find<Konva.Text>((n: Konva.Node) => n instanceof Konva.Text)
         const hasSVGImageChild = textChildren.length === 0
 
         if (hasSVGImageChild) {
@@ -413,8 +412,8 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
       } else if (!isTextShapeContainer && !props.autoFitToContainer) {
         shrinkTextNodeToContent(node, props)
       }
-    } else if (node instanceof KonvaRuntime.Group) {
-      const textChildren = node.find<Konva.Text>((n: Konva.Node) => n instanceof KonvaRuntime.Text)
+    } else if (node instanceof Konva.Group) {
+      const textChildren = node.find<Konva.Text>((n: Konva.Node) => n instanceof Konva.Text)
       if (textChildren.length === 0) {
         attachLogicalBoundsOverride(node, props.width || 0, props.height || 0)
       }
@@ -520,11 +519,11 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
    *   • Simple text path     → returns textNode (direct Layer child)    → use textNode
    */
   private resolveInteractiveTarget(returnedNode: Konva.Node): Konva.Node {
-    if (!(returnedNode instanceof KonvaRuntime.Group)) {
+    if (!(returnedNode instanceof Konva.Group)) {
       const parent = returnedNode.getParent()
       // Don't bubble up to a movement zone clip group — it is a fixed viewport,
       // not the interactive target. The text node inside is the drag target.
-      if (parent instanceof KonvaRuntime.Group && !parent.getAttr(MOVEMENT_ZONE_CLIP_ATTR)) {
+      if (parent instanceof Konva.Group && !parent.getAttr(MOVEMENT_ZONE_CLIP_ATTR)) {
         return parent
       }
     }
@@ -551,7 +550,7 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
 
     // Walk UP: enable listening on ancestors up to mainLayer
     let ancestor = target.getParent()
-    while (ancestor && !(ancestor instanceof KonvaRuntime.Layer)) {
+    while (ancestor && !(ancestor instanceof Konva.Layer)) {
       if (!ancestor.listening()) {
         ancestor.listening(true)
         if (ancestor.isCached()) ancestor.clearCache()
@@ -563,7 +562,7 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
     // NOTE: Pass a predicate function (not a CSS string) to find(). Konva's
     // _isMatch only handles className/nodeType strings; "Node" matches nothing.
     // A predicate (() => true) uses the function branch and returns all descendants.
-    if (target instanceof KonvaRuntime.Group) {
+    if (target instanceof Konva.Group) {
       target
         .find<Konva.Node>(() => true)
         .forEach((child: Konva.Node) => {
@@ -604,11 +603,11 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
         applyLayerRotation(target, pt.rotation)
         target.scaleX(1)
         target.scaleY(1)
-        if (target instanceof KonvaRuntime.Image) {
+        if (target instanceof Konva.Image) {
           // Image: restore explicit width/height
           target.width(pt.width)
           target.height(pt.height)
-        } else if (target instanceof KonvaRuntime.Group) {
+        } else if (target instanceof Konva.Group) {
           // Groups resize via scaleX/Y — restore scale from ratio of preserved vs default dimensions.
           const defaultW = defaultTransform.width > 0 ? defaultTransform.width : 1
           const defaultH = defaultTransform.height > 0 ? defaultTransform.height : 1
@@ -656,7 +655,7 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
       const grandParent = target.getParent()?.getParent()
       // Fallback to mainLayer when grandParent is Stage (no template group wrapping the layer)
       const clipParentContainer
-        = grandParent && !(grandParent instanceof KonvaRuntime.Stage) ? grandParent : this.getMainLayer()
+        = grandParent && !(grandParent instanceof Konva.Stage) ? grandParent : this.getMainLayer()
       clipParentContainer.add(zoneShape)
       // Position indicator just above the clip group in z-order.
       const clipGroup = target.getParent()
@@ -898,9 +897,9 @@ export class StorefrontInteractiveCanvasManager extends KonvaCanvasManager {
     StorefrontUndoStack.push(delta as any)
   }
 
-  /** Proxy: new KonvaRuntime.Circle(...) — uses the shared Konva instance */
+  /** Proxy: new Konva.Circle(...) — uses the shared Konva instance */
   createKonvaCircle(config: Record<string, unknown>): Konva.Circle {
-    return new KonvaRuntime.Circle(config as any)
+    return new Konva.Circle(config as any)
   }
 
   // ─── Override: dispose ────────────────────────────────────────────────────

@@ -5,8 +5,7 @@
  * including undo delta creation for each action.
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 import { StorefrontLayerState } from '../../stores/storefront-layer-state'
 import { StorefrontUndoStack } from '../../stores/storefront-undo-stack'
 import { getCharmProductMap } from '../../services/charm-layer-renderer'
@@ -35,7 +34,7 @@ export function resetLayer(layerId: string, ctx: ManagerContext): void {
   node.scaleX(1)
   node.scaleY(1)
   // For Konva.Image: also restore explicit width/height
-  if (node instanceof KonvaRuntime.Image) {
+  if (node instanceof Konva.Image) {
     node.width(defaults.width)
     node.height(defaults.height)
   }

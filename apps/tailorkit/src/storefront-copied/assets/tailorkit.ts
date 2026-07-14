@@ -25,6 +25,10 @@ import { logAvailableEvents } from './events'
 // Import cross-product personalizer modal listener
 import { registerCrossProductModalListener } from './components/cross-product-modal/cross-product-modal-listener'
 
+// Import inline ATC checkout-redirect setup (covers the non-modal flow where
+// the buyer customizes on-page and clicks the theme's native ATC button)
+import { installInlineCheckoutRedirect } from './features/post-atc-redirect/inline-atc-setup'
+
 // Import global styling utility
 import { applyGlobalStylingVariables } from './utils/global-styling'
 
@@ -74,3 +78,7 @@ logAvailableEvents()
 
 // Register cross-product personalizer modal listener (singleton — safe to call once)
 registerCrossProductModalListener()
+
+// Arm the post-ATC checkout redirect when buyers click the theme's native ATC
+// button on a page hosting a TailorKit customizer (inline personalization).
+installInlineCheckoutRedirect()

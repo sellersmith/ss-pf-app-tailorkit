@@ -16,7 +16,7 @@
  */
 
 import type Konva from 'konva'
-import { getTailorKitKonvaDragDrop } from '../../../shared/libraries/konva/runtime-konva'
+import { DD } from 'konva/lib/DragAndDrop' // Konva 10.0.12 internal API — re-verify on upgrade
 
 export interface MobileTouchRelayContext {
   getActive: () => boolean
@@ -82,7 +82,6 @@ export function initMobileTouchRelay(isMobile: boolean, stage: Konva.Stage, ctx:
     const feedDragIfActive = (e: Event) => {
       if (!ctx.getActive() || transformerInteracting) return
       e.stopPropagation()
-      const DD = getTailorKitKonvaDragDrop()
       DD._drag(e)
     }
     konvaContent.addEventListener('pointermove', feedDragIfActive, false)
@@ -93,7 +92,6 @@ export function initMobileTouchRelay(isMobile: boolean, stage: Konva.Stage, ctx:
     const feedEndAndReset = (e: Event) => {
       if (ctx.getActive() && !transformerInteracting) {
         e.stopPropagation()
-        const DD = getTailorKitKonvaDragDrop()
         DD._endDragBefore(e)
         DD._endDragAfter(e)
         ctx.setActive(false)

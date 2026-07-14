@@ -1,10 +1,8 @@
-import { FontLoader } from '../../assets/utils/font-loader'
-
-// Must initialize BEFORE re-exporting registerOptionSetElements: that re-export
-// triggers FontSwatchElement to load via customElements.define, which can fire
-// connectedCallback synchronously for existing DOM elements and reach into
-// fontStorefrontLoader during module init — causing a TDZ ReferenceError.
-export const fontStorefrontLoader = new FontLoader()
+// fontStorefrontLoader lives in its own leaf module to break the circular
+// dependency with registerOptionSetElements. Re-exported here for backward
+// compatibility; new code should import it from './font-storefront-loader'.
+// See font-storefront-loader.ts for the full TDZ explanation.
+export { fontStorefrontLoader } from './font-storefront-loader'
 
 export { registerOptionSetElements } from './registerOptionSetElements'
 export { registerTextCustomerElements } from './TextCustomer'

@@ -11,7 +11,6 @@
  * CONTAINER (one per product image), not the active/visible indicator.
  */
 export const SLIDE_CONTAINER_SELECTORS: string[] = [
-  '.pf-slide-main-media', // PageFly product media slider (one .pf-slide-main-media per image)
   '.product-media--image', // Modular
   '.product__media-item', // Dawn family
   '.product-gallery__media', // Prestige, Impact, Atlantic

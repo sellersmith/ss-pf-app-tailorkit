@@ -1,7 +1,7 @@
 import TextField from '../../../assets/components/commons/textfield'
 import { ROLE_TEXT_COUNTER, ROLE_TEXT_INPUT } from '../../../assets/utils/dom-constants'
 import { graphemeCount, graphemeTruncate } from '../../utils/grapheme-utils'
-import { fontStorefrontLoader } from '..'
+import { fontStorefrontLoader } from '../font-storefront-loader'
 
 const ELEMENT_NAME = 'tailorkit-text-customer-input'
 
