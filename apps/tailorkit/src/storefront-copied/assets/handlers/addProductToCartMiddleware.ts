@@ -1,6 +1,7 @@
 import { CANVAS_PREVIEW_PROPERTY_KEY, PROPERTY_PREFIX } from '../constants'
 import { OPTION_PRICING_PRODUCT_HANDLE, OPTION_PRICING_PROPERTY_PREFIX } from '../constants/option-pricing'
 import { getCachedHiddenPricingProduct } from '../utils/hidden-pricing-cache'
+import { claimPricingFire, findAtcFormForVariant } from '../utils/pricing-claim'
 import { TOTAL_ADDITIONAL_COST_PROPERTY } from '../components/pricing-manager'
 import { CanvasPreviewManager } from '../components/canvas-preview-manager'
 import { StorefrontLayerState } from '../stores/storefront-layer-state'
@@ -568,27 +569,39 @@ export const handleAddProductToCartByFormData = async (formData: FormData) => {
 
     // Step 3: Hidden pricing product item
     if (additionalCost > 0) {
-      const hiddenProduct = await getCachedHiddenPricingProduct()
+      // Claim the ATC form synchronously, before any async work below, so
+      // whichever mechanism reaches the claim first wins — this interceptor,
+      // or the cart-form-sync.ts submit-listener fallback (for themes whose
+      // ATC call doesn't go through fetch). See pricing-claim.ts for why the
+      // claim is TTL-based and keyed on the form element, rather than a
+      // refId or event.defaultPrevented (both proved unreliable) or a
+      // capture-phase reset (some themes' own ATC handling is ALSO a
+      // capture-phase document listener, with no guaranteed order vs ours).
+      const atcForm = findAtcFormForVariant((formData.get('id') as string) ?? undefined)
 
-      if (!hiddenProduct) {
-        console.error('[TailorKit] Cannot proceed with pricing - hidden product not available in cache')
-        console.error(
-          '[TailorKit] Please ensure the hidden product is created in Shopify admin with handle:',
-          OPTION_PRICING_PRODUCT_HANDLE
-        )
-      } else {
-        const hiddenProductPrice = hiddenProduct.variants[0]?.price
-        const basePricingQuantity = calculatePricingQuantity(additionalCost, hiddenProductPrice)
-        const totalPricingQuantity = basePricingQuantity * mainProductQuantity
-        const pricingItem = buildHiddenPricingItem(
-          refId,
-          hiddenProduct,
-          totalPricingQuantity,
-          mainProductName,
-          additionalCost
-        )
-        if (pricingItem) {
-          additionalItems.push(pricingItem)
+      if (claimPricingFire(atcForm)) {
+        const hiddenProduct = await getCachedHiddenPricingProduct()
+
+        if (!hiddenProduct) {
+          console.error('[TailorKit] Cannot proceed with pricing - hidden product not available in cache')
+          console.error(
+            '[TailorKit] Please ensure the hidden product is created in Shopify admin with handle:',
+            OPTION_PRICING_PRODUCT_HANDLE
+          )
+        } else {
+          const hiddenProductPrice = hiddenProduct.variants[0]?.price
+          const basePricingQuantity = calculatePricingQuantity(additionalCost, hiddenProductPrice)
+          const totalPricingQuantity = basePricingQuantity * mainProductQuantity
+          const pricingItem = buildHiddenPricingItem(
+            refId,
+            hiddenProduct,
+            totalPricingQuantity,
+            mainProductName,
+            additionalCost
+          )
+          if (pricingItem) {
+            additionalItems.push(pricingItem)
+          }
         }
       }
     }
