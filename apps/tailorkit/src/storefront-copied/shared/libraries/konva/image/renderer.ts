@@ -1,5 +1,4 @@
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../runtime-konva'
+import Konva from 'konva'
 import type { KonvaEditorState } from '../../../../assets/handlers/event-handlers/image-editor'
 import { computeSafeCachePixelRatio } from '../effects/utils'
 import { compositeImageWithOverlay, type OverlayMetadata } from '../../../utils/overlay-compositor'
@@ -204,7 +203,7 @@ export const ROTATION_DELEGATE_ATTR = '_rotationOnInnerImage'
  * wrong point.
  */
 export function applyLayerRotation(node: Konva.Node, rotation: number): void {
-  if (node.getAttr(ROTATION_DELEGATE_ATTR) && node instanceof KonvaRuntime.Group) {
+  if (node.getAttr(ROTATION_DELEGATE_ATTR) && node instanceof Konva.Group) {
     const inner = node.findOne<Konva.Image>('Image')
     if (inner) {
       inner.rotation(rotation)
@@ -337,7 +336,7 @@ export async function addImageLayer(
   // If clipGroup is provided, create a clipping container
   if (clipGroup) {
     // Create a group to handle clipping - use original x,y
-    const clipContainer = new KonvaRuntime.Group({
+    const clipContainer = new Konva.Group({
       x,
       y,
       rotation: rotation,
@@ -357,7 +356,7 @@ export async function addImageLayer(
     })
 
     // Create the visible boundary rectangle - now at (0,0)
-    const boundaryRect = new KonvaRuntime.Rect({
+    const boundaryRect = new Konva.Rect({
       x: 0,
       y: 0,
       width: clipWidth,
@@ -372,14 +371,14 @@ export async function addImageLayer(
 
     // Create an isolated group to contain image + mask so compositing
     // doesn't affect other canvas elements
-    const imageGroup = new KonvaRuntime.Group({
+    const imageGroup = new Konva.Group({
       x: 0,
       y: 0,
       listening: false,
     })
 
     // Create image with proper positioning
-    const konvaImage = new KonvaRuntime.Image({
+    const konvaImage = new Konva.Image({
       image: image,
       listening: false,
     })
@@ -461,7 +460,7 @@ export async function addImageLayer(
     if (maskConfig?.src) {
       const processedMask = await buildProcessedMaskCanvas(maskConfig, clipWidth, clipHeight)
       if (processedMask) {
-        const maskNode = new KonvaRuntime.Image({
+        const maskNode = new Konva.Image({
           image: processedMask,
           x: 0,
           y: 0,
@@ -630,13 +629,13 @@ export async function addImageLayer(
     }
   }
 
-  const imageGroup = new KonvaRuntime.Group({
+  const imageGroup = new Konva.Group({
     x,
     y,
     rotation: maskConfig?.src ? rotation : 0,
     listening: false,
   })
-  const konvaImage = new KonvaRuntime.Image({
+  const konvaImage = new Konva.Image({
     x: offsetX + pivotX,
     y: offsetY + pivotY,
     image: image,
@@ -666,7 +665,7 @@ export async function addImageLayer(
   if (maskConfig?.src) {
     const processedMask = await buildProcessedMaskCanvas(maskConfig, width, height)
     if (processedMask) {
-      const maskNode = new KonvaRuntime.Image({
+      const maskNode = new Konva.Image({
         image: processedMask,
         x: 0,
         y: 0,

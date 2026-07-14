@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { fontStorefrontLoader } from '../..'
+import { fontStorefrontLoader } from '../../font-storefront-loader'
 import { BaseOptionSetElement } from '../../BaseOptionSetElement'
 import type { FontOptionItem } from '../types'
 import { Popover, type PopoverOptions } from '../../../../assets/components/commons/popover'

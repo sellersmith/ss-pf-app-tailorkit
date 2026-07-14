@@ -1,5 +1,4 @@
-// Copied from TailorKit upstream; type sourced locally instead of backend app/routes for storefront isolation.
-import type { AppBlockInstallationSettings } from '../types/app-block-installation'
+import type { AppBlockInstallationSettings } from '../../../../../app/routes/api.app_proxy.product-variant-integration/type'
 
 /**
  * Default app block installation settings.

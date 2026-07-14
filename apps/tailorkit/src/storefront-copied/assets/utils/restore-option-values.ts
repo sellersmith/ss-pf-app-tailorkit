@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { fontStorefrontLoader } from '../../shared/components'
+import { fontStorefrontLoader } from '../../shared/components/font-storefront-loader'
 import type { TailorKitProductPersonalizer } from '../components/product-personalizer'
 import { localStorage } from './localStorage'
 import { sessionStorage } from './sessionStorage'

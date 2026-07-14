@@ -5,13 +5,12 @@
  *
  * Returns null when no scaled ancestor exists (groupScale = 1, no conversion needed).
  */
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../../../shared/libraries/konva/runtime-konva'
+import Konva from 'konva'
 
 export function findScaledAncestorGroup(node: Konva.Node): Konva.Group | null {
   let parent = node.getParent()
-  while (parent && !(parent instanceof KonvaRuntime.Layer)) {
-    if (parent instanceof KonvaRuntime.Group && (parent.scaleX() !== 1 || parent.scaleY() !== 1)) {
+  while (parent && !(parent instanceof Konva.Layer)) {
+    if (parent instanceof Konva.Group && (parent.scaleX() !== 1 || parent.scaleY() !== 1)) {
       return parent
     }
     parent = parent.getParent()

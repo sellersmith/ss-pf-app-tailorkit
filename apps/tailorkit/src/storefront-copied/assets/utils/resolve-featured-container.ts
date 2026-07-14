@@ -207,12 +207,6 @@ function getInnerImageElement(slide: Element): Element {
  * Ordered from most specific to most generic to minimize false positives.
  */
 const GENERIC_FALLBACK_SELECTORS: string[] = [
-  // PageFly product media slider — active slide is `.pf-slide-main-media.is-current.is-visible`.
-  '.pf-slide-main-media.is-current.is-visible',
-  '.pf-slide-main-media.is-current',
-  '.pf-slide-main-media.is-visible',
-  '.pf-slide-main-media',
-
   // Active/selected state selectors (most specific — unlikely to false-positive)
   '.product__media-item.is-active .product__media',
   '.product__media-item.is-selected .product__media-image-wrapper',

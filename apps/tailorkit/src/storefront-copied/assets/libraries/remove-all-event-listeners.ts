@@ -15,24 +15,15 @@ interface ExtendedEventTarget extends EventTarget {
   const _addEventListener = EventTarget.prototype.addEventListener
   const _removeEventListener = EventTarget.prototype.removeEventListener
 
-  // Override the addEventListener method to track added listeners.
-  // Tracking is wrapped in try/catch because this prototype patch runs for EVERY EventTarget on the
-  // page (including Shopify perf-kit internals whose `this` may be a frozen/proxy object that rejects
-  // the `_eventListeners` property). A failed track must never break the underlying addEventListener.
+  // Override the addEventListener method to track added listeners
   EventTarget.prototype.addEventListener = function (
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions
   ) {
-    try {
-      const self = this as ExtendedEventTarget
-      if (self) {
-        if (!self._eventListeners) self._eventListeners = []
-        self._eventListeners.push({ type, listener, options })
-      }
-    } catch {
-      // EventTarget does not allow attaching tracking state; skip tracking, still bind the listener.
-    }
+    const self = this as ExtendedEventTarget
+    if (!self._eventListeners) self._eventListeners = []
+    self._eventListeners.push({ type, listener, options })
 
     _addEventListener.call(this, type, listener, options)
   }

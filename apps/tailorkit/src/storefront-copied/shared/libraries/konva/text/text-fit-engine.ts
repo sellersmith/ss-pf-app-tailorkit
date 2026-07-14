@@ -1,5 +1,4 @@
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../runtime-konva'
+import Konva from 'konva'
 
 export interface KonvaTextMeasureOptions {
   text: string
@@ -37,7 +36,7 @@ class OffscreenKonvaTextMeasurer {
     }
 
     if (!this.stage) {
-      this.stage = new KonvaRuntime.Stage({
+      this.stage = new Konva.Stage({
         container: this.container!,
         width: Math.max(1, width),
         height: Math.max(1, height),
@@ -47,12 +46,12 @@ class OffscreenKonvaTextMeasurer {
     }
 
     if (!this.layer) {
-      this.layer = new KonvaRuntime.Layer()
+      this.layer = new Konva.Layer()
       this.stage.add(this.layer)
     }
 
     if (!this.textNode) {
-      this.textNode = new KonvaRuntime.Text({})
+      this.textNode = new Konva.Text({})
       this.layer.add(this.textNode)
     }
   }

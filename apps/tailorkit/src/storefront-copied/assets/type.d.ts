@@ -1,5 +1,5 @@
-import type { OptionsType } from './fns/get-fieldset-selector'
-import type { BaseTransform, PercentageTransform, ClipGroupPct } from './fns/decode-option-transform'
+import type { OptionsType } from '../fns/get-fieldset-selector'
+import type { BaseTransform, PercentageTransform, ClipGroupPct } from '../fns/decode-option-transform'
 
 type ProductImage = {
   // Product image URL for previewing the final print

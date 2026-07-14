@@ -12,8 +12,7 @@
  * @module konva/effects/vanilla-effects
  */
 
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../runtime-konva'
+import Konva from 'konva'
 import type { TextConfig } from 'konva/lib/shapes/Text'
 import type { DropShadowConfig, InnerShadowConfig } from './types'
 import {
@@ -95,12 +94,12 @@ export function createDropShadowLayers(
     const shadowColor = resolveColor(shadow.color, textColor)
 
     // Create group container for this shadow
-    const shadowGroup = new KonvaRuntime.Group({
+    const shadowGroup = new Konva.Group({
       name: `drop-shadow-${idx}`,
     })
 
     // Step 1: Draw text with shadow
-    const textWithShadow = new KonvaRuntime.Text({
+    const textWithShadow = new Konva.Text({
       ...textConfig,
       fill: '#000', // Any color, will be punched out
       strokeEnabled: false, // No stroke in shadow
@@ -148,12 +147,12 @@ export function createDropShadowPathLayers(
   return reversedShadows.map((shadow, idx) => {
     const shadowColor = resolveColor(shadow.color, textColor)
 
-    const shadowGroup = new KonvaRuntime.Group({
+    const shadowGroup = new Konva.Group({
       name: `drop-shadow-path-${idx}`,
     })
 
     // Step 1: Draw TextPath with shadow
-    const textPathWithShadow = new KonvaRuntime.TextPath({
+    const textPathWithShadow = new Konva.TextPath({
       ...textPathConfig,
       fill: '#000',
       strokeEnabled: false,
@@ -168,7 +167,7 @@ export function createDropShadowPathLayers(
     })
 
     // Step 2: Punch out
-    const punchOut = new KonvaRuntime.TextPath({
+    const punchOut = new Konva.TextPath({
       ...textPathConfig,
       fill: '#000',
       strokeEnabled: false,
@@ -259,7 +258,7 @@ export function createInnerShadowLayers(
 
   // Create cached group container (CRITICAL for source-atop isolation)
   const estimatedHeight = fontSize * 2
-  const cacheGroup = new KonvaRuntime.Group({
+  const cacheGroup = new Konva.Group({
     name: 'inner-shadow-cache-group',
     'data-hide-distance': hideDistance,
     'data-cache-width': width,
@@ -269,7 +268,7 @@ export function createInnerShadowLayers(
 
   // Base layer - defines the fill shape for inner shadows (no stroke in compositing)
   if (variant === 'text') {
-    const baseText = new KonvaRuntime.Text({
+    const baseText = new Konva.Text({
       ...variantProps.config,
       fill: textColor,
       strokeEnabled: false,
@@ -279,7 +278,7 @@ export function createInnerShadowLayers(
     })
     cacheGroup.add(baseText)
   } else {
-    const baseTextPath = new KonvaRuntime.TextPath({
+    const baseTextPath = new Konva.TextPath({
       ...variantProps.config,
       fill: textColor,
       strokeEnabled: false,
@@ -290,7 +289,7 @@ export function createInnerShadowLayers(
   }
 
   // Inner shadow container with source-atop composition
-  const compositeGroup = new KonvaRuntime.Group({
+  const compositeGroup = new Konva.Group({
     globalCompositeOperation: 'source-atop',
   })
 
@@ -310,13 +309,13 @@ export function createInnerShadowLayers(
     }
 
     if (variant === 'text') {
-      const colorLayer = new KonvaRuntime.Text({
+      const colorLayer = new Konva.Text({
         ...variantProps.config,
         ...colorProps,
       })
       compositeGroup.add(colorLayer)
     } else {
-      const colorLayer = new KonvaRuntime.TextPath({
+      const colorLayer = new Konva.TextPath({
         ...variantProps.config,
         ...colorProps,
       })
@@ -359,7 +358,7 @@ export function createInnerShadowLayers(
     }
 
     if (variant === 'text') {
-      const shadowLayer = new KonvaRuntime.Text({
+      const shadowLayer = new Konva.Text({
         ...variantProps.config,
         ...baseShadowProps,
         // Off-screen position
@@ -369,7 +368,7 @@ export function createInnerShadowLayers(
       compositeGroup.add(shadowLayer)
     } else {
       // For TextPath: position at hideDistance within the cache buffer
-      const shadowLayer = new KonvaRuntime.TextPath({
+      const shadowLayer = new Konva.TextPath({
         ...variantProps.config,
         ...baseShadowProps,
         x: hideDistance,
@@ -383,7 +382,7 @@ export function createInnerShadowLayers(
 
   // Stroke layer - rendered OUTSIDE compositing to appear on top
   if (variant === 'text') {
-    const strokeText = new KonvaRuntime.Text({
+    const strokeText = new Konva.Text({
       ...variantProps.config,
       fillEnabled: false,
       listening: false,
@@ -391,7 +390,7 @@ export function createInnerShadowLayers(
     })
     cacheGroup.add(strokeText)
   } else {
-    const strokeTextPath = new KonvaRuntime.TextPath({
+    const strokeTextPath = new Konva.TextPath({
       ...variantProps.config,
       fillEnabled: false,
       listening: false,
@@ -434,7 +433,7 @@ export function createInnerShadowLayers(
  * Simple wrapper for consistency with effect composition
  */
 export function createMainTextLayer(textConfig: TextConfig, textColor: string): Konva.Text {
-  return new KonvaRuntime.Text({
+  return new Konva.Text({
     ...textConfig,
     fill: textColor,
     listening: false,
@@ -459,7 +458,7 @@ export function createMainTextPathLayer(
   },
   textColor: string
 ): Konva.TextPath {
-  return new KonvaRuntime.TextPath({
+  return new Konva.TextPath({
     ...textPathConfig,
     fill: textColor,
     listening: false,

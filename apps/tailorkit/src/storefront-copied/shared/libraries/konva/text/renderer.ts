@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
-import type Konva from 'konva'
-import { TailorKitKonva as KonvaRuntime } from '../runtime-konva'
+import Konva from 'konva'
 import {
   calculateCurveEquivalentRadius,
   calculateOptimalTextSize,
@@ -37,7 +36,7 @@ import {
 } from '../../svg'
 import { createEnvelopeText } from '../../svg/svg-envelope-text-creator'
 import { scaleCustomPathToFit } from './scale-custom-path'
-import { fontStorefrontLoader } from '../../../components'
+import { fontStorefrontLoader } from '../../../components/font-storefront-loader'
 
 // =============================================================================
 // HOTFIX: Text Layer Rendering Version Control (Time-boxed)
@@ -118,7 +117,7 @@ function renderTextWithVanillaEffects(
   transformProps: Partial<Konva.NodeConfig>
 ): Konva.Group {
   // Create group exactly like old effectsGroup - spread transformProps which includes listening: false
-  const group = new KonvaRuntime.Group(transformProps)
+  const group = new Konva.Group(transformProps)
 
   // Drop shadows (behind text)
   if (dropShadows.length > 0) {
@@ -162,7 +161,7 @@ function renderTextPathWithVanillaEffects(
   width: number
 ): Konva.Group {
   // Create group exactly like old effectsGroup - spread transformProps which includes listening: false
-  const group = new KonvaRuntime.Group(transformProps)
+  const group = new Konva.Group(transformProps)
 
   // Drop shadows (behind text)
   if (dropShadows.length > 0) {
@@ -469,7 +468,7 @@ export async function addTextLayer(
       })
 
       // Use Group wrapper for transforms
-      const group = new KonvaRuntime.Group({
+      const group = new Konva.Group({
         x: x || 0,
         y: y || 0,
         rotation: transformRotation,
@@ -482,7 +481,7 @@ export async function addTextLayer(
         listening: false,
       })
 
-      const imageNode = new KonvaRuntime.Image({
+      const imageNode = new Konva.Image({
         image: img,
         x: padding,
         y: padding,
@@ -621,7 +620,7 @@ export async function addTextLayer(
 
       // Use Group wrapper for transforms (matches admin SVGTextWithEffects pattern)
       // This ensures rotation pivot is correct relative to padded content
-      const group = new KonvaRuntime.Group({
+      const group = new Konva.Group({
         x: x || 0,
         y: y || 0,
         rotation: transformRotation,
@@ -634,7 +633,7 @@ export async function addTextLayer(
         listening: false,
       })
 
-      const imageNode = new KonvaRuntime.Image({
+      const imageNode = new Konva.Image({
         image: result.image,
         x: padding - result.padding,
         y: padding - result.padding,
@@ -748,7 +747,7 @@ export async function addTextLayer(
 
     // Use Group wrapper for transforms (matches admin SVGTextWithEffects pattern)
     // This ensures rotation pivot is correct relative to padded content
-    const group = new KonvaRuntime.Group({
+    const group = new Konva.Group({
       x: x || 0,
       y: y || 0,
       rotation: transformRotation,
@@ -761,7 +760,7 @@ export async function addTextLayer(
       listening: false,
     })
 
-    const imageNode = new KonvaRuntime.Image({
+    const imageNode = new Konva.Image({
       image: result.image,
       x: -result.leftPadding,
       y: -result.topPadding,
@@ -778,7 +777,7 @@ export async function addTextLayer(
 
   // Fast path: Basic text without effects - use native Konva.Text
   // Use svgFontFamily (composite with emoji font fallback) so PUA chars render via Canvas 2D fallback
-  const textNode = new KonvaRuntime.Text({
+  const textNode = new Konva.Text({
     x: (x || 0) + padding,
     y: (y || 0) + padding,
     text: finalText,

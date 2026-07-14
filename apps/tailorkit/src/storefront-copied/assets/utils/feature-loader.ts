@@ -65,24 +65,22 @@ export const KONVA_READY_EVENT = 'tailorkit:konva-ready'
  * Registry of all available features
  * This mirrors the features.config.js build configuration
  */
-// PageFly app-platform generates feature bundles with the `pagefly-` prefix (see theme-surfaces.ts
-// generatedName), so scriptName matches the materialized asset filenames.
 const FEATURES: Record<FeatureName, FeatureConfig> = {
   konva: {
     name: 'konva',
-    scriptName: 'pagefly-tailorkit-konva.js',
+    scriptName: 'tailorkit-konva.js',
     windowKey: 'TailorKitKonva',
     readyEvent: 'tailorkit:konva-ready',
   },
   'pinch-zoom': {
     name: 'pinch-zoom',
-    scriptName: 'pagefly-tailorkit-pinch-zoom.js',
+    scriptName: 'tailorkit-pinch-zoom.js',
     windowKey: 'TailorKitPinchZoom',
     readyEvent: 'tailorkit:pinch-zoom-ready',
   },
   'charm-builder': {
     name: 'charm-builder',
-    scriptName: 'pagefly-tailorkit-charm-builder.js',
+    scriptName: 'tailorkit-charm-builder.js',
     windowKey: 'TailorKitCharmBuilder',
     readyEvent: 'tailorkit:charm-builder-ready',
   },
@@ -101,10 +99,10 @@ const featurePromises: Partial<Record<FeatureName, Promise<BaseFeatureModule>>> 
 
 /**
  * Check if we're running in storefront context
- * Storefront has pagefly-tailorkit.js loaded via the PageFly theme app-embed
+ * Storefront has tailorkit.js loaded via Liquid template
  */
 export function isStorefrontContext(): boolean {
-  return typeof document !== 'undefined' && !!document.querySelector('script[src*="pagefly-tailorkit.js"]')
+  return typeof document !== 'undefined' && !!document.querySelector('script[src*="tailorkit.js"]')
 }
 
 // ============================================================================
@@ -142,13 +140,13 @@ function injectFeatureScript(config: FeatureConfig): ScriptInjectionResult {
   }
 
   // Try to find the asset URL from existing scripts
-  const existingScript = document.querySelector('script[src*="pagefly-tailorkit.js"]')
+  const existingScript = document.querySelector('script[src*="tailorkit.js"]')
   if (!existingScript) {
-    console.warn(`[TailorKit] Could not find pagefly-tailorkit.js to derive ${config.scriptName} URL`)
+    console.warn(`[TailorKit] Could not find tailorkit.js to derive ${config.scriptName} URL`)
     return { success: false, isNewlyInjected: false }
   }
 
-  const baseUrl = (existingScript as HTMLScriptElement).src.replace('pagefly-tailorkit.js', '')
+  const baseUrl = (existingScript as HTMLScriptElement).src.replace('tailorkit.js', '')
   const scriptUrl = `${baseUrl}${config.scriptName}`
 
   const script = document.createElement('script')
