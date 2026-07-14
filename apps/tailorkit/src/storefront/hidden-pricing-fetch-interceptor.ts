@@ -9,6 +9,7 @@ import {
   injectTailorKitDomInputsIntoCartAddBody,
   variantIdFromCartAddBody,
 } from './hidden-pricing-cart-add-body'
+import { claimPricingFire, findAtcFormForVariant } from './pricing-claim'
 
 export {
   extractTailorKitHiddenPricingContextFromCartAddBody,
@@ -24,7 +25,7 @@ type TailorKitFetchInputLike = RequestInfo | URL | string
 
 export type TailorKitHiddenPricingFetchInterceptorResult =
   | TailorKitHiddenPricingSubmitResult
-  | { submitted: false; reason: 'skipped' | 'missing-context' }
+  | { submitted: false; reason: 'skipped' | 'missing-context' | 'claimed-elsewhere' }
 
 declare global {
   interface Window {
@@ -80,6 +81,14 @@ export async function handleTailorKitHiddenPricingCartAddFetch(
     readTailorKitHiddenPricingInputsFromDom(variantIdFromCartAddBody(init?.body))
   )
   if (!context) return { submitted: false, reason: 'missing-context' }
+
+  // Claim before submitting. storefront-copied's separate (upstream-mirrored)
+  // interceptor pair coordinates through the SAME `<form>` dataset key — see
+  // pricing-claim.ts for why this can't be a capture-phase reset or an
+  // event.defaultPrevented check.
+  if (!claimPricingFire(findAtcFormForVariant(variantIdFromCartAddBody(init?.body)))) {
+    return { submitted: false, reason: 'claimed-elsewhere' }
+  }
 
   return submitTailorKitHiddenPricingProductFromContext(context, options)
 }

@@ -4,6 +4,7 @@ import {
   buildTailorKitHiddenPricingCartItem,
   createTailorKitHiddenPricingProductCache,
 } from './hidden-pricing-product'
+import { claimPricingFire } from './pricing-claim'
 
 interface TailorKitFormInputLike {
   name: string
@@ -133,13 +134,19 @@ export function installTailorKitHiddenPricingNativeSubmit() {
     'submit',
     event => {
       const form = event.target as HTMLFormElement | null
-      if (!form?.action?.includes('/cart/add') || event.defaultPrevented) return
-      if (form.dataset.tailorkitHiddenPricingFired === 'true') return
+      if (!form?.action?.includes('/cart/add')) return
 
       const context = extractTailorKitHiddenPricingFormContext(formInputs(form))
       if (!context) return
 
-      form.dataset.tailorkitHiddenPricingFired = 'true'
+      // Claim before submitting, not gated on event.defaultPrevented — themes
+      // using XHR (not fetch) also call preventDefault() to stop page
+      // navigation, so defaultPrevented alone can't tell "the fetch
+      // interceptor will handle this" apart from "nothing will". See
+      // pricing-claim.ts for the full reasoning and how this coordinates with
+      // storefront-copied's separate (upstream-mirrored) interceptor pair.
+      if (!claimPricingFire(form)) return
+
       submitTailorKitHiddenPricingProductFromContext(context).catch(error =>
         console.error('[TailorKit] Hidden pricing native submit failed:', error)
       )
