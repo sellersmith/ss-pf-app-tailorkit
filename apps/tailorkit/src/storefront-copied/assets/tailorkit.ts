@@ -44,7 +44,7 @@ import { installTailorKitHiddenPricingNativeSubmit } from '../../storefront/hidd
 import { initializeTailorKitCartSync } from '../../storefront/cart-change-observer'
 // Hides the theme's qty stepper / remove button on the hidden pricing line and renders a clean label
 // instead, so buyers can't edit or delete the fee line independently.
-import { initializeCartHiddenProductManager } from '../../storefront/cart-hidden-product-manager'
+import { type CartHiddenProductManager, initializeCartHiddenProductManager } from '../../storefront/cart-hidden-product-manager'
 
 // Initialize TailorKit interceptor system
 console.log('[TailorKit] Initializing interceptor system...')
@@ -69,11 +69,32 @@ initializeHiddenPricingProductCache()
 installTailorKitHiddenPricingNativeSubmit()
 installTailorKitHiddenPricingFetchInterceptor()
 
-// Observe Ajax cart mutations to keep the hidden pricing line's quantity in sync and clean up orphans.
-initializeTailorKitCartSync()
-
 // Hide qty/remove controls on the hidden pricing line and render a clean label.
-initializeCartHiddenProductManager()
+const tailorKitHiddenManager = initializeCartHiddenProductManager()
+
+// Observe Ajax cart mutations to keep the hidden pricing line's quantity in sync, clean up
+// orphans, and re-tag the hidden line after the theme re-renders cart rows on each change.
+initializeTailorKitCartSync({
+  onCartData: cart =>
+    tailorKitHiddenManager.processCartWithData(
+      cart as unknown as Parameters<CartHiddenProductManager['processCartWithData']>[0]
+    ),
+})
+
+// Tag the hidden pricing line on initial cart render. The manager's own init runs before
+// section-rendered themes finish rendering cart rows (losing the DOM race), so drive it once the
+// DOM is ready with fresh cart data — mirrors the standalone helper's initial getCart→processCart.
+const tagTailorKitHiddenLineOnLoad = () => {
+  fetch('/cart.js')
+    .then(response => response.json())
+    .then(cart => tailorKitHiddenManager.processCartWithData(cart))
+    .catch(error => console.error('[TailorKit] Initial hidden-line tag failed:', error))
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', tagTailorKitHiddenLineOnLoad)
+} else {
+  tagTailorKitHiddenLineOnLoad()
+}
 
 // Initialize Buy It Now handler
 initializeBuyItNowHandler({

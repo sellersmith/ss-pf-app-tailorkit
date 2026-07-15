@@ -26,6 +26,10 @@ interface TailorKitCartObserverOptions {
   fetcher?: TailorKitCartFetcher
   refreshCart?: (cart: unknown) => void | Promise<void>
   propertyPrefix?: string
+  // Called with fresh cart data on every observed cart mutation, before the change-summary
+  // early-return, so consumers (e.g. the hidden-line control-hiding manager) can re-tag the
+  // DOM after the theme re-renders cart rows. Mirrors the standalone helper's handleCartChange.
+  onCartData?: (cart: TailorKitCartLike) => void
 }
 
 type PerformanceObserverConstructor = new (callback: (list: { getEntries(): TailorKitCartResourceEntry[] }) => void) => {
@@ -97,6 +101,11 @@ async function readCart(fetcher: TailorKitCartFetcher): Promise<TailorKitCartLik
 async function flushQueuedCartSync(fetcher: TailorKitCartFetcher, options: TailorKitCartObserverOptions) {
   const propertyPrefix = resolvePropertyPrefix(options)
   const cart = await readCart(fetcher)
+
+  // Re-tag the hidden line first: the theme re-renders cart rows on every change and drops our
+  // markers, so this must run even when the cart summary is unchanged (e.g. quantity already synced).
+  options.onCartData?.(cart)
+
   const nextSummary = summarizeCart(cart, propertyPrefix)
 
   if (nextSummary === lastCartSummary) return
