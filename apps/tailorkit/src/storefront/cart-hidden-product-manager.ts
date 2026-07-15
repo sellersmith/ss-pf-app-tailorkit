@@ -378,6 +378,18 @@ export class CartHiddenProductManager {
         cartElement.setAttribute('data-tlk-hidden', 'true')
         this.injectHiddenLabel(cartElement, item)
         this.log(`Marked hidden product (duplicate aware) at DOM index ${idx}:`, item.product_title)
+      } else if (cartElement.getAttribute('data-tlk-hidden') === 'true') {
+        // Idempotent cleanup. On ATC the theme re-renders the drawer and this runs
+        // multiple times (once per cart mutation: main add, then the hidden pricing
+        // add); an early run against a transient cart/DOM state can wrongly mark a
+        // REAL product row hidden, and the theme reuses the same row nodes across
+        // re-renders so the stale `data-tlk-hidden` + injected label persist. Without
+        // this branch the main product stays hidden until a full page reload. Un-mark
+        // rows that resolve to a non-hidden line so the real product shows.
+        cartElement.removeAttribute('data-tlk-hidden')
+        cartElement
+          .querySelectorAll(':scope > .tlk-hidden-label-cell, :scope > .tlk-hidden-label')
+          .forEach(node => node.remove())
       }
     })
   }
