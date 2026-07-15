@@ -7,6 +7,8 @@ yarn.lock
 dist/
 build/
 artifacts/
+# Generated storefront theme bundle output (built by build:theme:standalone, packaged into artifact)
+extensions/pagefly-theme-helper/
 **/.probe/
 coverage/
 .nyc_output/

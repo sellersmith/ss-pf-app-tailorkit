@@ -47,8 +47,12 @@ if (tailorkitPackageJson.scripts?.['build:admin-artifact'] !== 'npm run build:co
   throw new Error('TailorKit package is missing build:admin-artifact contract')
 }
 
-if (tailorkitPackageJson.scripts?.['build:artifact'] !== 'npm run build:admin-runtime && npm run build:copied-routes-runtime && npm run package:artifact') {
+if (tailorkitPackageJson.scripts?.['build:artifact'] !== 'npm run build:admin-runtime && npm run build:copied-routes-runtime && npm run build:theme:standalone && npm run package:artifact') {
   throw new Error('TailorKit package is missing build:artifact contract')
+}
+
+if (tailorkitPackageJson.scripts?.['build:theme:standalone'] !== 'node ../../extensions/app-platform-src/scripts/build.mjs --app tailorkit') {
+  throw new Error('TailorKit package is missing build:theme:standalone contract (storefront theme bundle must build in-repo)')
 }
 
 if (tailorkitPackageJson.scripts?.['package:artifact'] !== 'node ../../scripts/package-app-platform-artifact.mjs') {

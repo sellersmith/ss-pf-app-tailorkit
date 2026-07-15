@@ -1,0 +1,11 @@
+{
+  "name": "pagefly-app-platform-src",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:app": "node scripts/build.mjs --app",
+    "dev": "node scripts/build.mjs --watch",
+    "prepare:tailorkit": "node scripts/prepare-tailorkit-extension-source.mjs"
+  }
+}

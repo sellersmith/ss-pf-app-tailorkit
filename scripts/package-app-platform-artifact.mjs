@@ -227,6 +227,19 @@ function packageArtifact(argv) {
   transpileFile(path.join(appRoot, 'theme-extension'), path.join(outDir, 'theme-extension'), 'theme-surfaces.ts')
   fs.writeFileSync(path.join(outDir, 'server/plugin.js'), "module.exports = require('./src/backend/plugin.js')\n")
 
+  // Storefront theme bundle (pagefly-<app>.js et al.) + generated liquid/locales. Built by
+  // build:theme:standalone into extensions/pagefly-theme-helper; the monorepo install copies these
+  // straight into its own pagefly-theme-helper deploy shell. Without this the theme bundle has no
+  // automated delivery path and the storefront ships a stale hand-built file (see PageFly root-cause
+  // report: tailorkit-storefront-bundle-stale). Assets are the fix payload, so their absence is fatal.
+  const themeHelperRoot = path.join(repoRoot, 'extensions/pagefly-theme-helper')
+  if (!copyDirectoryIfExists(path.join(themeHelperRoot, 'assets'), path.join(outDir, 'theme-helper/assets'))) {
+    throw new Error(`Theme assets missing at ${themeHelperRoot}/assets. Run build:theme:standalone first.`)
+  }
+  copyDirectoryIfExists(path.join(themeHelperRoot, 'blocks'), path.join(outDir, 'theme-helper/blocks'))
+  copyDirectoryIfExists(path.join(themeHelperRoot, 'snippets'), path.join(outDir, 'theme-helper/snippets'))
+  copyDirectoryIfExists(path.join(themeHelperRoot, 'locales'), path.join(outDir, 'theme-helper/locales'))
+
   const pluginPath = 'server/plugin.js'
   validateAdminManifest(outDir, adminManifest)
   validateAdminManifest(outDir, copiedRoutesManifest)
@@ -247,6 +260,7 @@ function packageArtifact(argv) {
     },
     server: { plugin: pluginPath },
     themeExtension: { surfaces: 'theme-extension/theme-surfaces.js' },
+    themeHelper: { root: 'theme-helper', assets: 'theme-helper/assets' },
     build: {
       node: process.versions.node,
       npm: process.env.npm_config_user_agent?.match(/npm\/([^ ]+)/)?.[1] ?? 'unknown',
