@@ -85,8 +85,10 @@ export async function handleTailorKitHiddenPricingCartAddFetch(
   // Claim before submitting. storefront-copied's separate (upstream-mirrored)
   // interceptor pair coordinates through the SAME `<form>` dataset key — see
   // pricing-claim.ts for why this can't be a capture-phase reset or an
-  // event.defaultPrevented check.
-  if (!claimPricingFire(findAtcFormForVariant(variantIdFromCartAddBody(init?.body)))) {
+  // event.defaultPrevented check. Pass the variant id so the global backstop
+  // still coordinates when the variant→form lookup misses (form === null).
+  const variantId = variantIdFromCartAddBody(init?.body)
+  if (!claimPricingFire(findAtcFormForVariant(variantId), variantId)) {
     return { submitted: false, reason: 'claimed-elsewhere' }
   }
 

@@ -62,21 +62,44 @@ export function findAtcFormForVariant(variantId: string | undefined): HTMLFormEl
 }
 
 /**
+ * Global (window-level) backstop claim keyed by variant id. Fixes the
+ * documented "Known limitation" above: when the interceptor's variant→form
+ * lookup resolves to a null or DIFFERENT form node than the one that
+ * dispatched the submit, the form-level claim can't coordinate and a null
+ * form previously always fired — producing a second pricing line with a
+ * mismatched refId (orphan). Keyed by variant so two genuinely different
+ * products added in quick succession each still fire.
+ */
+function claimGlobalPricingFire(variantId: string | undefined, now: number): boolean {
+  if (typeof window === 'undefined' || !variantId) return true
+  const store = ((window as unknown as { __tlkPricingClaims?: Record<string, number> }).__tlkPricingClaims ??= {})
+  if (store[variantId] && now - store[variantId] < CLAIM_TTL_MS) return false
+  store[variantId] = now
+  return true
+}
+
+/**
  * Attempt to claim the pricing-fire right for a submission.
  *
  * Returns true if this call claimed it (proceed to add the pricing line).
  * Returns false if already claimed (within CLAIM_TTL_MS) by the other
- * mechanism — skip, it's already being handled. A null form (no matching DOM
- * form found, e.g. a theme-built quick-add widget with no real <form>) always
- * claims true, since there's no shared node to coordinate through and so no
- * double-add risk from this guard's perspective.
+ * mechanism — via the shared `<form>` node OR the variant-keyed global
+ * backstop, so a null/different form no longer bypasses coordination. Pass
+ * `variantId` explicitly when the caller knows it but the form may be null
+ * (e.g. the fetch interceptor); otherwise it is read from the form.
  */
-export function claimPricingFire(form: HTMLFormElement | null): boolean {
-  if (!form) return true
+export function claimPricingFire(form: HTMLFormElement | null, variantId?: string): boolean {
+  const now = Date.now()
+  const variantKey =
+    variantId != null
+      ? String(variantId)
+      : (form?.querySelector('input[name="id"]') as HTMLInputElement | null)?.value || undefined
 
-  const existing = form.dataset.tlkPricingFiredAt
-  if (existing && Date.now() - Number(existing) < CLAIM_TTL_MS) return false
+  if (form) {
+    const existing = form.dataset.tlkPricingFiredAt
+    if (existing && now - Number(existing) < CLAIM_TTL_MS) return false
+    form.dataset.tlkPricingFiredAt = String(now)
+  }
 
-  form.dataset.tlkPricingFiredAt = String(Date.now())
-  return true
+  return claimGlobalPricingFire(variantKey, now)
 }
