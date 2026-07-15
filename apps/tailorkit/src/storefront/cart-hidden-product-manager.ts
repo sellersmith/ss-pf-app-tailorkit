@@ -72,6 +72,24 @@ function resolvePropertyPrefix(): string {
 }
 
 /**
+ * Map a DOM cart row to its cart.js line by the theme's own 1-based line index
+ * (e.g. Dawn `id="CartDrawer-Item-3"`, or a descendant `[data-index]` on the
+ * quantity input / remove button). This replaces fragile global positional
+ * matching so a hidden pricing row is never mis-identified — and, critically,
+ * so the MAIN product row is never relabeled as the hidden pricing line — when
+ * DOM order differs from cart.js order or multiple cart UIs (drawer + page)
+ * render at once. Returns null when no usable index is exposed (caller falls
+ * back to positional matching, i.e. never worse than before).
+ */
+function resolveCartLineIndex(el: HTMLElement): number | null {
+  const fromId = el.id.match(/-(\d+)$/)?.[1]
+  if (fromId) return Number(fromId)
+  const fromChild = el.querySelector('[data-index]')?.getAttribute('data-index')
+  if (fromChild && /^\d+$/.test(fromChild)) return Number(fromChild)
+  return null
+}
+
+/**
  * Cart Hidden Product Manager
  * Configurable system to hide controls for hidden pricing products
  */
@@ -337,17 +355,23 @@ export class CartHiddenProductManager {
       domElements: cartItemElements.length,
     })
 
-    // Match cart items with DOM elements by position – handle scenarios where
-    // each cart item is rendered multiple times (e.g. cart page + cart drawer).
+    // Match cart items with DOM elements by the theme's own 1-based line index
+    // when exposed (order-independent, handles drawer + cart page rendered at
+    // once); fall back to positional matching (each item rendered multiple
+    // times) only when no index is available.
     const propertyPrefix = resolvePropertyPrefix()
     const totalCartItems = cart.items.length
 
     cartItemElements.forEach((el, idx) => {
-      const item = cart.items[idx % totalCartItems]
+      const cartElement = el as HTMLElement
+      const lineIndex = resolveCartLineIndex(cartElement)
+      const item =
+        lineIndex !== null && lineIndex >= 1 && lineIndex <= totalCartItems
+          ? cart.items[lineIndex - 1]
+          : cart.items[idx % totalCartItems]
       const properties = item.properties
       const isHidden = properties && properties[`${propertyPrefix}_hidden`] === 'true'
 
-      const cartElement = el as HTMLElement
       cartElement.setAttribute('data-tlk-item-key', item.key)
 
       if (isHidden) {
