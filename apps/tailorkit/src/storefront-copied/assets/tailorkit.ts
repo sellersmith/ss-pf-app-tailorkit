@@ -39,6 +39,12 @@ import { applyGlobalStylingVariables } from './utils/global-styling'
 // product line. Idempotent + uses an `X-TailorKit-Internal` marker so it never re-processes its own add.
 import { installTailorKitHiddenPricingFetchInterceptor } from '../../storefront/hidden-pricing-fetch-interceptor'
 import { installTailorKitHiddenPricingNativeSubmit } from '../../storefront/hidden-pricing-native-submit'
+// Keeps the hidden pricing line in sync after the interceptor adds it: re-scales its quantity when the
+// main product quantity changes and removes orphaned fee lines when the main product leaves the cart.
+import { initializeTailorKitCartSync } from '../../storefront/cart-change-observer'
+// Hides the theme's qty stepper / remove button on the hidden pricing line and renders a clean label
+// instead, so buyers can't edit or delete the fee line independently.
+import { initializeCartHiddenProductManager } from '../../storefront/cart-hidden-product-manager'
 
 // Initialize TailorKit interceptor system
 console.log('[TailorKit] Initializing interceptor system...')
@@ -62,6 +68,12 @@ initializeHiddenPricingProductCache()
 // personalization fee is actually added to the cart in the PageFly-embedded storefront.
 installTailorKitHiddenPricingNativeSubmit()
 installTailorKitHiddenPricingFetchInterceptor()
+
+// Observe Ajax cart mutations to keep the hidden pricing line's quantity in sync and clean up orphans.
+initializeTailorKitCartSync()
+
+// Hide qty/remove controls on the hidden pricing line and render a clean label.
+initializeCartHiddenProductManager()
 
 // Initialize Buy It Now handler
 initializeBuyItNowHandler({
