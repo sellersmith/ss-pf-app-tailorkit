@@ -45,16 +45,43 @@ export function findAtcFormForVariant(variantId: string | number | undefined): H
 }
 
 /**
- * Returns true if this call claimed the form (proceed to add the pricing
- * line). Returns false if already claimed, within CLAIM_TTL_MS, by another
- * mechanism. A null form always claims true — nothing to coordinate through.
+ * Global (window-level) backstop claim keyed by variant id. Coordinates the
+ * mechanisms that resolve to a NULL or DIFFERENT `<form>` for the same ATC —
+ * the documented escape that let a second mechanism double-add the pricing
+ * line (with a mismatched refId → orphan pricing line): the fetch interceptor
+ * whose variant→form lookup misses (customizer modal, quick-add widget, or
+ * multiple matching forms) hit `if (!form) return true` and fired anyway while
+ * the submit-listener already claimed the real form. Keyed by variant so two
+ * genuinely different products added in quick succession each still fire.
  */
-export function claimPricingFire(form: HTMLFormElement | null): boolean {
-  if (!form) return true
-
-  const existing = form.dataset.tlkPricingFiredAt
-  if (existing && Date.now() - Number(existing) < CLAIM_TTL_MS) return false
-
-  form.dataset.tlkPricingFiredAt = String(Date.now())
+function claimGlobalPricingFire(variantId: string | undefined, now: number): boolean {
+  if (typeof window === 'undefined' || !variantId) return true
+  const store = ((window as unknown as { __tlkPricingClaims?: Record<string, number> }).__tlkPricingClaims ??= {})
+  if (store[variantId] && now - store[variantId] < CLAIM_TTL_MS) return false
+  store[variantId] = now
   return true
+}
+
+/**
+ * Returns true if this call claimed the fire (proceed to add the pricing
+ * line). Returns false if already claimed, within CLAIM_TTL_MS, by another
+ * mechanism — via the shared `<form>` node OR the variant-keyed global
+ * backstop (so a null/different form no longer bypasses coordination).
+ * Pass `variantId` explicitly when the caller knows it but the form may be
+ * null (e.g. the fetch interceptor); otherwise it is read from the form.
+ */
+export function claimPricingFire(form: HTMLFormElement | null, variantId?: string | number): boolean {
+  const now = Date.now()
+  const variantKey =
+    variantId != null
+      ? String(variantId)
+      : form?.querySelector<HTMLInputElement>('input[name="id"]')?.value || undefined
+
+  if (form) {
+    const existing = form.dataset.tlkPricingFiredAt
+    if (existing && now - Number(existing) < CLAIM_TTL_MS) return false
+    form.dataset.tlkPricingFiredAt = String(now)
+  }
+
+  return claimGlobalPricingFire(variantKey, now)
 }

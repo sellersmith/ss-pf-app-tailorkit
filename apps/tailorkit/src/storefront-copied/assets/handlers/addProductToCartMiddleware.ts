@@ -577,9 +577,12 @@ export const handleAddProductToCartByFormData = async (formData: FormData) => {
       // refId or event.defaultPrevented (both proved unreliable) or a
       // capture-phase reset (some themes' own ATC handling is ALSO a
       // capture-phase document listener, with no guaranteed order vs ours).
-      const atcForm = findAtcFormForVariant((formData.get('id') as string) ?? undefined)
+      const atcVariantId = (formData.get('id') as string) ?? undefined
+      const atcForm = findAtcFormForVariant(atcVariantId)
 
-      if (claimPricingFire(atcForm)) {
+      // Pass the variant id so the global backstop still coordinates when the
+      // variant→form lookup misses or resolves to a different form (form === null).
+      if (claimPricingFire(atcForm, atcVariantId)) {
         const hiddenProduct = await getCachedHiddenPricingProduct()
 
         if (!hiddenProduct) {
