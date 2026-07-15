@@ -5,10 +5,12 @@
 
 import { getStorefrontLayerState } from '../stores/storefront-layer-state'
 import { FEATURE_FLAGS } from '../constants/feature-flags'
-import { CANVAS_PREVIEW_PROPERTY_KEY } from '../constants'
+import { CANVAS_PREVIEW_PROPERTY_KEY, PROPERTY_PREFIX } from '../constants'
 import { uploadImageToServer } from '../handlers/event-handlers/image-editor/upload-service'
 
-const LAYER_TRANSFORM_PROPERTY_PREFIX = '_%{PROPERTY_PREFIX}%_Layer_'
+// Upstream shipped `_%{PROPERTY_PREFIX}%_Layer_` (a build-time token). PageFly resolves the prefix at
+// runtime via the PROPERTY_PREFIX constant, so derive the layer prefix from it instead of the token.
+const LAYER_TRANSFORM_PROPERTY_PREFIX = `${PROPERTY_PREFIX}_Layer_`
 
 /**
  * Upload the canvas preview file input to our server and return the hosted URL.

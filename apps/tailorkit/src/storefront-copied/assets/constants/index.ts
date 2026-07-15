@@ -1,11 +1,40 @@
+// Copied from TailorKit upstream. Original resolved %{...}% placeholders at build time via
+// vite-plugin-transform + env. PageFly is ONE Shopify app with ONE app-proxy subpath per env
+// (prod `pagefly`, dev `local-proxy`/`wip-proxy`, beta `beta-proxy`), so the proxy base is read at
+// runtime from the app-embed storefront-config (backend injects the env-aware `APP_PROXY_PATH` via
+// the em_storefront.app_proxy_path metafield). Fallback `/apps/pagefly` matches OneTick's resolver.
+interface TailorKitProxyConfig {
+  propertyPrefix?: string
+  appProxyPath?: string
+  appProxyOrigin?: string
+}
+
+function readProxyConfig(): TailorKitProxyConfig {
+  if (typeof document === 'undefined') return {}
+  const raw = document.getElementById('tailorkit-storefront-config')?.textContent || '{}'
+  try {
+    return JSON.parse(raw) as TailorKitProxyConfig
+  } catch {
+    return {}
+  }
+}
+
+const proxyConfig = readProxyConfig()
+
 /**
  * Property prefix is serving for hiding meta data properties in cart
  */
-export const PROPERTY_PREFIX = '_%{PROPERTY_PREFIX}%'
+export const PROPERTY_PREFIX = proxyConfig.propertyPrefix || '__pf_tailorkit'
 
-export const APP_PROXY_PATH = '%{APP_PROXY_PATH}%'
-export const APP_PROXY_ORIGIN = '%{APP_PROXY_ORIGIN}%'
-export const APP_HANDLE = '%{APP_HANDLE}%'
+// PageFly app-proxy base (single proxy, env-aware). Original TailorKit appended `/app_proxy/...`;
+// copied callers keep that suffix, so this is the subpath base only (e.g. `/apps/pagefly`).
+export const APP_PROXY_PATH = proxyConfig.appProxyPath || '/apps/pagefly'
+export const APP_PROXY_ORIGIN =
+  proxyConfig.appProxyOrigin || (typeof window !== 'undefined' ? window.location.origin : '')
+// Internal app handle for the hidden-pricing product (`tailorkit-item-personalization`); matches the
+// PageFly backend product-personalizer (process.env.APP_HANDLE) and the rewrite host's hardcoded handle.
+// NOT the Shopify app handle and NOT the proxy subpath.
+export const APP_HANDLE = 'tailorkit'
 
 /**
  * Print id is serving for grouping display name properties
