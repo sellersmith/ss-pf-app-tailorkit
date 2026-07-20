@@ -29,6 +29,14 @@ const SAFETY_TIMEOUT_MS = 4000
 // staying below the threshold a buyer would notice as a pause.
 const REDIRECT_DELAY_MS = 150
 
+// The personalization add is multi-step (main line + hidden pricing line, via
+// separate /cart/add requests). Navigating to /checkout before those persist
+// aborts the in-flight adds, so checkout loads an EMPTY cart and Shopify bounces
+// the buyer to the homepage. Before navigating, poll the cart and only leave
+// once it is non-empty (or the deadline passes as a safety valve).
+const CART_READY_POLL_INTERVAL_MS = 150
+const CART_READY_MAX_WAIT_MS = 4000
+
 export const TLK_REDIRECT_MARKER = '_tlkPostAtcRedirect'
 const MARKER_FIELD = `properties[${TLK_REDIRECT_MARKER}]`
 
@@ -121,9 +129,29 @@ export function armCheckoutRedirectOnce(): void {
     if (redirectScheduled) return
     redirectScheduled = true
     const target = resolveCheckoutUrl()
-    redirectHandle = setTimeout(() => {
-      window.location.href = target
-    }, REDIRECT_DELAY_MS)
+    const deadline = Date.now() + CART_READY_MAX_WAIT_MS
+
+    // Navigate only once the cart actually holds items. Use the unpatched
+    // fetch with credentials so we read the buyer's real cart session. Waiting
+    // instead of navigating early is what lets the in-flight personalization
+    // adds finish (navigation would otherwise cancel them → empty checkout →
+    // homepage bounce).
+    const navigateWhenCartReady = async () => {
+      let hasItems = false
+      try {
+        const cart = await originalFetch('/cart.js', { credentials: 'same-origin' }).then(response => response.json())
+        hasItems = typeof cart?.item_count === 'number' && cart.item_count > 0
+      } catch {
+        // Ignore transient cart.js errors; the deadline check still applies.
+      }
+      if (hasItems || Date.now() >= deadline) {
+        window.location.href = target
+        return
+      }
+      redirectHandle = setTimeout(navigateWhenCartReady, CART_READY_POLL_INTERVAL_MS)
+    }
+
+    redirectHandle = setTimeout(navigateWhenCartReady, REDIRECT_DELAY_MS)
   }
 
   const disarm = () => {
