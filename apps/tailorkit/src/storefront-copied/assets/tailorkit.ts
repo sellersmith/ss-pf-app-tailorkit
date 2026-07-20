@@ -39,6 +39,9 @@ import { applyGlobalStylingVariables } from './utils/global-styling'
 // product line. Idempotent + uses an `X-TailorKit-Internal` marker so it never re-processes its own add.
 import { installTailorKitHiddenPricingFetchInterceptor } from '../../storefront/hidden-pricing-fetch-interceptor'
 import { installTailorKitHiddenPricingNativeSubmit } from '../../storefront/hidden-pricing-native-submit'
+// PageFly delta: hide the "Generate image with AI" controls — the AI generation
+// backend is not wired in the app-platform port, so the button would fail.
+import { installHideAiImageGenerator } from '../../storefront/hide-ai-image-generator'
 // Keeps the hidden pricing line in sync after the interceptor adds it: re-scales its quantity when the
 // main product quantity changes and removes orphaned fee lines when the main product leaves the cart.
 import { initializeTailorKitCartSync } from '../../storefront/cart-change-observer'
@@ -68,6 +71,9 @@ initializeHiddenPricingProductCache()
 // personalization fee is actually added to the cart in the PageFly-embedded storefront.
 installTailorKitHiddenPricingNativeSubmit()
 installTailorKitHiddenPricingFetchInterceptor()
+
+// Hide the (unwired) "Generate image with AI" storefront controls.
+installHideAiImageGenerator()
 
 // Hide qty/remove controls on the hidden pricing line and render a clean label.
 const tailorKitHiddenManager = initializeCartHiddenProductManager()
