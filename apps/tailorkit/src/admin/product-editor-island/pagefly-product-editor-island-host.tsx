@@ -95,6 +95,17 @@ export const ProductEditorIslandHost: React.FC<ProductEditorIslandHostProps> = (
           </Text>
           <Button onClick={onBack}>Back</Button>
         </InlineStack>
+        {/* AI generation/effects (image generation, AI effects, remove background, vectorize, and the
+            Elva AI assistant) are not wired in the app-platform port yet. Their controls still render
+            inside the copied editor runtime, so surface a clear notice above it rather than leave the
+            merchant to click controls that silently do nothing. */}
+        <Banner tone="info" title="AI features coming soon">
+          <Text as="p">
+            AI tools — image generation, AI effects, remove background, vectorize, and the Elva AI
+            assistant — are being finalized in the new PageFly-integrated app and are not available yet.
+            We&apos;ll let you know as soon as they&apos;re ready.
+          </Text>
+        </Banner>
         {!host || !runtimeApiClient || !loaderData ? (
           <Banner tone="warning" title="ProductEditor runtime unavailable">
             <Text as="p">
